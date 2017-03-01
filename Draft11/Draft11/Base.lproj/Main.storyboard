@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="dUn-0X-foA">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Stack View Controller-->
+        <scene sceneID="PVb-SD-wMC">
+            <objects>
+                <viewController id="tlD-2J-kBt" customClass="StackViewController" customModule="Draft11" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Qui-Jv-caa"/>
+                        <viewControllerLayoutGuide type="bottom" id="eNt-GN-xEg"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Bc6-t8-HPg">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="top" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="aLc-ML-Gd1">
+                                <rect key="frame" x="16" y="20" width="343" height="305"/>
+                                <subviews>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="UUQ-Tp-lw6">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="200"/>
+                                        <color key="backgroundColor" red="0.64216190805848883" green="0.98511108396405489" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t9g-M2-1yW">
+                                        <rect key="frame" x="0.0" y="200" width="343" height="105"/>
+                                        <color key="backgroundColor" red="1" green="0.46080805372133815" blue="0.32694504517113321" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" red="0.569301011169008" green="1" blue="0.0074285916021298304" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="305" id="Foz-aE-mGF"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="aLc-ML-Gd1" firstAttribute="trailing" secondItem="Bc6-t8-HPg" secondAttribute="trailingMargin" id="5AJ-XH-Xih"/>
+                            <constraint firstItem="aLc-ML-Gd1" firstAttribute="leading" secondItem="Bc6-t8-HPg" secondAttribute="leadingMargin" id="Dhy-JZ-Jc5"/>
+                            <constraint firstItem="aLc-ML-Gd1" firstAttribute="top" secondItem="Qui-Jv-caa" secondAttribute="bottom" id="FBc-Cl-fcb"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="constraintStackviewHeight" destination="Foz-aE-mGF" id="tDG-oS-iDu"/>
+                        <outlet property="expandedView" destination="t9g-M2-1yW" id="HSZ-T6-dGN"/>
+                        <outlet property="textView" destination="UUQ-Tp-lw6" id="aBX-Oj-qhr"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="koT-0v-vKh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1522.4000000000001" y="-979.16041979010504"/>
+        </scene>
+        <!--Todo Table View Controller-->
+        <scene sceneID="5Mr-0M-fNi">
+            <objects>
+                <viewController id="dUn-0X-foA" customClass="TodoTableViewController" customModule="Draft11" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="143" sectionHeaderHeight="28" sectionFooterHeight="28" id="o8J-Z6-hke">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </tableView>
+                    <connections>
+                        <outlet property="tableView" destination="o8J-Z6-hke" id="yCh-d2-WBx"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eUe-GF-pjh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-458.39999999999998" y="-697.60119940029995"/>
+        </scene>
+    </scenes>
+</document>
