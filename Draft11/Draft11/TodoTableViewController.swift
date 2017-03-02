@@ -15,8 +15,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 2000
+//        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 44
         
         
         tableView.dataSource = self
@@ -40,30 +40,28 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1;
+        return 2;
     }
     
+    
+    
+        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+            
+            return UITableViewAutomaticDimension
+        }
+    
+    
+    
+    
     func cellHeightDidChange(cell: TodoItemTableViewCell) {
+//        self.tableView.reloadData()
+//        self.tableView.layoutIfNeeded()
         UIView.performWithoutAnimation {
             self.tableView.beginUpdates()
-            
-            tableView.rowHeight = cell.stackViewHeightConstraint.constant
-            //        tableView.layoutIfNeeded()
-            
             self.tableView.endUpdates()
         }
         
     }
-    
-//    
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        if let cell = tableView.cellForRow(at: indexPath) as? TodoItemTableViewCell
-//        {
-//            return cell.stackViewHeightConstraint.constant
-//        }
-//            
-//        
-//        return 44
-//    }
+ 
     
 }
