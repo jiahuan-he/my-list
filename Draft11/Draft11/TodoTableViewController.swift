@@ -40,7 +40,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2;
+        return 10;
     }
     
     
