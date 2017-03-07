@@ -53,7 +53,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         expandedView.isHidden = true
         setDueView.isHidden = true
         
-        stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height + expandedViewHeight + setDueViewHeight
+        textView.returnKeyType = UIReturnKeyType.done
+        
+        adjustHeightConstrant()
         
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(sender:)))
         tapRecognizer.delegate = self
@@ -71,7 +73,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         expandedView.isHidden = !expandedView.isHidden
         setDueView.isHidden = !setDueView.isHidden
         
-        stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height + expandedViewHeight + setDueViewHeight
+        adjustHeightConstrant()
+        
         print(stackViewHeightConstraint.constant," = ",textView.sizeThatFits(textView.frame.size).height,"+", expandedViewHeight)
         
         delegate!.cellHeightDidChange(cell: self)
@@ -79,9 +82,30 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height + expandedViewHeight + setDueViewHeight
+        adjustHeightConstrant()
         delegate!.cellHeightDidChange(cell: self)
 
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n"{
+            adjustHeightConstrant()
+            if !expandedView.isHidden {
+                expandedView.isHidden = true
+            }
+            if !setDueView.isHidden {
+                setDueView.isHidden = true
+            }
+            adjustHeightConstrant()
+            
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
+    }
+    
+    private func adjustHeightConstrant(){
+        stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height + expandedViewHeight + setDueViewHeight
     }
 
 }
