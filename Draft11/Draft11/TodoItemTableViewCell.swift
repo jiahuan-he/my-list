@@ -55,12 +55,12 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         textView.returnKeyType = UIReturnKeyType.done
         
-        adjustHeightConstrant()
-        
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(sender:)))
-        tapRecognizer.delegate = self
-        
-        textView.addGestureRecognizer(tapRecognizer)
+        stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height + expandedViewHeight + setDueViewHeight
+//        
+//        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(sender:)))
+//        tapRecognizer.delegate = self
+//        
+//        textView.addGestureRecognizer(tapRecognizer)
         textView.delegate = self
         
 //        print(stackViewHeightConstraint.constant)
@@ -70,26 +70,24 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func handleTap(sender: UITapGestureRecognizer){
-        expandedView.isHidden = !expandedView.isHidden
-        setDueView.isHidden = !setDueView.isHidden
+//        expandedView.isHidden = !expandedView.isHidden
+//        setDueView.isHidden = !setDueView.isHidden
+//        
+//        adjustHeightConstrant()
+//        
+//        print(stackViewHeightConstraint.constant," = ",textView.sizeThatFits(textView.frame.size).height,"+", expandedViewHeight)
         
-        adjustHeightConstrant()
         
-        print(stackViewHeightConstraint.constant," = ",textView.sizeThatFits(textView.frame.size).height,"+", expandedViewHeight)
-        
-        delegate!.cellHeightDidChange(cell: self)
         
     }
     
     func textViewDidChange(_ textView: UITextView) {
         adjustHeightConstrant()
-        delegate!.cellHeightDidChange(cell: self)
-
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n"{
-            adjustHeightConstrant()
+            
             if !expandedView.isHidden {
                 expandedView.isHidden = true
             }
@@ -106,7 +104,18 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     private func adjustHeightConstrant(){
         stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height + expandedViewHeight + setDueViewHeight
+        delegate!.cellHeightDidChange(cell: self)
     }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        expandedView.isHidden = !expandedView.isHidden
+        setDueView.isHidden = !setDueView.isHidden
+        
+        adjustHeightConstrant()
+        
+        print(stackViewHeightConstraint.constant," = ",textView.sizeThatFits(textView.frame.size).height,"+", expandedViewHeight)
+    }
+    
 
 }
 
