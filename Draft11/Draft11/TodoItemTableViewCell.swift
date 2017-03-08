@@ -19,11 +19,18 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
     
     var delegate: TodoItemTableViewCellDelegate?
-    
+    let screenSize: CGRect = UIScreen.main.bounds
     
     override func awakeFromNib() {
+//        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         
-        let screenSize: CGRect = UIScreen.main.bounds
+        
+        let rightBorder = CALayer()
+        rightBorder.frame = CGRect(x: screenSize.width-6, y: 0, width: 6, height: textView.frame.height)
+        rightBorder.backgroundColor = UIColor.red.cgColor
+        textView.layer.addSublayer(rightBorder)
+        
+                
         let toobar = toolbarView(frame: CGRect(x: 0, y:0 , width: screenSize.width, height: 30))
         
         let dueLabel = UILabel(frame: CGRect(x: screenSize.width/2+50, y: 0, width: 60, height: 30))
