@@ -22,7 +22,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     let screenSize: CGRect = UIScreen.main.bounds
     
     override func awakeFromNib() {
-//        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
+        textView.textContainerInset = UIEdgeInsetsMake(30, 2, 10, 0)
         
         
         let rightBorder = CALayer()
@@ -30,7 +30,30 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         rightBorder.backgroundColor = UIColor.red.cgColor
         textView.layer.addSublayer(rightBorder)
         
-                
+//        let divider  = CALayer()
+//        divider.frame = CGRect(x: screenSize.width-66, y: 0, width: 3, height: textView.frame.height)
+//        divider.backgroundColor = UIColor.gray.cgColor
+//        textView.layer.addSublayer(divider)
+        
+        let dateLabel = UILabel(frame: CGRect(x: 5, y: 2, width: 60, height: 20))
+        dateLabel.text = "tomorrow"
+        dateLabel.font = UIFont(name: "Helvetica", size: 13)
+        dateLabel.textColor = UIColor.red
+        
+        let timeLabel = UILabel(frame: CGRect(x: 65, y: 2, width: 60, height: 20))
+        timeLabel.text = "8:00 pm"
+        timeLabel.font = UIFont(name: "Helvetica", size: 13)
+        timeLabel.textColor = UIColor.red
+        
+        
+        
+        textView.addSubview(timeLabel)
+        textView.addSubview(dateLabel)
+        
+        
+        
+        
+        
         let toobar = toolbarView(frame: CGRect(x: 0, y:0 , width: screenSize.width, height: 30))
         
         let dueLabel = UILabel(frame: CGRect(x: screenSize.width/2+50, y: 0, width: 60, height: 30))
@@ -39,11 +62,14 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         let redButton = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 30))
         redButton.setTitle("red", for: .normal)
         
+        redButton.addTarget(self, action: #selector(self.didPressRedButton(sender:)), for: .touchUpInside)
+        
         let yellowButton = UIButton(frame: CGRect(x: 50, y: 0, width: 60, height: 30))
         yellowButton.setTitle("yellow", for: .normal)
-//
+        yellowButton.addTarget(self, action: #selector(self.didPressRedButton(sender:)), for: .touchUpInside)
+
 //        let greenButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-//        redButton.setTitle("green", for: .normal)
+//        greenButton.setTitle("green", for: .normal)
         
         
         toobar.addSubview(redButton)
@@ -67,6 +93,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         textView.inputAccessoryView = toobar
         
         
+    }
+    
+    func didPressRedButton(sender: UIButton){
+        print(sender.titleLabel?.text ?? "")
     }
     
     func textViewDidChange(_ textView: UITextView) {
