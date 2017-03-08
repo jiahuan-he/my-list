@@ -44,11 +44,32 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     
     var delegate: TodoItemTableViewCellDelegate?
-            
-//        self.contentView.addSubview(textView)
-//        self.contentView.addSubview(expandedView)        
+    
     
     override func awakeFromNib() {
+        
+        let screenSize: CGRect = UIScreen.main.bounds
+        let toobar = toolbarView(frame: CGRect(x: 0, y:0 , width: screenSize.width, height: 30))
+        
+        let redButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        redButton.setTitle("red", for: .normal)
+//        
+//        let yellowButton = UIButton(frame: CGRect(x: 30, y: 0, width: 30, height: 30))
+//        redButton.setTitle("yellow", for: .normal)
+//        
+//        let greenButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+//        redButton.setTitle("green", for: .normal)
+        
+        
+        toobar.addSubview(redButton)
+//        toobar.addSubview(yellowButton)
+//        toobar.addSubview(greenButton)
+        
+        
+        
+        toobar.backgroundColor = UIColor.brown
+        
+        
         
         expandedView.isHidden = true
         setDueView.isHidden = true
@@ -56,27 +77,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         textView.returnKeyType = UIReturnKeyType.done
         
         stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height + expandedViewHeight + setDueViewHeight
-//        
-//        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(sender:)))
-//        tapRecognizer.delegate = self
-//        
-//        textView.addGestureRecognizer(tapRecognizer)
         textView.delegate = self
         
-//        print(stackViewHeightConstraint.constant)
-//        print("awake from nib")
-//        print(stackViewHeightConstraint.constant," = ",textView.sizeThatFits(textView.frame.size).height,"+", expandedViewHeight)
-        
-    }
-    
-    func handleTap(sender: UITapGestureRecognizer){
-//        expandedView.isHidden = !expandedView.isHidden
-//        setDueView.isHidden = !setDueView.isHidden
-//        
-//        adjustHeightConstrant()
-//        
-//        print(stackViewHeightConstraint.constant," = ",textView.sizeThatFits(textView.frame.size).height,"+", expandedViewHeight)
-        
+        textView.inputAccessoryView = toobar
         
         
     }

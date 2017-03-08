@@ -30,7 +30,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wfi-j2-NZc">
                                 <rect key="frame" x="0.0" y="36" width="356" height="28"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Set Due " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rnL-zS-orH">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Set Due " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rnL-zS-orH" userLabel="Set Due">
                                         <rect key="frame" x="0.0" y="4" width="356" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <nil key="textColor"/>
@@ -39,9 +39,9 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.99065217099245029" green="1" blue="0.4818045675047351" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="28" id="01b-1O-Bbu"/>
+                                    <constraint firstAttribute="height" priority="999" constant="28" id="01b-1O-Bbu"/>
                                     <constraint firstItem="rnL-zS-orH" firstAttribute="top" secondItem="Wfi-j2-NZc" secondAttribute="top" constant="4" id="2LT-dP-zpb"/>
-                                    <constraint firstAttribute="bottom" secondItem="rnL-zS-orH" secondAttribute="bottom" constant="3" id="Ph9-xz-rha"/>
+                                    <constraint firstAttribute="bottom" secondItem="rnL-zS-orH" secondAttribute="bottom" priority="999" constant="3" id="Ph9-xz-rha"/>
                                     <constraint firstAttribute="trailing" secondItem="rnL-zS-orH" secondAttribute="trailing" id="r2I-2s-1f9"/>
                                     <constraint firstItem="rnL-zS-orH" firstAttribute="leading" secondItem="Wfi-j2-NZc" secondAttribute="leading" id="sN4-TN-tU0"/>
                                 </constraints>
@@ -79,12 +79,12 @@
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="0.68666118253758923" blue="0.81819538869110142" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="28" id="JBP-v8-7gX"/>
+                                    <constraint firstAttribute="height" priority="999" constant="28" id="JBP-v8-7gX"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="height" constant="92" id="3gl-Ig-VQl"/>
+                            <constraint firstAttribute="height" priority="999" constant="92" id="3gl-Ig-VQl"/>
                             <constraint firstAttribute="trailing" secondItem="UM2-14-HIx" secondAttribute="trailing" id="APf-v5-nwt"/>
                             <constraint firstItem="UM2-14-HIx" firstAttribute="leading" secondItem="sGV-do-Oep" secondAttribute="leading" id="gp9-vI-nsD"/>
                         </constraints>
