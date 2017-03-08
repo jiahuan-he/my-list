@@ -15,78 +15,21 @@
             <rect key="frame" x="0.0" y="0.0" width="356" height="93"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="356" height="92"/>
+                <rect key="frame" x="0.0" y="0.0" width="356" height="92.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="sGV-do-Oep">
                         <rect key="frame" x="0.0" y="0.0" width="356" height="92"/>
                         <subviews>
                             <textView multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="Buy some food." translatesAutoresizingMaskIntoConstraints="NO" id="jYQ-Tl-NB0">
-                                <rect key="frame" x="0.0" y="0.0" width="356" height="36"/>
+                                <rect key="frame" x="0.0" y="0.0" width="356" height="92"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
                             </textView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wfi-j2-NZc">
-                                <rect key="frame" x="0.0" y="36" width="356" height="28"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Set Due " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rnL-zS-orH" userLabel="Set Due">
-                                        <rect key="frame" x="0.0" y="4" width="356" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" red="0.99065217099245029" green="1" blue="0.4818045675047351" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" priority="999" constant="28" id="01b-1O-Bbu"/>
-                                    <constraint firstItem="rnL-zS-orH" firstAttribute="top" secondItem="Wfi-j2-NZc" secondAttribute="top" constant="4" id="2LT-dP-zpb"/>
-                                    <constraint firstAttribute="bottom" secondItem="rnL-zS-orH" secondAttribute="bottom" priority="999" constant="3" id="Ph9-xz-rha"/>
-                                    <constraint firstAttribute="trailing" secondItem="rnL-zS-orH" secondAttribute="trailing" id="r2I-2s-1f9"/>
-                                    <constraint firstItem="rnL-zS-orH" firstAttribute="leading" secondItem="Wfi-j2-NZc" secondAttribute="leading" id="sN4-TN-tU0"/>
-                                </constraints>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UM2-14-HIx">
-                                <rect key="frame" x="0.0" y="64" width="356" height="28"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Set Flag" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SIB-UA-jkP">
-                                        <rect key="frame" x="8" y="0.0" width="70" height="21"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RyP-9z-EhA">
-                                        <rect key="frame" x="171" y="-4" width="46" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Button"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M0D-bf-Xrv">
-                                        <rect key="frame" x="225" y="-4" width="46" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Button"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5dA-86-gPx">
-                                        <rect key="frame" x="114" y="-4" width="46" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Button"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sMu-2c-vXa">
-                                        <rect key="frame" x="279" y="-4" width="46" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Button"/>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" red="1" green="0.68666118253758923" blue="0.81819538869110142" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" priority="999" constant="28" id="JBP-v8-7gX"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="height" priority="999" constant="92" id="3gl-Ig-VQl"/>
-                            <constraint firstAttribute="trailing" secondItem="UM2-14-HIx" secondAttribute="trailing" id="APf-v5-nwt"/>
-                            <constraint firstItem="UM2-14-HIx" firstAttribute="leading" secondItem="sGV-do-Oep" secondAttribute="leading" id="gp9-vI-nsD"/>
                         </constraints>
                     </stackView>
                 </subviews>
@@ -98,12 +41,10 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="expandedView" destination="UM2-14-HIx" id="dAU-hr-lvy"/>
-                <outlet property="setDueView" destination="Wfi-j2-NZc" id="wH3-8a-gcw"/>
                 <outlet property="stackViewHeightConstraint" destination="3gl-Ig-VQl" id="wun-gC-1Le"/>
                 <outlet property="textView" destination="jYQ-Tl-NB0" id="HHz-dz-xts"/>
             </connections>
-            <point key="canvasLocation" x="5" y="-145"/>
+            <point key="canvasLocation" x="-35" y="-171"/>
         </tableViewCell>
     </objects>
 </document>
