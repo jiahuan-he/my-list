@@ -11,60 +11,65 @@ import UIKit
 class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate {
     
     
-    let todoItems: [TodoModel] = []
+    var todoItems = [TodoModel]()
     @IBOutlet var tableView: UITableView!
     override func viewDidLoad() {
         
-        super.viewDidLoad()
+        super.viewDidLoad()                
         
-        tableView.showsVerticalScrollIndicator = false
+        todoItems.append(TodoModel(content: "Have supper with friends"))
+        todoItems.append(TodoModel(content: "By some milk"))
+        todoItems.append(TodoModel(content: "Watch movies"))
+        todoItems.append(TodoModel(content: "Study for courses, and pick up a parcel. Then walk the dog and buy some dog food."))
+        todoItems.append(TodoModel(content: "Have supper with friends"))
+        todoItems.append(TodoModel(content: "By some milk"))
+        todoItems.append(TodoModel(content: "Watch movies"))
+        todoItems.append(TodoModel(content: "Study for courses, and pick up a parcel. Then walk the dog and buy some dog food."))
         
-//        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.showsVerticalScrollIndicator = false        
         tableView.estimatedRowHeight = 44
         tableView.dataSource = self
         tableView.delegate = self
-        
-//        tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
-
-        // Do any additional setup after loading the view.
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
         cell.delegate = self
         cell.selectionStyle = .none
-        print("cell for row at")
-        
-        
+        cell.item = todoItems[indexPath.row]
         return cell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        //TEMP
-        return 10;
+        return todoItems.count;
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
     
-    
-        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            
-            return UITableViewAutomaticDimension
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let c = cell as? TodoItemTableViewCell{
+            // Adjust row height with predefined text.
+            c.adjustHeightConstrant()
         }
+    }
     
-    
-    
+    //TodoitemTableViewCell delegate
+    func deleteToDoItem(item: TodoModel) {
+        let index = (todoItems as NSArray).index(of: item)
+        todoItems.remove(at: index)
+        let indexPath = IndexPath(row: index, section: 0)
+        tableView.beginUpdates()
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.endUpdates()
+    }
     
     func cellHeightDidChange(cell: TodoItemTableViewCell) {
-//        self.tableView.reloadData()
-//        self.tableView.layoutIfNeeded()
         UIView.performWithoutAnimation {
             self.tableView.beginUpdates()
             self.tableView.endUpdates()
         }
-        
-    }
- 
-    
+    }    
 }

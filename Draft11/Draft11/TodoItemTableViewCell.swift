@@ -7,13 +7,19 @@
 //
 protocol TodoItemTableViewCellDelegate{
     func cellHeightDidChange(cell: TodoItemTableViewCell)
-    
+    func deleteToDoItem(item: TodoModel)
 }
-
 
 import UIKit
 
 class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDelegate {
+    
+    var item : TodoModel?{
+        didSet{
+            textView.text = item?.content
+//            adjustHeightConstrant() // TEMP : can cause BUG which is one more cell than needed is loaded into view.
+        }
+    }
     
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
@@ -27,6 +33,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
     let screenSize: CGRect = UIScreen.main.bounds
     
     override func awakeFromNib() {
+        
         textView.textContainerInset = UIEdgeInsetsMake(30, 2, 10, 0)
         rightBorder.frame = CGRect(x: screenSize.width-6, y: 0, width: 6, height: textView.frame.height)
         rightBorder.backgroundColor = UIColor.red.cgColor
@@ -66,9 +73,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
 //        toobar.addSubview(greenButton)
 
         toobar.backgroundColor = UIColor.brown
-      
         textView.returnKeyType = UIReturnKeyType.done
         
+//        textView.sizeToFit() // CAN CAUSE BUG: size doesn't fit
         stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height
         textView.delegate = self
         
@@ -89,7 +96,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
         if recognizer.state == .changed{
             center = CGPoint(x: originalCenter.x+recognizer.translation(in: self).x, y: originalCenter.y)
             print(center.x)
-            if frame.origin.x < -bounds.size.width/4 {
+            if frame.origin.x < -bounds.size.width/3 {
                 deleteOnRelease = true
             }
         }
@@ -101,7 +108,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
                 })
             }
             else{
-                
+                delegate?.deleteToDoItem(item: item!)
             }
         }
     }
@@ -114,16 +121,13 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
         }
         return false
     }
-    
-    
-    
+
     func didPressRedButton(sender: UIButton){
         print(sender.titleLabel?.text ?? "")
     }
     
     func textViewDidChange(_ textView: UITextView) {
         adjustHeightConstrant()
-
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -135,7 +139,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
         return true
     }
     
-    private func adjustHeightConstrant(){
+    func adjustHeightConstrant(){
         stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height
         delegate!.cellHeightDidChange(cell: self)
     }
@@ -146,7 +150,3 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
 }
 
     
-    
-    
-    
-

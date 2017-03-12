@@ -21,4 +21,7 @@ class TodoModel{
     var date: NSDate?
     var completed: Bool = false
     var deleted: Bool = false
+    init(content: String) {
+        self.content = content
+    }
 }
