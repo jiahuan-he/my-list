@@ -15,6 +15,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.showsVerticalScrollIndicator = false
+        
 //        tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 44
         
