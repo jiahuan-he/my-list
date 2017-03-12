@@ -10,7 +10,6 @@ import UIKit
 
 class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate {
     
-    
     var todoItems = [TodoModel]()
     @IBOutlet var tableView: UITableView!
     override func viewDidLoad() {
@@ -66,10 +65,27 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.endUpdates()
     }
     
+    func completeToDoItem(item: TodoModel) {
+        let index = (todoItems as NSArray).index(of: item)
+        let indexPath = IndexPath(row: index, section: 0)
+        let c = tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell
+        if item.completed{
+            
+            c.textView.backgroundColor = UIColor(red: 220/255, green: 237/255, blue: 200/255, alpha: 1)
+        }
+        else{
+            c.textView.backgroundColor = UIColor.clear
+        }
+        tableView.beginUpdates()
+        tableView.endUpdates()
+        
+    }
+
+    
     func cellHeightDidChange(cell: TodoItemTableViewCell) {
         UIView.performWithoutAnimation {
             self.tableView.beginUpdates()
             self.tableView.endUpdates()
         }
-    }    
+    }
 }

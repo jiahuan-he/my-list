@@ -8,6 +8,7 @@
 protocol TodoItemTableViewCellDelegate{
     func cellHeightDidChange(cell: TodoItemTableViewCell)
     func deleteToDoItem(item: TodoModel)
+    func completeToDoItem(item: TodoModel)
 }
 
 import UIKit
@@ -26,8 +27,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
     let rightBorder = CALayer()
     
     var originalCenter = CGPoint()
-    var deleteOnRelease = false
-    
+    var deleteOnRelease = false    
     
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
@@ -99,6 +99,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
             if frame.origin.x < -bounds.size.width/3 {
                 deleteOnRelease = true
             }
+            if frame.origin.x > bounds.size.width/5{
+                item!.completed = !item!.completed
+            }
         }
         if recognizer.state == .ended{
             let originalFrame = CGRect(x: 0, y: frame.origin.y, width: bounds.size.width, height: bounds.size.height)
@@ -106,6 +109,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
                 UIView.animate(withDuration: 0.3, animations: {
                     self.frame = originalFrame
                 })
+                //TODO debug: have to swipe twice to delete a cell!
+                self.delegate?.completeToDoItem(item: self.item!)
             }
             else{
                 delegate?.deleteToDoItem(item: item!)
