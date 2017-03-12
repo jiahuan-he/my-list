@@ -7,33 +7,30 @@
 //
 protocol TodoItemTableViewCellDelegate{
     func cellHeightDidChange(cell: TodoItemTableViewCell)
+    
 }
 
 
 import UIKit
 
-class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
+class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDelegate {
     
     @IBOutlet weak var textView: UITextView!
-    
     @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
+    let rightBorder = CALayer()
+    
+    var originalCenter = CGPoint()
+    var deleteOnRelease = false
+    
     
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
     
     override func awakeFromNib() {
         textView.textContainerInset = UIEdgeInsetsMake(30, 2, 10, 0)
-        
-        
-        let rightBorder = CALayer()
         rightBorder.frame = CGRect(x: screenSize.width-6, y: 0, width: 6, height: textView.frame.height)
         rightBorder.backgroundColor = UIColor.red.cgColor
         textView.layer.addSublayer(rightBorder)
-        
-//        let divider  = CALayer()
-//        divider.frame = CGRect(x: screenSize.width-66, y: 0, width: 3, height: textView.frame.height)
-//        divider.backgroundColor = UIColor.gray.cgColor
-//        textView.layer.addSublayer(divider)
         
         let dateLabel = UILabel(frame: CGRect(x: 5, y: 2, width: 60, height: 20))
         dateLabel.text = "tomorrow"
@@ -45,23 +42,15 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         timeLabel.font = UIFont(name: "Helvetica", size: 13)
         timeLabel.textColor = UIColor.red
         
-        
-        
         textView.addSubview(timeLabel)
         textView.addSubview(dateLabel)
         
-        
-        
-        
-        
         let toobar = toolbarView(frame: CGRect(x: 0, y:0 , width: screenSize.width, height: 30))
-        
         let dueLabel = UILabel(frame: CGRect(x: screenSize.width/2+50, y: 0, width: 60, height: 30))
         dueLabel.text = "Due"
-        
         let redButton = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 30))
-        redButton.setTitle("red", for: .normal)
         
+        redButton.setTitle("red", for: .normal)
         redButton.addTarget(self, action: #selector(self.didPressRedButton(sender:)), for: .touchUpInside)
         
         let yellowButton = UIButton(frame: CGRect(x: 50, y: 0, width: 60, height: 30))
@@ -71,20 +60,13 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
 //        let greenButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
 //        greenButton.setTitle("green", for: .normal)
         
-        
         toobar.addSubview(redButton)
         toobar.addSubview(yellowButton)
         toobar.addSubview(dueLabel)
 //        toobar.addSubview(greenButton)
-        
-        
-        
-        toobar.backgroundColor = UIColor.brown
-        
-        
-        
 
-        
+        toobar.backgroundColor = UIColor.brown
+      
         textView.returnKeyType = UIReturnKeyType.done
         
         stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height
@@ -92,8 +74,48 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         textView.inputAccessoryView = toobar
         
-        
+        // Add gesture recognizer. 
+        let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(recognizer:)))
+        panRecognizer.delegate = self
+        addGestureRecognizer(panRecognizer)
     }
+    
+    //Pan Gesture recognizer.
+    func handlePan(recognizer: UIPanGestureRecognizer){
+        if recognizer.state == .began{
+            print("width ", -bounds.size.width )
+            originalCenter = center
+        }
+        if recognizer.state == .changed{
+            center = CGPoint(x: originalCenter.x+recognizer.translation(in: self).x, y: originalCenter.y)
+            print(center.x)
+            if frame.origin.x < -bounds.size.width/4 {
+                deleteOnRelease = true
+            }
+        }
+        if recognizer.state == .ended{
+            let originalFrame = CGRect(x: 0, y: frame.origin.y, width: bounds.size.width, height: bounds.size.height)
+            if !deleteOnRelease{
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.frame = originalFrame
+                })
+            }
+            else{
+                
+            }
+        }
+    }
+    
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let recognizer = gestureRecognizer as? UIPanGestureRecognizer{
+            if fabs(recognizer.translation(in: self).x) > fabs(recognizer.translation(in: self).y){
+                return true
+            }
+        }
+        return false
+    }
+    
+    
     
     func didPressRedButton(sender: UIButton){
         print(sender.titleLabel?.text ?? "")
@@ -106,7 +128,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n"{
-            
             adjustHeightConstrant()
             textView.resignFirstResponder()
             return false
@@ -120,12 +141,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        
         adjustHeightConstrant()
-        
     }
-    
-
 }
 
     

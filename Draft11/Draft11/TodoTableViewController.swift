@@ -10,24 +10,22 @@ import UIKit
 
 class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate {
     
+    
+    let todoItems: [TodoModel] = []
     @IBOutlet var tableView: UITableView!
-
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         
         tableView.showsVerticalScrollIndicator = false
         
 //        tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 44
-        
-        
         tableView.dataSource = self
         tableView.delegate = self
         
 //        tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
-        
-        
 
         // Do any additional setup after loading the view.
     }
@@ -35,6 +33,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
         cell.delegate = self
+        cell.selectionStyle = .none
         print("cell for row at")
         
         
@@ -42,6 +41,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        //TEMP
         return 10;
     }
     
