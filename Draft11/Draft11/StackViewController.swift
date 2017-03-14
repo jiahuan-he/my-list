@@ -13,8 +13,7 @@ class StackViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var constraintStackviewHeight: NSLayoutConstraint!
     @IBOutlet weak var expandedView: UIView!
-    
-    
+        
     
     func textViewDidChange(_ textView: UITextView) {
         

@@ -70,7 +70,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let indexPath = IndexPath(row: index, section: 0)
         let c = tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell
         if item.completed{
-            
             c.textView.backgroundColor = UIColor(red: 220/255, green: 237/255, blue: 200/255, alpha: 1)
         }
         else{

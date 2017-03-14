@@ -95,25 +95,20 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
         }
         if recognizer.state == .changed{
             center = CGPoint(x: originalCenter.x+recognizer.translation(in: self).x, y: originalCenter.y)
-            print(center.x)
-            if frame.origin.x < -bounds.size.width/3 {
-                deleteOnRelease = true
-            }
-            if frame.origin.x > bounds.size.width/5{
-                item!.completed = !item!.completed
-            }
+            
         }
         if recognizer.state == .ended{
             let originalFrame = CGRect(x: 0, y: frame.origin.y, width: bounds.size.width, height: bounds.size.height)
-            if !deleteOnRelease{
-                UIView.animate(withDuration: 0.3, animations: {
-                    self.frame = originalFrame
-                })
-                //TODO debug: have to swipe twice to delete a cell!
-                self.delegate?.completeToDoItem(item: self.item!)
-            }
-            else{
+            if frame.origin.x < -bounds.size.width/3 {
                 delegate?.deleteToDoItem(item: item!)
+            } else {
+                UIView.animate(withDuration: 0.3, animations: {
+                self.frame = originalFrame
+                
+            })
+                //TODO debug: have to swipe twice to delete a cell!
+                item!.completed = !item!.completed
+                self.delegate?.completeToDoItem(item: self.item!)
             }
         }
     }
