@@ -16,7 +16,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     @IBOutlet weak var textView: UITextView!
     
-    @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
+//    @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
     
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
@@ -41,9 +41,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         timeLabel.text = "8:00 pm"
         timeLabel.font = UIFont(name: "Helvetica", size: 13)
         timeLabel.textColor = UIColor.red
-        
-        
-        
+
         textView.addSubview(timeLabel)
         textView.addSubview(dateLabel)
         
@@ -71,14 +69,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         
         toobar.backgroundColor = UIColor.brown
-        
-        
-        
-        
-        
+
         textView.returnKeyType = UIReturnKeyType.done
         
-        stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height
+//        stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height
         textView.delegate = self
         
         textView.inputAccessoryView = toobar
@@ -87,26 +81,20 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        adjustHeightConstrant()
+        delegate?.cellHeightDidChange(cell: self)
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n"{
             
-            adjustHeightConstrant()
             textView.resignFirstResponder()
             return false
         }
         return true
     }
     
-    private func adjustHeightConstrant(){
-        stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height
-        delegate!.cellHeightDidChange(cell: self)
-    }
-    
     func textViewDidBeginEditing(_ textView: UITextView) {
-        adjustHeightConstrant()
+        
     }
     
     

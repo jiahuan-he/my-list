@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		3AD7808E1EB078BB007FDE5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */; };
-		3AD780901EB078BB007FDE5E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD7808F1EB078BB007FDE5E /* ViewController.swift */; };
 		3AD780931EB078BB007FDE5E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AD780911EB078BB007FDE5E /* Main.storyboard */; };
 		3AD780961EB078BB007FDE5E /* Draft12.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3AD780941EB078BB007FDE5E /* Draft12.xcdatamodeld */; };
 		3AD780981EB078BB007FDE5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3AD780971EB078BB007FDE5E /* Assets.xcassets */; };
@@ -22,7 +21,6 @@
 /* Begin PBXFileReference section */
 		3AD7808A1EB078BA007FDE5E /* Draft12.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Draft12.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3AD7808F1EB078BB007FDE5E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3AD780921EB078BB007FDE5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3AD780951EB078BB007FDE5E /* Draft12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Draft12.xcdatamodel; sourceTree = "<group>"; };
 		3AD780971EB078BB007FDE5E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -66,7 +64,6 @@
 			children = (
 				3AD780A81EB07A7D007FDE5E /* toolbarView.swift */,
 				3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */,
-				3AD7808F1EB078BB007FDE5E /* ViewController.swift */,
 				3AD780911EB078BB007FDE5E /* Main.storyboard */,
 				3AD780971EB078BB007FDE5E /* Assets.xcassets */,
 				3AD780991EB078BB007FDE5E /* LaunchScreen.storyboard */,
@@ -156,7 +153,6 @@
 				3AD780A61EB07971007FDE5E /* TodoItemTableViewCell.swift in Sources */,
 				3AD780961EB078BB007FDE5E /* Draft12.xcdatamodeld in Sources */,
 				3AD780A31EB0792A007FDE5E /* TodoTableViewController.swift in Sources */,
-				3AD780901EB078BB007FDE5E /* ViewController.swift in Sources */,
 				3AD7808E1EB078BB007FDE5E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

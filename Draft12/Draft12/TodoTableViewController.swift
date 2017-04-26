@@ -18,7 +18,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         super.viewDidLoad()
         
         //        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 44
+        tableView.estimatedRowHeight = 30
+        tableView.rowHeight = UITableViewAutomaticDimension
         
         
         tableView.dataSource = self
@@ -36,7 +37,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let item1 = TodoItem(context: context)
         item1.name = "item1"
         item1.isComplete = false
-        
+
         let item2 = TodoItem(context: context)
         item2.name = "item1"
         item2.isComplete = false
@@ -59,7 +60,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let item7 = TodoItem(context: context)
         item7.name = "item1"
-        item7.isComplete = false
+//        item7.isComplete = false
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         
@@ -88,22 +89,20 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count;
-//        return 10;
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
     
-    
     func cellHeightDidChange(cell: TodoItemTableViewCell) {
-        //        self.tableView.reloadData()
-        //        self.tableView.layoutIfNeeded()
-        UIView.performWithoutAnimation {
-            self.tableView.beginUpdates()
-            self.tableView.endUpdates()
-        }
-        
+        tableView.beginUpdates()
+        tableView.endUpdates()
     }
+    
+    
+    
+    
     
     
 }

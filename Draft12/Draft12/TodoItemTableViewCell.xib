@@ -18,37 +18,28 @@
                 <rect key="frame" x="0.0" y="0.0" width="356" height="92.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="W8O-VA-MgE">
+                    <textView multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z3M-Ab-AXi">
                         <rect key="frame" x="0.0" y="0.0" width="356" height="92"/>
-                        <subviews>
-                            <textView multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z3M-Ab-AXi">
-                                <rect key="frame" x="0.0" y="0.0" width="356" height="92"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <attributedString key="attributedText">
-                                    <fragment content="test">
-                                        <attributes>
-                                            <font key="NSFont" size="12" name="Helvetica"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
-                            </textView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstAttribute="height" priority="999" constant="92" id="DgA-Dr-D56"/>
-                        </constraints>
-                    </stackView>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <attributedString key="attributedText">
+                            <fragment content="test">
+                                <attributes>
+                                    <font key="NSFont" size="12" name="Helvetica"/>
+                                    <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                </attributes>
+                            </fragment>
+                        </attributedString>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
+                    </textView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="W8O-VA-MgE" secondAttribute="bottom" id="FMQ-bw-mb0"/>
-                    <constraint firstItem="W8O-VA-MgE" firstAttribute="leading" secondItem="ry2-I0-Htc" secondAttribute="leading" id="dS7-NN-XrP"/>
-                    <constraint firstAttribute="trailing" secondItem="W8O-VA-MgE" secondAttribute="trailing" id="eD6-TI-RDd"/>
-                    <constraint firstItem="W8O-VA-MgE" firstAttribute="top" secondItem="ry2-I0-Htc" secondAttribute="top" id="nyS-1c-rpF"/>
+                    <constraint firstItem="Z3M-Ab-AXi" firstAttribute="leading" secondItem="ry2-I0-Htc" secondAttribute="leading" id="4oT-iM-MCh"/>
+                    <constraint firstItem="Z3M-Ab-AXi" firstAttribute="top" secondItem="ry2-I0-Htc" secondAttribute="top" id="7ON-K6-9jU"/>
+                    <constraint firstAttribute="trailing" secondItem="Z3M-Ab-AXi" secondAttribute="trailing" id="OEl-EL-P2y"/>
+                    <constraint firstAttribute="bottom" secondItem="Z3M-Ab-AXi" secondAttribute="bottom" id="SKI-SH-ldo"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="stackViewHeightConstraint" destination="DgA-Dr-D56" id="SfC-EN-I5x"/>
                 <outlet property="textView" destination="Z3M-Ab-AXi" id="KdU-zw-jqa"/>
             </connections>
             <point key="canvasLocation" x="-35" y="-171"/>
