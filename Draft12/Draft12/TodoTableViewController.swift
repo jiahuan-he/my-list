@@ -21,14 +21,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.estimatedRowHeight = 30
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        
         tableView.dataSource = self
         tableView.delegate = self
         
         //        tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
         
-        // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -65,6 +63,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         
         getData()
+
         tableView.reloadData()
     }
     
@@ -83,7 +82,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
         cell.delegate = self
-        cell.textView.text = items[indexPath.row].name
+        cell.todoItem = items[indexPath.row]
         return cell
     }
     
@@ -100,7 +99,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.endUpdates()
     }
     
-    
+    //TodoItemTableViewCell delegate 
+    func itemDeleted(item: TodoItem) {
+        let itemIndex = (items as NSArray).index(of: item)
+        items.remove(at: itemIndex)
+        tableView.beginUpdates()
+        let indexPathForRow = NSIndexPath(row: itemIndex, section: 0)
+        tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .fade)
+        tableView.endUpdates()
+    }
     
     
     

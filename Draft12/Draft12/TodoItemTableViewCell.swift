@@ -7,6 +7,7 @@
 //
 protocol TodoItemTableViewCellDelegate{
     func cellHeightDidChange(cell: TodoItemTableViewCell)
+    func itemDeleted(item: TodoItem)
 }
 
 
@@ -15,11 +16,20 @@ import UIKit
 class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     @IBOutlet weak var textView: UITextView!
-    
-//    @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
-    
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
+    
+    var todoItem: TodoItem?{
+        didSet{
+            textView.text = todoItem?.name
+        }
+    }
+    
+    var originalCenter = CGPoint()
+    var deleteOnDragRelease = false
+    var completeOnDragRelease = false
+    
+  
     
     override func awakeFromNib() {
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
@@ -77,7 +87,70 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         textView.inputAccessoryView = toobar
         
+        let recognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(recognizer:)))
+        recognizer.delegate = self
+        addGestureRecognizer(recognizer)
+    }
+    
+    func handlePan(recognizer: UIPanGestureRecognizer){
+        // 1
+        if recognizer.state == .began {
+            // when the gesture begins, record the current center location
+            originalCenter = center
+        }
         
+        // 2
+        if recognizer.state == .changed {
+            let translation = recognizer.translation(in: self)
+            center = CGPoint(x: originalCenter.x + translation.x, y: originalCenter.y)
+            print(center.x, "  ",center.y)
+            deleteOnDragRelease = (frame.origin.x < -frame.size.width / 2.0)
+            completeOnDragRelease = (frame.origin.x > frame.size.width / 2.0)
+        }
+        
+        // 3
+        if recognizer.state == .ended {
+            // the frame this cell had before user dragged it
+            let originalFrame = CGRect(x: 0, y: frame.origin.y,
+                                       width: bounds.size.width, height: bounds.size.height)
+            
+            if deleteOnDragRelease {
+                if delegate != nil && todoItem != nil {
+                    // notify the delegate that this item should be deleted
+                    delegate!.itemDeleted(item: self.todoItem!)
+                    //                    itemCompleteLayer.isHidden = !itemCompleteLayer.isHidden
+                    //                    UIView.animate(withDuration: 0.2, animations:
+                    //                        {
+                    //                            self.frame = originalFrame
+                    //                    })
+                }
+            }
+            else if completeOnDragRelease {
+                todoItem!.isComplete = !todoItem!.isComplete
+                UIView.animate(withDuration: 0.5, animations: {self.frame = originalFrame})
+            }
+            else {
+                // if the item is not being deleted, snap back to the original location
+                UIView.animate(withDuration: 0.2, animations:
+                    {
+                        self.frame = originalFrame
+                        
+                })
+            }
+        }
+
+        
+    }
+    
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+            let translation = panGestureRecognizer.translation(in: superview!)
+            if fabs(translation.x) > fabs(translation.y) {
+                return true
+            }
+            return false
+        }
+        return false
     }
     
     func textViewDidChange(_ textView: UITextView) {
