@@ -30,13 +30,53 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         // Do any additional setup after loading the view.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        
+        let item1 = TodoItem(context: context)
+        item1.name = "item1"
+        item1.isComplete = false
+        
+        let item2 = TodoItem(context: context)
+        item2.name = "item1"
+        item2.isComplete = false
+        
+        let item3 = TodoItem(context: context)
+        item3.name = "item1"
+        item3.isComplete = false
+        
+        let item4 = TodoItem(context: context)
+        item4.name = "item1"
+        item4.isComplete = false
+        
+        let item5 = TodoItem(context: context)
+        item5.name = "item1"
+        item5.isComplete = false
+        
+        let item6 = TodoItem(context: context)
+        item6.name = "item1"
+        item6.isComplete = false
+        
+        let item7 = TodoItem(context: context)
+        item7.name = "item1"
+        item7.isComplete = false
+        
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        
+        getData()
+        tableView.reloadData()
+    }
+    
+    
     func getData(){
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        
+        do {
+            items = try context.fetch(TodoItem.fetchRequest())
         }
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
+        catch{
+            print("Wrong")
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
