@@ -26,7 +26,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         //        tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
-
+        
         // Do any additional setup after loading the view.
     }
     
@@ -35,7 +35,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             UIApplication.shared.delegate as? AppDelegate else {
                 return
         }
-      
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -47,6 +48,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count;
+//        return 10;
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
