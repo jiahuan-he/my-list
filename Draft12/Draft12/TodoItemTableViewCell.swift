@@ -15,7 +15,7 @@ import UIKit
 
 class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
-    @IBOutlet weak var textView: UITextView!
+    @IBOutlet  var textView: UITextView!
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
     
@@ -29,7 +29,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     var deleteOnDragRelease = false
     var completeOnDragRelease = false
     
-  
+    
     
     override func awakeFromNib() {
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
