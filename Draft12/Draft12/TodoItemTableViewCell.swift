@@ -15,7 +15,7 @@ import UIKit
 
 class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
-    @IBOutlet  var textView: UITextView!
+    @IBOutlet var textView: UITextView!
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
     
@@ -29,7 +29,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     var deleteOnDragRelease = false
     var completeOnDragRelease = false
     
-    
+  
     
     override func awakeFromNib() {
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
@@ -103,7 +103,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         if recognizer.state == .changed {
             let translation = recognizer.translation(in: self)
             center = CGPoint(x: originalCenter.x + translation.x, y: originalCenter.y)
-            print(center.x, "  ",center.y)
+//            print(center.x, "  ",center.y)
             deleteOnDragRelease = (frame.origin.x < -frame.size.width / 2.0)
             completeOnDragRelease = (frame.origin.x > frame.size.width / 2.0)
         }

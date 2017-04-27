@@ -24,7 +24,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.dataSource = self
         tableView.delegate = self
         
-        //        tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
+//                tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
         
     }
@@ -35,29 +35,29 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let item1 = TodoItem(context: context)
         item1.name = "item1"
         item1.isComplete = false
-
-        let item2 = TodoItem(context: context)
-        item2.name = "item1"
-        item2.isComplete = false
-        
-        let item3 = TodoItem(context: context)
-        item3.name = "item1"
-        item3.isComplete = false
-        
-        let item4 = TodoItem(context: context)
-        item4.name = "item1"
-        item4.isComplete = false
-        
-        let item5 = TodoItem(context: context)
-        item5.name = "item1"
-        item5.isComplete = false
-        
-        let item6 = TodoItem(context: context)
-        item6.name = "item1"
-        item6.isComplete = false
-        
-        let item7 = TodoItem(context: context)
-        item7.name = "item1"
+//
+//        let item2 = TodoItem(context: context)
+//        item2.name = "item1"
+//        item2.isComplete = false
+//        
+//        let item3 = TodoItem(context: context)
+//        item3.name = "item1"
+//        item3.isComplete = false
+//        
+//        let item4 = TodoItem(context: context)
+//        item4.name = "item1"
+//        item4.isComplete = false
+//        
+//        let item5 = TodoItem(context: context)
+//        item5.name = "item1"
+//        item5.isComplete = false
+//        
+//        let item6 = TodoItem(context: context)
+//        item6.name = "item1"
+//        item6.isComplete = false
+//        
+//        let item7 = TodoItem(context: context)
+//        item7.name = "item1"
 //        item7.isComplete = false
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
@@ -131,48 +131,64 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     // contains scrollViewDidScroll, and other methods, to keep track of dragging the scrollView
     
     // a cell that is rendered as a placeholder to indicate where a new item is added
-    let placeHolderCell = TodoItemTableViewCell(style: .default, reuseIdentifier: "todoCell")
+//    var placeHolderCell: TodoItemTableViewCell?
     // indicates the state of this behavior
-    var pullDownInProgress = false
+//    var pullDownInProgress = false
     
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        // this behavior starts when a user pulls down while at the top of the table
-        pullDownInProgress = scrollView.contentOffset.y <= 0.0
-        placeHolderCell.backgroundColor = UIColor.clear
-        if pullDownInProgress {
-            // add the placeholder
-//            placeHolderCell.awakeFromNib()
-            tableView.insertSubview(placeHolderCell, at: 0)
-            
-        }
+        var clueView = UIView(frame: CGRect(x: 0, y: -30, width: 300, height: 50))
+        clueView.backgroundColor = UIColor.blue
+        tableView.insertSubview(clueView, at: 0)
+        
+        
+//        // this behavior starts when a user pulls down while at the top of the table
+//        placeHolderCell = tableView.dequeueReusableCell(withIdentifier: "todoCell") as? TodoItemTableViewCell
+//        pullDownInProgress = scrollView.contentOffset.y <= 0.0
+//        placeHolderCell?.backgroundColor = UIColor.black
+//        if pullDownInProgress {
+//            // add the placeholder
+////            placeHolderCell.awakeFromNib()
+//            tableView.insertSubview(placeHolderCell!, at: 0)
+//            
+//        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let scrollViewContentOffsetY = scrollView.contentOffset.y
         
-        if pullDownInProgress && scrollView.contentOffset.y <= 0.0 {
-            // maintain the location of the placeholder
-            placeHolderCell.frame = CGRect(x: 0, y: -tableView.rowHeight,
-                                           width: tableView.frame.size.width, height: tableView.rowHeight)
-            placeHolderCell.textView.text = -scrollViewContentOffsetY > 30 ?
-                "Release to add item" : "Pull to add item"
-            placeHolderCell.alpha = min(1.0, -scrollViewContentOffsetY / 30)
-        } else {
-            pullDownInProgress = false
-        }
+        let scrollViewContentOffsetY = scrollView.contentOffset.y
+        print(scrollViewContentOffsetY)
+////        print(scrollViewContentOffsetY)
+//        
+//        if pullDownInProgress && scrollView.contentOffset.y <= 0.0 {
+//            // maintain the location of the placeholder
+//            let testCell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! TodoItemTableViewCell
+////            print("w:", testCell.frame.size.width, "h:", testCell.frame.size.height)
+//            print("x:", testCell.frame.origin.x, "y:", testCell.frame.origin.x)
+//            
+//            placeHolderCell?.frame = CGRect(x: 0, y: 0,
+//                                           width: tableView.frame.size.width, height: -scrollViewContentOffsetY)
+////            print(-scrollViewContentOffsetY)
+////              print(tableView.frame.size.width)
+//            
+////            print("y: ", -tableView.rowHeight, " w: ", tableView.frame.size.width, "h: ", tableView.rowHeight)
+//            placeHolderCell?.textView.text = -scrollViewContentOffsetY > 30 ?
+//                "Release to add item" : "Pull to add item"
+////            placeHolderCell?.alpha = min(1.0, -scrollViewContentOffsetY / 30)
+//            placeHolderCell?.alpha = 0.5
+//        } else {
+//            pullDownInProgress = false
+//        }
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        // check whether the user pulled down far enough
-        if pullDownInProgress && -scrollView.contentOffset.y > tableView.rowHeight {
-            itemAdded()
-        }
-        pullDownInProgress = false
-        placeHolderCell.removeFromSuperview()
+//        // check whether the user pulled down far enough
+////        if pullDownInProgress && -scrollView.contentOffset.y > tableView.rowHeight
+//        if pullDownInProgress && -scrollView.contentOffset.y > 30
+//        {
+//            itemAdded()
+//        }
+//        pullDownInProgress = false
+//        placeHolderCell?.removeFromSuperview()
     }
-    
-    
-    
-    
 }
