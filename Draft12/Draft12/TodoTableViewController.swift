@@ -133,55 +133,50 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     // a cell that is rendered as a placeholder to indicate where a new item is added
 //    var placeHolderCell: TodoItemTableViewCell?
     // indicates the state of this behavior
-//    var pullDownInProgress = false
-    
+    var pullDownInProgress = false
+    var clueView: UIView?
+    let marginalHeight = CGFloat(40)
+    var addClueLabel = UILabel()
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        var clueView = UIView(frame: CGRect(x: 0, y: -30, width: 300, height: 50))
-        clueView.backgroundColor = UIColor.blue
-        tableView.insertSubview(clueView, at: 0)
-        
+        clueView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        addClueLabel.font = UIFont(name: "ArialMT ", size: 8)
+        addClueLabel.textColor = UIColor.black
         
 //        // this behavior starts when a user pulls down while at the top of the table
-//        placeHolderCell = tableView.dequeueReusableCell(withIdentifier: "todoCell") as? TodoItemTableViewCell
-//        pullDownInProgress = scrollView.contentOffset.y <= 0.0
-//        placeHolderCell?.backgroundColor = UIColor.black
-//        if pullDownInProgress {
-//            // add the placeholder
-////            placeHolderCell.awakeFromNib()
-//            tableView.insertSubview(placeHolderCell!, at: 0)
-//            
-//        }
+        pullDownInProgress = scrollView.contentOffset.y <= 0.0
+        clueView!.backgroundColor = UIColor.clear
+        if pullDownInProgress {
+            tableView.insertSubview(clueView!, at: 0)
+            clueView?.addSubview(addClueLabel)
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
         let scrollViewContentOffsetY = scrollView.contentOffset.y
-        print(scrollViewContentOffsetY)
-////        print(scrollViewContentOffsetY)
-//        
-//        if pullDownInProgress && scrollView.contentOffset.y <= 0.0 {
-//            // maintain the location of the placeholder
-//            let testCell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! TodoItemTableViewCell
-////            print("w:", testCell.frame.size.width, "h:", testCell.frame.size.height)
-//            print("x:", testCell.frame.origin.x, "y:", testCell.frame.origin.x)
-//            
-//            placeHolderCell?.frame = CGRect(x: 0, y: 0,
-//                                           width: tableView.frame.size.width, height: -scrollViewContentOffsetY)
-////            print(-scrollViewContentOffsetY)
-////              print(tableView.frame.size.width)
-//            
-////            print("y: ", -tableView.rowHeight, " w: ", tableView.frame.size.width, "h: ", tableView.rowHeight)
-//            placeHolderCell?.textView.text = -scrollViewContentOffsetY > 30 ?
-//                "Release to add item" : "Pull to add item"
-////            placeHolderCell?.alpha = min(1.0, -scrollViewContentOffsetY / 30)
-//            placeHolderCell?.alpha = 0.5
-//        } else {
-//            pullDownInProgress = false
-//        }
+        if pullDownInProgress && scrollViewContentOffsetY <= 0.0 {
+            // maintain the location of the placeholder
+            print(scrollViewContentOffsetY)
+            addClueLabel.frame = CGRect(x: tableView.frame.size.width/2-30, y: -scrollViewContentOffsetY-25, width: 100, height: 30)
+            clueView!.frame = CGRect(x: 0, y: scrollViewContentOffsetY,
+                                           width: tableView.frame.size.width, height: -scrollViewContentOffsetY)
+            if(scrollViewContentOffsetY <= -marginalHeight){
+                addClueLabel.text = "Release"
+            }
+            else{
+                addClueLabel.text = "Test"
+            }
+//            addClueLabel!.alpha = min(1.0, -scrollViewContentOffsetY/marginalHeight)
+            
+        } else {
+            pullDownInProgress = false
+        }
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        
+        
 //        // check whether the user pulled down far enough
 ////        if pullDownInProgress && -scrollView.contentOffset.y > tableView.rowHeight
 //        if pullDownInProgress && -scrollView.contentOffset.y > 30
