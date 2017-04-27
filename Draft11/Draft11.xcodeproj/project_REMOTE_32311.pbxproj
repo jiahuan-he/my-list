@@ -16,7 +16,6 @@
 		3A560B601E6555FF0021F76D /* TodoItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A560B5E1E6555FF0021F76D /* TodoItemTableViewCell.swift */; };
 		3A560B611E6555FF0021F76D /* TodoItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3A560B5F1E6555FF0021F76D /* TodoItemTableViewCell.xib */; };
 		3A560B6D1E6F97D50021F76D /* toolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A560B6C1E6F97D50021F76D /* toolbarView.swift */; };
-		3AAC9FF51E74FE7B00D86B8B /* TodoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAC9FF41E74FE7B00D86B8B /* TodoModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +30,6 @@
 		3A560B5E1E6555FF0021F76D /* TodoItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItemTableViewCell.swift; sourceTree = "<group>"; };
 		3A560B5F1E6555FF0021F76D /* TodoItemTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TodoItemTableViewCell.xib; sourceTree = "<group>"; };
 		3A560B6C1E6F97D50021F76D /* toolbarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = toolbarView.swift; sourceTree = "<group>"; };
-		3AAC9FF41E74FE7B00D86B8B /* TodoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,11 +71,7 @@
 				3A560B5E1E6555FF0021F76D /* TodoItemTableViewCell.swift */,
 				3A560B5F1E6555FF0021F76D /* TodoItemTableViewCell.xib */,
 				3A560B6C1E6F97D50021F76D /* toolbarView.swift */,
-<<<<<<< HEAD
-				3AAC9FF41E74FE7B00D86B8B /* TodoModel.swift */,
-=======
 				3A2B949D1EADEEB5003F9928 /* TodoItemCore.xcdatamodeld */,
->>>>>>> b2
 			);
 			path = Draft11;
 			sourceTree = "<group>";
@@ -159,7 +153,6 @@
 				3A560B5D1E654A200021F76D /* TodoTableViewController.swift in Sources */,
 				3A2B949F1EADEEB5003F9928 /* TodoItemCore.xcdatamodeld in Sources */,
 				3A560B601E6555FF0021F76D /* TodoItemTableViewCell.swift in Sources */,
-				3AAC9FF51E74FE7B00D86B8B /* TodoModel.swift in Sources */,
 				3A560B6D1E6F97D50021F76D /* toolbarView.swift in Sources */,
 				3A560B471E65341E0021F76D /* AppDelegate.swift in Sources */,
 			);

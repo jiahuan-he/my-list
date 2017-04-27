@@ -33,16 +33,41 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
     let screenSize: CGRect = UIScreen.main.bounds
     
     override func awakeFromNib() {
+<<<<<<< HEAD
+=======
+        //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
+        textView.textContainerInset = UIEdgeInsetsMake(20, 2, 15, 2)
+>>>>>>> b2
         
         textView.textContainerInset = UIEdgeInsetsMake(30, 2, 10, 0)
         rightBorder.frame = CGRect(x: screenSize.width-6, y: 0, width: 6, height: textView.frame.height)
         rightBorder.backgroundColor = UIColor.red.cgColor
         textView.layer.addSublayer(rightBorder)
         
+<<<<<<< HEAD
+=======
+        
+>>>>>>> b2
         let dateLabel = UILabel(frame: CGRect(x: 5, y: 2, width: 60, height: 20))
         dateLabel.text = "tomorrow"
         dateLabel.font = UIFont(name: "Helvetica", size: 13)
         dateLabel.textColor = UIColor.red
+<<<<<<< HEAD
+=======
+        
+        let timeLabel = UILabel(frame: CGRect(x: 65, y: 2, width: 60, height: 20))
+        timeLabel.text = "8:00 pm"
+        timeLabel.font = UIFont(name: "Helvetica", size: 13)
+        timeLabel.textColor = UIColor.red
+        
+        
+        
+        textView.addSubview(timeLabel)
+        textView.addSubview(dateLabel)
+        
+        
+        let toobar = toolbarView(frame: CGRect(x: 0, y:0 , width: screenSize.width, height: 30))
+>>>>>>> b2
         
         let timeLabel = UILabel(frame: CGRect(x: 65, y: 2, width: 60, height: 20))
         timeLabel.text = "8:00 pm"
@@ -62,17 +87,37 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
         
         let yellowButton = UIButton(frame: CGRect(x: 50, y: 0, width: 60, height: 30))
         yellowButton.setTitle("yellow", for: .normal)
+<<<<<<< HEAD
         yellowButton.addTarget(self, action: #selector(self.didPressRedButton(sender:)), for: .touchUpInside)
 
 //        let greenButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
 //        greenButton.setTitle("green", for: .normal)
+=======
+        //
+        //        let greenButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        //        redButton.setTitle("green", for: .normal)
+        
+>>>>>>> b2
         
         toobar.addSubview(redButton)
         toobar.addSubview(yellowButton)
         toobar.addSubview(dueLabel)
+<<<<<<< HEAD
 //        toobar.addSubview(greenButton)
 
         toobar.backgroundColor = UIColor.brown
+=======
+        //        toobar.addSubview(greenButton)
+        
+        
+        
+        toobar.backgroundColor = UIColor.brown
+        
+        
+        
+        
+        
+>>>>>>> b2
         textView.returnKeyType = UIReturnKeyType.done
         
 //        textView.sizeToFit() // CAN CAUSE BUG: size doesn't fit
@@ -147,6 +192,18 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate, CAAnimationDel
     func textViewDidBeginEditing(_ textView: UITextView) {
         adjustHeightConstrant()
     }
+<<<<<<< HEAD
 }
 
     
+=======
+    
+    
+}
+
+
+
+
+
+
+>>>>>>> b2
