@@ -15,6 +15,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var items: [TodoItem] = []
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var editingOffset: CGFloat?
+    var offset: CGFloat?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,27 +82,24 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
 //        print("offsety: " , tableView.contentOffset.y, "originY: ", editingCell.frame.origin.y)
         
-        
+        UIView.setAnimationsEnabled(false)
         tableView.beginUpdates()
         // calculate the height to move up.
         tableView.endUpdates()
-        // calculate the height to move up.
-//        print("offset2: " , editingOffset!)
-//        let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-//        for cell in visibleCells {
-//            //            prevent editing other cells when a cell is being editing.
-//            if cell !== editingCell {
-//                //                cell.shouldBeginEditing = false
-//                cell.textView.isEditable = false
-//            }
-//            UIView.animate(withDuration: 0.3, animations: {() in
-//                cell.transform = CGAffineTransform(translationX: 0, y: self.editingOffset!.multiplied(by: CGFloat(2*self.timesChangeHeight)))
-//                
-//                if cell !== editingCell {
-//                    cell.alpha = 0.3
-//                }
-//            })
-//        }
+        let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
+        for cell in visibleCells {
+            //            prevent editing other cells when a cell is being editing.
+            if cell !== editingCell {
+                //                cell.shouldBeginEditing = false
+                cell.textView.isEditable = false
+            }
+                cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
+                if cell !== editingCell {
+                    cell.alpha = 0.3
+                }
+        }
+        UIView.setAnimationsEnabled(true)
+
     }
     
     //TodoItemTableViewCell delegate
@@ -136,9 +134,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     //    }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-        // calculate the height to move up.
-        editingOffset = tableView.contentOffset.y - editingCell.frame.origin.y as CGFloat
-        print("offset1: " , editingOffset!)
+        offset = -editingCell.frame.origin.y
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell in visibleCells {
             //            prevent editing other cells when a cell is being editing.
@@ -147,7 +143,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.textView.isEditable = false
             }
             UIView.animate(withDuration: 0.3, animations: {() in
-                cell.transform = CGAffineTransform(translationX: 0, y: self.editingOffset!)
+                
+                cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
                 if cell !== editingCell {
                     cell.alpha = 0.3
                 }
@@ -156,7 +153,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
-        timesChangeHeight = 0
+        
         
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell: TodoItemTableViewCell in visibleCells {
@@ -164,10 +161,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             //            cell.shouldBeginEditing = true
             cell.textView.isEditable = true
             UIView.animate(withDuration: 0.5, animations: {() in
-                cell.transform = CGAffineTransform.identity
-                if cell !== editingCell {
+//                if cell !== editingCell {
+                    cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
                     cell.alpha = 1.0
-                }
+//                }
             })
         }
         if editingCell.todoItem?.name == "" {
