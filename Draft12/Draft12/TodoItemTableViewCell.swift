@@ -6,8 +6,10 @@
 //  Copyright © 2017 Jiahuan He. All rights reserved.
 //
 protocol TodoItemTableViewCellDelegate{
-    func cellHeightDidChange(cell: TodoItemTableViewCell)
+    func cellHeightDidChange(editingCell: TodoItemTableViewCell)
     func itemDeleted(item: TodoItem)
+    func cellDidBeginEditing(editingCell: TodoItemTableViewCell)
+    func cellDidEndEditing(editingCell: TodoItemTableViewCell)
 }
 
 
@@ -19,7 +21,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
     
-    var todoItem: TodoItem?{
+    var todoItem: TodoItem?
+        //for testing purpose
+    {
         didSet{
             textView.text = todoItem?.name
         }
@@ -154,23 +158,32 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        delegate?.cellHeightDidChange(cell: self)
+        let startHeight = textView.frame.size.height
+        let calcHeight = textView.sizeThatFits(textView.frame.size).height
+        if startHeight != calcHeight{
+            delegate?.cellHeightDidChange(editingCell: self)
+
+        }
     }
     
+    // prevent appending new line.
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n"{
-            
             textView.resignFirstResponder()
             return false
         }
+        
         return true
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        
+        delegate!.cellDidBeginEditing(editingCell: self)
     }
     
-    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        todoItem!.name = textView.text!
+        delegate!.cellDidEndEditing(editingCell: self)
+    }
 }
 
 
