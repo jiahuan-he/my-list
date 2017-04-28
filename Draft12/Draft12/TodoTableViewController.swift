@@ -54,6 +54,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func getData(){
         do {
             items = try context.fetch(TodoItem.fetchRequest())
+            // Temp 
+            items.reverse()
         }
         catch{
             print("Wrong")
@@ -134,7 +136,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     //    }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-        offset = -editingCell.frame.origin.y
+        offset = tableView.contentOffset.y - editingCell.frame.origin.y
+        // Important feature: scrolview content offset !!
+        print(tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell in visibleCells {
             //            prevent editing other cells when a cell is being editing.
@@ -154,13 +158,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
         
-        
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell: TodoItemTableViewCell in visibleCells {
             //resume the status: editable
             //            cell.shouldBeginEditing = true
             cell.textView.isEditable = true
-            UIView.animate(withDuration: 0.5, animations: {() in
+            UIView.animate(withDuration: 0.3, animations: {() in
 //                if cell !== editingCell {
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
                     cell.alpha = 1.0
@@ -222,7 +225,17 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//        if pullDownInProgress && -scrollView.contentOffset.y > marginalHeight{
+        
+        if pullDownInProgress && scrollView.contentOffset.y <= -marginalHeight{
+            let newItem = TodoItem(context: context)
+            let indexPath = IndexPath(row: 0, section: 0)
+            items.insert(newItem, at: 0)
+            tableView.insertRows(at: [indexPath], with: .fade)
+            tableView.reloadData()
+            (tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell).textView!.becomeFirstResponder()
+            cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
+        }
+        
 //            //            var cell = TodoItemTableViewCell()
 //            tableView.beginUpdates()
 //            let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
