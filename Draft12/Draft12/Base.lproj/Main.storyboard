@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="rTC-IO-9NN">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="S4Y-nh-bC5">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -10,21 +10,40 @@
     </dependencies>
     <scenes>
         <!--Todo Table View Controller-->
-        <scene sceneID="LhI-4R-Iou">
+        <scene sceneID="Sm0-95-emX">
             <objects>
-                <viewController id="rTC-IO-9NN" customClass="TodoTableViewController" customModule="Draft12" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="143" sectionHeaderHeight="28" sectionFooterHeight="28" id="pEi-XA-kLC">
+                <viewController id="jkg-Wv-gTY" customClass="TodoTableViewController" customModule="Draft12" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="BKK-po-88j">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </tableView>
+                    <navigationItem key="navigationItem" id="Z9h-Rd-Tea"/>
                     <connections>
-                        <outlet property="tableView" destination="pEi-XA-kLC" id="hEk-zd-C7c"/>
+                        <outlet property="tableView" destination="BKK-po-88j" id="eKI-49-G2m"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="DkE-db-LLp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wUl-Gq-lXw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-458.39999999999998" y="-697.60119940029995"/>
+            <point key="canvasLocation" x="2287.1999999999998" y="-675.11244377811101"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="apC-w8-kLI">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="S4Y-nh-bC5" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="LCw-NK-xt4">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="jkg-Wv-gTY" kind="relationship" relationship="rootViewController" id="Yar-Oi-APC"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wMQ-LS-y8T" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1348" y="-675.11244377811101"/>
         </scene>
     </scenes>
 </document>
