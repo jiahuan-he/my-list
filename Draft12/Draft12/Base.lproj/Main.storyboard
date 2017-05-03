@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Todo Table View Controller-->
+        <!--Title-->
         <scene sceneID="Sm0-95-emX">
             <objects>
                 <viewController id="jkg-Wv-gTY" customClass="TodoTableViewController" customModule="Draft12" customModuleProvider="target" sceneMemberID="viewController">
@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </tableView>
-                    <navigationItem key="navigationItem" id="Z9h-Rd-Tea"/>
+                    <navigationItem key="navigationItem" title="Title" id="Z9h-Rd-Tea"/>
                     <connections>
                         <outlet property="tableView" destination="BKK-po-88j" id="eKI-49-G2m"/>
                     </connections>

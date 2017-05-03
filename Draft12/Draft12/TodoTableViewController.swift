@@ -11,7 +11,7 @@ import CoreData
 
 class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate {
     
-    let naviBarHeight: CGFloat = 64
+    var initContentOffset: CGFloat = 0
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -23,7 +23,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-            
         
         //        tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 30
@@ -34,7 +33,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         //                tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -54,8 +52,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         getData()
         tableView.reloadData()
+        
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        initContentOffset = -tableView.contentOffset.y
+    }
     
     func getData(){
         do {
@@ -143,7 +145,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
         offset = tableView.contentOffset.y - editingCell.frame.origin.y
-        offset = naviBarHeight + offset!
+        offset = initContentOffset + offset!
         
         // Important feature: scrolview content offset !!
         print(tableView.contentOffset.y)
@@ -203,7 +205,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         addClueLabel.textColor = UIColor.black
         
         //        // this behavior starts when a user pulls down while at the top of the table
-        pullDownInProgress = (scrollView.contentOffset.y + naviBarHeight) <= 0.0
+        pullDownInProgress = (scrollView.contentOffset.y + initContentOffset) <= 0.0
         clueView!.backgroundColor = UIColor.clear
         if pullDownInProgress {
             tableView.insertSubview(clueView!, at: 0)
@@ -212,7 +214,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let scrollViewContentOffsetY = scrollView.contentOffset.y + naviBarHeight
+        let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffset
         if pullDownInProgress && scrollViewContentOffsetY <= 0.0 {
             // maintain the location of the placeholder
             print(scrollViewContentOffsetY)
@@ -234,7 +236,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
-        let scrollViewContentOffsetY = scrollView.contentOffset.y + naviBarHeight
+        let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffset
         if pullDownInProgress && scrollViewContentOffsetY <= -marginalHeight{
             let newItem = TodoItem(context: context)
             let indexPath = IndexPath(row: 0, section: 0)
