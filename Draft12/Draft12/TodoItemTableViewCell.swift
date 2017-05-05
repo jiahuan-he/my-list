@@ -6,7 +6,7 @@
 //  Copyright © 2017 Jiahuan He. All rights reserved.
 //
 protocol TodoItemTableViewCellDelegate{
-    func cellHeightDidChange(editingCell: TodoItemTableViewCell)
+    func cellHeightDidChange(editingCell: TodoItemTableViewCell, heightChange: CGFloat)
     func itemDeleted(item: TodoItem)
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell)
     func cellDidEndEditing(editingCell: TodoItemTableViewCell)
@@ -153,8 +153,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         let startHeight = textView.frame.size.height
         let calcHeight = textView.sizeThatFits(textView.frame.size).height
+        
         if startHeight != calcHeight{
-            delegate?.cellHeightDidChange(editingCell: self)
+//            print(calcHeight - startHeight)
+            delegate?.cellHeightDidChange(editingCell: self, heightChange: calcHeight - startHeight)
         }
     }
     

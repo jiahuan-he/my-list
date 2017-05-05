@@ -12,18 +12,20 @@ import CoreData
 class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate {
     
     var initContentOffset: CGFloat = 0
+    var blurView: UIVisualEffectView?
     
     @IBOutlet weak var tableView: UITableView!
     
     var items: [TodoItem] = []
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-//    var editingOffset: CGFloat?
+    //    var editingOffset: CGFloat?
     var offset: CGFloat?
-//    var headerView: UIView?
+    //    var headerView: UIView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        blurView = UIVisualEffectView()
+        tableView.addSubview(blurView!)
         //        tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 30
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -55,7 +57,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func getData(){
         do {
             items = try context.fetch(TodoItem.fetchRequest())
-            // Temp 
+            // Temp
             items.reverse()
         }
         catch{
@@ -78,32 +80,27 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         return UITableViewAutomaticDimension
     }
     
-    func cellHeightDidChange(editingCell: TodoItemTableViewCell) {
-        
-//        tableView.reloadRows(at: [tableView.indexPath(for: editingCell)!], with: .automatic)
-        
-        
-//        print("offsety: " , tableView.contentOffset.y, "originY: ", editingCell.frame.origin.y)
+    func cellHeightDidChange(editingCell: TodoItemTableViewCell, heightChange: CGFloat) {
         
         UIView.setAnimationsEnabled(false)
         tableView.beginUpdates()
-        // calculate the height to move up.
+        // calculate the height to adjust.
         tableView.endUpdates()
+        UIView.setAnimationsEnabled(true)
+        
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell in visibleCells {
-            //            prevent editing other cells when a cell is being editing.
             if cell !== editingCell {
-                //                cell.shouldBeginEditing = false
                 cell.textView.isEditable = false
+                //                    cell.alpha = 0.3
             }
-                cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
-                if cell !== editingCell {
-                    cell.alpha = 0.3
-                }
+            cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
         }
-        UIView.setAnimationsEnabled(true)
+        UIView.animate(withDuration: 0.2, animations: { () in
+            self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: heightChange)
 
-    }
+        })
+        }
     
     //TodoItemTableViewCell delegate
     func itemDeleted(item: TodoItem) {
@@ -111,47 +108,27 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         items.remove(at: itemIndex)
         context.delete(item)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
-//        tableView.reloadData()
+        //        tableView.reloadData()
         tableView.beginUpdates()
         let indexPathForRow = NSIndexPath(row: itemIndex, section: 0)
         tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .fade)
         tableView.endUpdates()
     }
     
-    //
-    //    func itemAdded() {
-    //        let item = TodoItem()
-    //        item.name = " "
-    //        items.insert(item, at: 0)
-    //        tableView.reloadData()
-    //        // enter edit mode
-    //        var editCell: TodoItemTableViewCell
-    //        let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-    //        for cell in visibleCells {
-    //            if (cell.todoItem === item) {
-    //                editCell = cell
-    //                editCell.textView.becomeFirstResponder()
-    //                break
-    //            }
-    //        }
-    //    }
     
-    
-    var blurView: UIVisualEffectView?
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
         offset = tableView.contentOffset.y - editingCell.frame.origin.y
         offset = initContentOffset + offset!
         
+        self.blurView?.isHidden = false
         // Important feature: scrolview content offset !!
         print(tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         let blurEffect = UIBlurEffect(style: .dark)
         let y = editingCell.frame.origin.y + editingCell.frame.height
-        blurView = UIVisualEffectView(frame: CGRect(x: 0, y: y, width: editingCell.bounds.width, height: tableView.bounds.height - y))
+        blurView!.frame = CGRect(x: 0, y: y, width: editingCell.bounds.width, height: tableView.bounds.height - y)
         blurView!.effect = blurEffect
         blurView!.alpha = 0
-        tableView.addSubview(blurView!)
-        tableView.separatorStyle = .none
         for cell in visibleCells {
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
@@ -167,7 +144,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
-        tableView.separatorStyle = .singleLine
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell: TodoItemTableViewCell in visibleCells {
             cell.textView.isEditable = true
@@ -182,7 +158,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         UIView.animate(withDuration: 0.8, animations: {() in
             self.blurView!.alpha = 0
         }, completion: {(finished: Bool) in
-            self.blurView?.removeFromSuperview()
+            self.blurView?.isHidden = true
         })
         
         if editingCell.todoItem?.name == "" {
@@ -252,45 +228,5 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             (tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell).textView!.becomeFirstResponder()
             cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
         }
-        
-//            //            var cell = TodoItemTableViewCell()
-//            tableView.beginUpdates()
-//            let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-//            let newItem = TodoItem(context: context)
-//            items.insert(newItem, at: 0)
-//            tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .fade)
-//            
-//            let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-//            for cell in visibleCells {
-//                if (cell.todoItem === newItem) {
-//                    cell.textView.becomeFirstResponder()
-//                    break
-//                }
-//            }
-//            
-//            tableView.endUpdates()
-//        }
-        //        // check whether the user pulled down far enough
-        //        if pullDownInProgress && -scrollView.contentOffset.y > marginalHeight{
-        //            let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        //
-        //            let newItem = TodoItem(context: context)
-        //            newItem.name = "new"
-        //            newItem.isComplete = false
-        //            items.insert(newItem, at: 0)
-        //            tableView.reloadData()
-        //            // enter edit mode
-        //            var editCell: TodoItemTableViewCell
-        //            let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-        //            for cell in visibleCells {
-        //                if (cell.todoItem === newItem) {
-        //                    editCell = cell
-        //                    editCell.textView.becomeFirstResponder()
-        //                    break
-        //                }
-        //            }
-        //
-        //            (UIApplication.shared.delegate as! AppDelegate).saveContext()
-        //        }
     }
 }
