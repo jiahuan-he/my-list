@@ -119,12 +119,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
         offset = tableView.contentOffset.y - editingCell.frame.origin.y
         offset = initContentOffset + offset!
-        
-        self.blurView?.isHidden = false
+        self.blurView!.isHidden = false
         // Important feature: scrolview content offset !!
         print(tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-        let blurEffect = UIBlurEffect(style: .dark)
+        let blurEffect = UIBlurEffect(style: .regular)
         let y = editingCell.frame.origin.y + editingCell.frame.height
         blurView!.frame = CGRect(x: 0, y: y, width: editingCell.bounds.width, height: tableView.bounds.height - y)
         blurView!.effect = blurEffect
@@ -138,15 +137,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: self.offset!)
         })
         
-        UIView.animate(withDuration: 0.8, animations: {() in
-            self.blurView!.alpha = 0.9
+        UIView.animate(withDuration: 0.5, animations: {() in
+            self.blurView!.alpha = 1.0
+            self.tableView.separatorColor = UIColor.clear
         })
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
+        
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell: TodoItemTableViewCell in visibleCells {
-            cell.textView.isEditable = true
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
             })
@@ -155,10 +155,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: -self.offset!)
         })
         
-        UIView.animate(withDuration: 0.8, animations: {() in
+        UIView.animate(withDuration: 0.5, animations: {() in
             self.blurView!.alpha = 0
+            self.tableView.separatorColor = UIColor.gray
         }, completion: {(finished: Bool) in
-            self.blurView?.isHidden = true
+            self.blurView!.isHidden = true
+            for cell: TodoItemTableViewCell in visibleCells {
+                cell.textView.isEditable = true}
         })
         
         if editingCell.todoItem?.name == "" {
