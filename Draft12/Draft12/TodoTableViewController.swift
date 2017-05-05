@@ -136,6 +136,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     //        }
     //    }
     
+    
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
         offset = tableView.contentOffset.y - editingCell.frame.origin.y
         offset = initContentOffset + offset!
@@ -144,16 +145,31 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         print(tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell in visibleCells {
+           
             //            prevent editing other cells when a cell is being editing.
             if cell !== editingCell {
+                
                 //                cell.shouldBeginEditing = false
                 cell.textView.isEditable = false
+                tableView.separatorStyle = .none
             }
+            let blurEffect = UIBlurEffect(style: .dark)
+            let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
+//            UIVibrancyEffect
+            // make the seperator more 'blurer'
+//            blurredEffectView.frame = cell.bounds.insetBy(dx: 0, dy: -5)
+            cell.blurredEffectView = UIVisualEffectView()
+            cell.blurredEffectView!.frame = cell.bounds
+            cell.blurredEffectView!.effect = blurEffect
+            cell.blurredEffectView!.alpha = 0
+            
+            cell.addSubview(cell.blurredEffectView!)
             UIView.animate(withDuration: 0.3, animations: {() in
                 
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
                 if cell !== editingCell {
-                    cell.alpha = 0.3
+//                    cell.alpha = 0.3
+                    cell.blurredEffectView!.alpha = 0.8
                 }
             })
         }
@@ -163,15 +179,17 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell: TodoItemTableViewCell in visibleCells {
-            //resume the status: editable
-            //            cell.shouldBeginEditing = true
             cell.textView.isEditable = true
-            UIView.animate(withDuration: 0.3, animations: {() in
-//                if cell !== editingCell {
+            UIView.animate(withDuration: 0.5, animations: {() in
+//                cell.blurredEffectView?.alpha = 0
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
-                    cell.alpha = 1.0
-//                }
+                if cell !== editingCell {
+                    //                    cell.alpha = 0.3
+//                    cell.blurredEffectView!.alpha = 0.2
+                }
+                
             })
+            cell.blurredEffectView?.removeFromSuperview()
         }
         if editingCell.todoItem?.name == "" {
 //            planDeleted(plan: editingCell.plan!)

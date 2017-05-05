@@ -21,6 +21,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
     let rightBorder = CALayer()
+    
+    var blurredEffectView: UIVisualEffectView?
 
     
     var todoItem: TodoItem?
@@ -58,12 +60,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
 
         textView.addSubview(timeLabel)
         textView.addSubview(dateLabel)
-        
-        
-        let toobar = toolbarView(frame: CGRect(x: 0, y:0 , width: screenSize.width, height: 30))
-        
-        
-        
+
         let dueLabel = UILabel(frame: CGRect(x: screenSize.width/2+50, y: 0, width: 60, height: 30))
         dueLabel.text = "Due"
         
@@ -83,48 +80,17 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         let yellowLabel = UIButton(frame: CGRect(x: 60, y: 0, width: 30, height: 30))
         yellowLabel.backgroundColor = UIColor.yellow
         yellowLabel.setTitle("Yellow", for: .normal)
-        
-        let button = UIButton(frame: CGRect(x: 90, y: 0, width: 60, height: 30))
-        button.setTitle("bbbb", for: .normal)
-        toobar.addSubview(button)
-        
-        self.addSubview(button)
-        
-        
-        toobar.addSubview(redLabel)
-        toobar.addSubview(orangeLabel)
-        toobar.addSubview(yellowLabel)
-        toobar.addSubview(dueLabel)
-        //        toobar.addSubview(greenButton)
-        
-        toobar.backgroundColor = UIColor.brown
+
         textView.returnKeyType = UIReturnKeyType.done
         textView.delegate = self
-        textView.inputAccessoryView = toobar
-        textView.inputAccessoryView?.isUserInteractionEnabled = true
         
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.setFlag))
-        tapRecognizer.delegate = self
         
-//        redLabel.isUserInteractionEnabled = true
-//        orangeLabel.isUserInteractionEnabled = true
-        yellowLabel.isUserInteractionEnabled = true
-        
-        yellowLabel.addGestureRecognizer(tapRecognizer)
-//        orangeLabel.addGestureRecognizer(tapRecognizer)
-//        yellowLabel.addGestureRecognizer(tapRecognizer)
         
         
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(recognizer:)))
         panRecognizer.delegate = self
         addGestureRecognizer(panRecognizer)
 
-    }
-
-    func setFlag(){
-//        let flag = sender.text!
-        
-        print("he")
     }
     
     func handlePan(recognizer: UIPanGestureRecognizer){
