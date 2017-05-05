@@ -137,6 +137,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     //    }
     
     
+    var blurView: UIVisualEffectView?
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
         offset = tableView.contentOffset.y - editingCell.frame.origin.y
         offset = initContentOffset + offset!
@@ -144,59 +145,53 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         // Important feature: scrolview content offset !!
         print(tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
+        let blurEffect = UIBlurEffect(style: .dark)
+        let y = editingCell.frame.origin.y + editingCell.frame.height
+        blurView = UIVisualEffectView(frame: CGRect(x: 0, y: y, width: editingCell.bounds.width, height: tableView.bounds.height - y))
+        blurView!.effect = blurEffect
+        blurView!.alpha = 0
+        tableView.addSubview(blurView!)
+        tableView.separatorStyle = .none
         for cell in visibleCells {
-           
-            //            prevent editing other cells when a cell is being editing.
-            if cell !== editingCell {
-                
-                //                cell.shouldBeginEditing = false
-                cell.textView.isEditable = false
-                tableView.separatorStyle = .none
-            }
-            let blurEffect = UIBlurEffect(style: .dark)
-            let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
-//            UIVibrancyEffect
-            // make the seperator more 'blurer'
-//            blurredEffectView.frame = cell.bounds.insetBy(dx: 0, dy: -5)
-            cell.blurredEffectView = UIVisualEffectView()
-            cell.blurredEffectView!.frame = cell.bounds
-            cell.blurredEffectView!.effect = blurEffect
-            cell.blurredEffectView!.alpha = 0
-            
-            cell.addSubview(cell.blurredEffectView!)
             UIView.animate(withDuration: 0.3, animations: {() in
-                
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
-                if cell !== editingCell {
-//                    cell.alpha = 0.3
-                    cell.blurredEffectView!.alpha = 0.8
-                }
             })
         }
+        UIView.animate(withDuration: 0.3, animations: {() in
+            self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: self.offset!)
+        })
+        
+        UIView.animate(withDuration: 0.8, animations: {() in
+            self.blurView!.alpha = 0.9
+        })
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
-        
+        tableView.separatorStyle = .singleLine
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell: TodoItemTableViewCell in visibleCells {
             cell.textView.isEditable = true
-            UIView.animate(withDuration: 0.5, animations: {() in
-//                cell.blurredEffectView?.alpha = 0
-                    cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
-                if cell !== editingCell {
-                    //                    cell.alpha = 0.3
-//                    cell.blurredEffectView!.alpha = 0.2
-                }
-                
+            UIView.animate(withDuration: 0.3, animations: {() in
+                cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
             })
-            cell.blurredEffectView?.removeFromSuperview()
         }
+        UIView.animate(withDuration: 0.3, animations: {() in
+            self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: -self.offset!)
+        })
+        
+        UIView.animate(withDuration: 0.8, animations: {() in
+            self.blurView!.alpha = 0
+        }, completion: {(finished: Bool) in
+            self.blurView?.removeFromSuperview()
+        })
+        
         if editingCell.todoItem?.name == "" {
-//            planDeleted(plan: editingCell.plan!)
+            itemDeleted(item: editingCell.todoItem!)
         }
         else{
             (UIApplication.shared.delegate as! AppDelegate).saveContext()
         }
+        
     }
     
     // MARK: - UIScrollViewDelegate methods

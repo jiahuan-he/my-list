@@ -20,9 +20,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     @IBOutlet var textView: UITextView!
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
-    let rightBorder = CALayer()
-    
-    var blurredEffectView: UIVisualEffectView?
+    let rightBorder = CALayer()        
 
     
     var todoItem: TodoItem?
