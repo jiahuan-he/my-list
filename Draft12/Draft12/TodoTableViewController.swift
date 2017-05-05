@@ -111,7 +111,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         //        tableView.reloadData()
         tableView.beginUpdates()
         let indexPathForRow = NSIndexPath(row: itemIndex, section: 0)
-        tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .fade)
+        tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .top)
         tableView.endUpdates()
     }
     
