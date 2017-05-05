@@ -19,7 +19,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 //    var editingOffset: CGFloat?
     var offset: CGFloat?
-    var headerView: UIView?
+//    var headerView: UIView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +33,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         //                tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -40,14 +41,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let item1 = TodoItem(context: context)
         item1.name = "item1"
         item1.isComplete = false
-        //
-        //        let item2 = TodoItem(context: context)
-        //        item2.name = "item1"
-        //        item2.isComplete = false
-        //
-        //        let item3 = TodoItem(context: context)
-        //        item3.name = "item1"
-        //        item3.isComplete = false
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         getData()

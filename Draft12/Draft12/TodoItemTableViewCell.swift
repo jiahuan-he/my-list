@@ -20,6 +20,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     @IBOutlet var textView: UITextView!
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
+    let rightBorder = CALayer()
+
     
     var todoItem: TodoItem?
         //for testing purpose
@@ -31,16 +33,14 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     var originalCenter = CGPoint()
     var deleteOnDragRelease = false
-    var completeOnDragRelease = false
-    
-  
+    var completeOnDragRelease = false      
     
     override func awakeFromNib() {
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         textView.textContainerInset = UIEdgeInsetsMake(20, 2, 15, 2)
         
         
-        let rightBorder = CALayer()
+        
         rightBorder.frame = CGRect(x: screenSize.width-6, y: 0, width: 6, height: textView.frame.height)
         rightBorder.backgroundColor = UIColor.red.cgColor
         textView.layer.addSublayer(rightBorder)
@@ -62,41 +62,73 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         let toobar = toolbarView(frame: CGRect(x: 0, y:0 , width: screenSize.width, height: 30))
         
+        
+        
         let dueLabel = UILabel(frame: CGRect(x: screenSize.width/2+50, y: 0, width: 60, height: 30))
         dueLabel.text = "Due"
         
-        let redButton = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 30))
-        redButton.setTitle("red", for: .normal)
         
-        let yellowButton = UIButton(frame: CGRect(x: 50, y: 0, width: 60, height: 30))
-        yellowButton.setTitle("yellow", for: .normal)
-        //
-        //        let greenButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-        //        redButton.setTitle("green", for: .normal)
+        let redLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        redLabel.backgroundColor = UIColor.red
+        redLabel.text = "Red"
+        redLabel.textColor = UIColor.clear
         
         
-        toobar.addSubview(redButton)
-        toobar.addSubview(yellowButton)
+        let orangeLabel = UILabel(frame: CGRect(x: 30, y: 0, width: 30, height: 30))
+        orangeLabel.backgroundColor = UIColor.orange
+        orangeLabel.text = "Orange"
+        orangeLabel.textColor = UIColor.clear
+        
+        
+        let yellowLabel = UIButton(frame: CGRect(x: 60, y: 0, width: 30, height: 30))
+        yellowLabel.backgroundColor = UIColor.yellow
+        yellowLabel.setTitle("Yellow", for: .normal)
+        
+        let button = UIButton(frame: CGRect(x: 90, y: 0, width: 60, height: 30))
+        button.setTitle("bbbb", for: .normal)
+        toobar.addSubview(button)
+        
+        self.addSubview(button)
+        
+        
+        toobar.addSubview(redLabel)
+        toobar.addSubview(orangeLabel)
+        toobar.addSubview(yellowLabel)
         toobar.addSubview(dueLabel)
         //        toobar.addSubview(greenButton)
         
-        
-        
         toobar.backgroundColor = UIColor.brown
-
         textView.returnKeyType = UIReturnKeyType.done
-        
-//        stackViewHeightConstraint.constant = textView.sizeThatFits(textView.frame.size).height
         textView.delegate = self
-        
         textView.inputAccessoryView = toobar
+        textView.inputAccessoryView?.isUserInteractionEnabled = true
         
-        let recognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(recognizer:)))
-        recognizer.delegate = self
-        addGestureRecognizer(recognizer)
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.setFlag))
+        tapRecognizer.delegate = self
+        
+//        redLabel.isUserInteractionEnabled = true
+//        orangeLabel.isUserInteractionEnabled = true
+        yellowLabel.isUserInteractionEnabled = true
+        
+        yellowLabel.addGestureRecognizer(tapRecognizer)
+//        orangeLabel.addGestureRecognizer(tapRecognizer)
+//        yellowLabel.addGestureRecognizer(tapRecognizer)
+        
+        
+        let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(recognizer:)))
+        panRecognizer.delegate = self
+        addGestureRecognizer(panRecognizer)
+
+    }
+
+    func setFlag(){
+//        let flag = sender.text!
+        
+        print("he")
     }
     
     func handlePan(recognizer: UIPanGestureRecognizer){
+        
         // 1
         if recognizer.state == .began {
             // when the gesture begins, record the current center location
@@ -138,12 +170,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
                 UIView.animate(withDuration: 0.2, animations:
                     {
                         self.frame = originalFrame
-                        
                 })
             }
         }
-
-        
     }
     
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -162,7 +191,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         let calcHeight = textView.sizeThatFits(textView.frame.size).height
         if startHeight != calcHeight{
             delegate?.cellHeightDidChange(editingCell: self)
-
         }
     }
     
@@ -172,7 +200,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
             textView.resignFirstResponder()
             return false
         }
-        
         return true
     }
     
@@ -185,9 +212,5 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         delegate!.cellDidEndEditing(editingCell: self)
     }
 }
-
-
-
-
 
 
