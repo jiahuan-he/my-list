@@ -121,11 +121,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         offset = initContentOffset + offset!
         self.blurView!.isHidden = false
         // Important feature: scrolview content offset !!
-        print(tableView.contentOffset.y)
+        print("content Offset " , tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-        let blurEffect = UIBlurEffect(style: .regular)
+        let blurEffect = UIBlurEffect(style: .dark)
         let y = editingCell.frame.origin.y + editingCell.frame.height
-        blurView!.frame = CGRect(x: 0, y: y, width: editingCell.bounds.width, height: tableView.bounds.height - y)
+        let screenHeight = UIScreen.main.bounds.height
+        
+        
+        blurView!.frame = CGRect(x: 0, y: y, width: editingCell.bounds.width, height: screenHeight - editingCell.bounds.height )
+        print("blur y: ",y, "height: ", tableView.bounds.height - y)
         blurView!.effect = blurEffect
         blurView!.alpha = 0
         for cell in visibleCells {
@@ -138,7 +142,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         })
         
         UIView.animate(withDuration: 0.5, animations: {() in
-            self.blurView!.alpha = 1.0
+            self.blurView!.alpha = 0.90
             self.tableView.separatorColor = UIColor.clear
         })
     }
