@@ -127,7 +127,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let y = editingCell.frame.origin.y + editingCell.frame.height
         let screenHeight = UIScreen.main.bounds.height
         
-        
         blurView!.frame = CGRect(x: 0, y: y, width: editingCell.bounds.width, height: screenHeight - editingCell.bounds.height )
         print("blur y: ",y, "height: ", tableView.bounds.height - y)
         blurView!.effect = blurEffect

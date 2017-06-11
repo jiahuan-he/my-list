@@ -31,6 +31,11 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         }
     }
     
+    var redLabel: UILabel?
+    var yellowLabel: UILabel?
+    var purpleLabel: UILabel?
+    var labelRadius = 5.0
+    
     var originalCenter = CGPoint()
     var deleteOnDragRelease = false
     var completeOnDragRelease = false      
@@ -48,37 +53,41 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         let dateLabel = UILabel(frame: CGRect(x: 5, y: 2, width: 60, height: 20))
         dateLabel.text = "tomorrow"
-        dateLabel.font = UIFont(name: "Helvetica", size: 13)
+        dateLabel.font = UIFont(name: "Avenir", size: 13)
         dateLabel.textColor = UIColor.red
         
         let timeLabel = UILabel(frame: CGRect(x: 65, y: 2, width: 60, height: 20))
         timeLabel.text = "8:00 pm"
-        timeLabel.font = UIFont(name: "Helvetica", size: 13)
+        timeLabel.font = UIFont(name: "Avenir", size: 13)
         timeLabel.textColor = UIColor.red
+        
+        
 
+        redLabel = UILabel(frame: CGRect(x: 230, y: 6, width: 15, height: 15))
+        redLabel!.backgroundColor = UIColor.red
+        redLabel!.layer.masksToBounds = true
+        redLabel!.layer.cornerRadius = CGFloat(labelRadius)
+        
+        
+        yellowLabel = UILabel(frame: CGRect(x: 255, y: 6, width: 15, height: 15))
+        yellowLabel!.backgroundColor = UIColor.yellow
+        yellowLabel!.layer.cornerRadius = CGFloat(labelRadius)
+        yellowLabel!.layer.masksToBounds = true
+        
+        purpleLabel = UILabel(frame: CGRect(x: 280, y: 6, width: 15, height: 15))
+        purpleLabel!.backgroundColor = UIColor.purple
+        purpleLabel!.layer.masksToBounds = true
+        purpleLabel!.layer.cornerRadius = CGFloat(labelRadius)
+        
+        textView.addSubview(redLabel!)
+        textView.addSubview(yellowLabel!)
+        textView.addSubview(purpleLabel!)
+        
         textView.addSubview(timeLabel)
         textView.addSubview(dateLabel)
-
-        let dueLabel = UILabel(frame: CGRect(x: screenSize.width/2+50, y: 0, width: 60, height: 30))
-        dueLabel.text = "Due"
         
+        hideLabels()
         
-        let redLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-        redLabel.backgroundColor = UIColor.red
-        redLabel.text = "Red"
-        redLabel.textColor = UIColor.clear
-        
-        
-        let orangeLabel = UILabel(frame: CGRect(x: 30, y: 0, width: 30, height: 30))
-        orangeLabel.backgroundColor = UIColor.orange
-        orangeLabel.text = "Orange"
-        orangeLabel.textColor = UIColor.clear
-        
-        
-        let yellowLabel = UIButton(frame: CGRect(x: 60, y: 0, width: 30, height: 30))
-        yellowLabel.backgroundColor = UIColor.yellow
-        yellowLabel.setTitle("Yellow", for: .normal)
-
         textView.returnKeyType = UIReturnKeyType.done
         textView.delegate = self
         
@@ -170,12 +179,26 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
+        unhideLabels()
         delegate!.cellDidBeginEditing(editingCell: self)
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
+        hideLabels()
         todoItem!.name = textView.text!
         delegate!.cellDidEndEditing(editingCell: self)
+    }
+    
+    private func hideLabels(){
+        yellowLabel!.isHidden = true
+        purpleLabel!.isHidden = true
+        redLabel!.isHidden = true
+    }
+    
+    private func unhideLabels(){
+        yellowLabel!.isHidden = false
+        purpleLabel!.isHidden = false
+        redLabel!.isHidden = false
     }
 }
 
