@@ -10,6 +10,7 @@ protocol TodoItemTableViewCellDelegate{
     func itemDeleted(item: TodoItem)
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell)
     func cellDidEndEditing(editingCell: TodoItemTableViewCell)
+    func cellFlagDidChange(editingCell: TodoItemTableViewCell)
 }
 
 enum labelTag: Int {
@@ -51,9 +52,25 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         textView.textContainerInset = UIEdgeInsetsMake(20, 2, 15, 2)
         
         rightBorder.frame = CGRect(x: screenSize.width-6, y: 0, width: 6, height: textView.frame.height)
-        rightBorder.backgroundColor = UIColor.red.cgColor
-        textView.layer.addSublayer(rightBorder)
         
+        if let todoFlag = todoItem?.flag{
+            if let todoFlagInt = Int(todoFlag){
+                switch todoFlagInt {
+                case labelTag.Red.rawValue :
+                    rightBorder.backgroundColor = UIColor.red.cgColor                    
+                case labelTag.Orange.rawValue:
+                    rightBorder.backgroundColor = UIColor.orange.cgColor
+                case labelTag.Cyan.rawValue:
+                    rightBorder.backgroundColor = UIColor.cyan.cgColor
+                case labelTag.Green.rawValue:
+                    rightBorder.backgroundColor = UIColor.green.cgColor
+                default:
+                    break
+                }
+            }
+        }
+        
+        textView.layer.addSublayer(rightBorder)
         
         let dateLabel = UILabel(frame: CGRect(x: 5, y: 2, width: 60, height: 20))
         dateLabel.text = "tomorrow"
@@ -64,7 +81,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         timeLabel.text = "8:00 pm"
         timeLabel.font = UIFont(name: "Avenir", size: 13)
         timeLabel.textColor = UIColor.red
-        
         
         let labelRadius = 5.0
         let labelWidth = 16
@@ -102,18 +118,17 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         cyanButton!.tag = labelTag.Cyan.rawValue
         greenButton!.tag = labelTag.Green.rawValue
         
-        redButton!.addTarget(self, action: #selector(self.setRed(sender:)), for: UIControlEvents.touchUpInside)
+        redButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
         redButton!.isUserInteractionEnabled = true
         
-        orangeButton!.addTarget(self, action: #selector(self.setRed(sender:)), for: UIControlEvents.touchUpInside)
+        orangeButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
         orangeButton!.isUserInteractionEnabled = true
         
-        cyanButton!.addTarget(self, action: #selector(self.setRed(sender:)), for: UIControlEvents.touchUpInside)
+        cyanButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
         cyanButton!.isUserInteractionEnabled = true
         
-        greenButton!.addTarget(self, action: #selector(self.setRed(sender:)), for: UIControlEvents.touchUpInside)
+        greenButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
         greenButton!.isUserInteractionEnabled = true
-        
         
         textView.addSubview(timeLabel)
         textView.addSubview(dateLabel)
@@ -127,24 +142,11 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         panRecognizer.delegate = self
         addGestureRecognizer(panRecognizer)
         
-//        let redTap = UITapGestureRecognizer(target: self, action: #selector(self.setRed(sender:)))
-//        redLabel!.isUserInteractionEnabled = true
-//        
-//        
-//        let orangeTap = UITapGestureRecognizer(target: self, action: #selector(self.setRed(sender:)))
-//        orangeLabel!.isUserInteractionEnabled = true
-//        
-//        
-//        let cyanTap = UITapGestureRecognizer(target: self, action: #selector(self.setRed(sender:)))
-//        cyanLabel!.isUserInteractionEnabled = true
-//        
-//        
-//        let greenTap = UITapGestureRecognizer(target: self, action: #selector(self.setRed(sender:)))
-//        greenLabel!.isUserInteractionEnabled = true
-//        
     }
     
-    func setRed(sender: UIButton){
+    func setFlag(sender: UIButton){
+        todoItem!.flag = String(sender.tag)
+        delegate!.cellFlagDidChange(editingCell: self)
         print(sender.tag)
     }
     

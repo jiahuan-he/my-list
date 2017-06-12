@@ -44,9 +44,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewWillAppear(_ animated: Bool) {
         
-        let item1 = TodoItem(context: context)
-        item1.name = "item1"
-        item1.isComplete = false
+//        let item1 = TodoItem(context: context)
+//        item1.name = "item1"
+//        item1.isComplete = false
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         getData()
@@ -88,6 +88,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         return UITableViewAutomaticDimension
     }
     
+    //TodoItemTableViewCell delegate
+    
     func cellHeightDidChange(editingCell: TodoItemTableViewCell, heightChange: CGFloat) {
         
         UIView.setAnimationsEnabled(false)
@@ -110,7 +112,25 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         })
         }
     
-    //TodoItemTableViewCell delegate
+    func cellFlagDidChange(editingCell: TodoItemTableViewCell){
+//        print("current flag: ", editingCell.todoItem?.flag ?? "wrong flag")
+        UIView.animate(withDuration: 0.5, animations: {() in
+            if let f = editingCell.todoItem?.flag{
+            switch f {
+            case "0" :
+                editingCell.rightBorder.backgroundColor = UIColor.red.cgColor
+            case "1":
+                editingCell.rightBorder.backgroundColor = UIColor.orange.cgColor
+            case "2":
+                editingCell.rightBorder.backgroundColor = UIColor.cyan.cgColor
+            case "3":
+                editingCell.rightBorder.backgroundColor = UIColor.green.cgColor
+            default:
+                break
+                }}}
+        )
+        }
+    
     func itemDeleted(item: TodoItem) {
         let itemIndex = (items as NSArray).index(of: item)
         items.remove(at: itemIndex)
@@ -243,4 +263,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
         }
     }
+    
+    
 }
