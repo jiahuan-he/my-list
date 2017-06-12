@@ -12,6 +12,13 @@ protocol TodoItemTableViewCellDelegate{
     func cellDidEndEditing(editingCell: TodoItemTableViewCell)
 }
 
+enum labelTag: Int {
+    case Red
+    case Orange
+    case Cyan
+    case Green
+}
+
 
 import UIKit
 
@@ -21,7 +28,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
     let rightBorder = CALayer()        
-
     
     var todoItem: TodoItem?
         //for testing purpose
@@ -31,10 +37,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         }
     }
     
-    var redLabel: UILabel?
-    var yellowLabel: UILabel?
-    var purpleLabel: UILabel?
-    var labelRadius = 5.0
+    var redButton: UIButton?
+    var orangeButton: UIButton?
+    var cyanButton: UIButton?
+    var greenButton: UIButton?
     
     var originalCenter = CGPoint()
     var deleteOnDragRelease = false
@@ -43,8 +49,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     override func awakeFromNib() {
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         textView.textContainerInset = UIEdgeInsetsMake(20, 2, 15, 2)
-        
-        
         
         rightBorder.frame = CGRect(x: screenSize.width-6, y: 0, width: 6, height: textView.frame.height)
         rightBorder.backgroundColor = UIColor.red.cgColor
@@ -62,26 +66,54 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         timeLabel.textColor = UIColor.red
         
         
-
-        redLabel = UILabel(frame: CGRect(x: 230, y: 6, width: 15, height: 15))
-        redLabel!.backgroundColor = UIColor.red
-        redLabel!.layer.masksToBounds = true
-        redLabel!.layer.cornerRadius = CGFloat(labelRadius)
+        let labelRadius = 5.0
+        let labelWidth = 16
+        let labelPosY = 6
+        let labelPosX = 205
+        let distance = 25
         
+        redButton = UIButton(frame: CGRect(x: labelPosX, y: labelPosY, width: labelWidth, height: labelWidth))
+        redButton!.backgroundColor = UIColor.red
+        redButton!.layer.masksToBounds = true
+        redButton!.layer.cornerRadius = CGFloat(labelRadius)
         
-        yellowLabel = UILabel(frame: CGRect(x: 255, y: 6, width: 15, height: 15))
-        yellowLabel!.backgroundColor = UIColor.yellow
-        yellowLabel!.layer.cornerRadius = CGFloat(labelRadius)
-        yellowLabel!.layer.masksToBounds = true
+        orangeButton = UIButton(frame: CGRect(x: labelPosX+distance, y: labelPosY, width: labelWidth, height: labelWidth))
+        orangeButton!.backgroundColor = UIColor.orange
+        orangeButton!.layer.cornerRadius = CGFloat(labelRadius)
+        orangeButton!.layer.masksToBounds = true
         
-        purpleLabel = UILabel(frame: CGRect(x: 280, y: 6, width: 15, height: 15))
-        purpleLabel!.backgroundColor = UIColor.purple
-        purpleLabel!.layer.masksToBounds = true
-        purpleLabel!.layer.cornerRadius = CGFloat(labelRadius)
+        cyanButton = UIButton(frame: CGRect(x: labelPosX+2*distance, y: labelPosY, width: labelWidth, height: labelWidth))
+        cyanButton!.backgroundColor = UIColor.cyan
+        cyanButton!.layer.masksToBounds = true
+        cyanButton!.layer.cornerRadius = CGFloat(labelRadius)
         
-        textView.addSubview(redLabel!)
-        textView.addSubview(yellowLabel!)
-        textView.addSubview(purpleLabel!)
+        greenButton = UIButton(frame: CGRect(x: labelPosX+3*distance, y: labelPosY, width: labelWidth, height: labelWidth))
+        greenButton!.backgroundColor = UIColor.green
+        greenButton!.layer.masksToBounds = true
+        greenButton!.layer.cornerRadius = CGFloat(labelRadius)
+        
+        textView.addSubview(redButton!)
+        textView.addSubview(orangeButton!)
+        textView.addSubview(cyanButton!)
+        textView.addSubview(greenButton!)
+        
+        redButton!.tag = labelTag.Red.rawValue
+        orangeButton!.tag = labelTag.Orange.rawValue
+        cyanButton!.tag = labelTag.Cyan.rawValue
+        greenButton!.tag = labelTag.Green.rawValue
+        
+        redButton!.addTarget(self, action: #selector(self.setRed(sender:)), for: UIControlEvents.touchUpInside)
+        redButton!.isUserInteractionEnabled = true
+        
+        orangeButton!.addTarget(self, action: #selector(self.setRed(sender:)), for: UIControlEvents.touchUpInside)
+        orangeButton!.isUserInteractionEnabled = true
+        
+        cyanButton!.addTarget(self, action: #selector(self.setRed(sender:)), for: UIControlEvents.touchUpInside)
+        cyanButton!.isUserInteractionEnabled = true
+        
+        greenButton!.addTarget(self, action: #selector(self.setRed(sender:)), for: UIControlEvents.touchUpInside)
+        greenButton!.isUserInteractionEnabled = true
+        
         
         textView.addSubview(timeLabel)
         textView.addSubview(dateLabel)
@@ -91,13 +123,29 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         textView.returnKeyType = UIReturnKeyType.done
         textView.delegate = self
         
-        
-        
-        
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(recognizer:)))
         panRecognizer.delegate = self
         addGestureRecognizer(panRecognizer)
-
+        
+//        let redTap = UITapGestureRecognizer(target: self, action: #selector(self.setRed(sender:)))
+//        redLabel!.isUserInteractionEnabled = true
+//        
+//        
+//        let orangeTap = UITapGestureRecognizer(target: self, action: #selector(self.setRed(sender:)))
+//        orangeLabel!.isUserInteractionEnabled = true
+//        
+//        
+//        let cyanTap = UITapGestureRecognizer(target: self, action: #selector(self.setRed(sender:)))
+//        cyanLabel!.isUserInteractionEnabled = true
+//        
+//        
+//        let greenTap = UITapGestureRecognizer(target: self, action: #selector(self.setRed(sender:)))
+//        greenLabel!.isUserInteractionEnabled = true
+//        
+    }
+    
+    func setRed(sender: UIButton){
+        print(sender.tag)
     }
     
     func handlePan(recognizer: UIPanGestureRecognizer){
@@ -190,15 +238,17 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     private func hideLabels(){
-        yellowLabel!.isHidden = true
-        purpleLabel!.isHidden = true
-        redLabel!.isHidden = true
+        orangeButton!.isHidden = true
+        cyanButton!.isHidden = true
+        redButton!.isHidden = true
+        greenButton!.isHidden = true
     }
     
     private func unhideLabels(){
-        yellowLabel!.isHidden = false
-        purpleLabel!.isHidden = false
-        redLabel!.isHidden = false
+        orangeButton!.isHidden = false
+        cyanButton!.isHidden = false
+        redButton!.isHidden = false
+        greenButton!.isHidden = false
     }
 }
 

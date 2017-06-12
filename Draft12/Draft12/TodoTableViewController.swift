@@ -24,6 +24,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.showsVerticalScrollIndicator = false
+        tableView.separatorColor = UIColor.lightGray.withAlphaComponent(0.3)
+
+        
         blurView = UIVisualEffectView()
         tableView.addSubview(blurView!)
         //        tableView.rowHeight = UITableViewAutomaticDimension
@@ -69,6 +73,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
         cell.delegate = self
         cell.todoItem = items[indexPath.row]
+        cell.preservesSuperviewLayoutMargins = false
+        cell.separatorInset = UIEdgeInsets.zero
+        cell.layoutMargins = UIEdgeInsets.zero
+        
         return cell
     }
     
@@ -160,7 +168,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         UIView.animate(withDuration: 0.5, animations: {() in
             self.blurView!.alpha = 0
-            self.tableView.separatorColor = UIColor.gray
+            self.tableView.separatorColor = UIColor.lightGray.withAlphaComponent(0.3)
         }, completion: {(finished: Bool) in
             self.blurView!.isHidden = true
             for cell: TodoItemTableViewCell in visibleCells {
