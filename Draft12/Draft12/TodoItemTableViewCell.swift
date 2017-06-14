@@ -28,7 +28,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     @IBOutlet var textView: UITextView!
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
-    let rightBorder = CALayer()        
+    let rightBorder = CALayer()
+    
+    let datePicker = UIDatePicker()
     
     var todoItem: TodoItem?
         //for testing purpose
@@ -52,36 +54,42 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         textView.textContainerInset = UIEdgeInsetsMake(20, 2, 15, 2)
         
         rightBorder.frame = CGRect(x: screenSize.width-6, y: 0, width: 6, height: textView.frame.height)
-        
-        if let todoFlag = todoItem?.flag{
-            if let todoFlagInt = Int(todoFlag){
-                switch todoFlagInt {
-                case labelTag.Red.rawValue :
-                    rightBorder.backgroundColor = UIColor.red.cgColor                    
-                case labelTag.Orange.rawValue:
-                    rightBorder.backgroundColor = UIColor.orange.cgColor
-                case labelTag.Cyan.rawValue:
-                    rightBorder.backgroundColor = UIColor.cyan.cgColor
-                case labelTag.Green.rawValue:
-                    rightBorder.backgroundColor = UIColor.green.cgColor
-                default:
-                    break
-                }
-            }
-        }
-        
         textView.layer.addSublayer(rightBorder)
+
+// BUG HERE: todoItem is not initialized here! WHY
+//        if let todoFlag = todoItem?.flag{
+//                switch todoFlag {
+//                case String(labelTag.Red.rawValue) :
+//                    rightBorder.backgroundColor = UIColor.red.cgColor                    
+//                case String(labelTag.Orange.rawValue):
+//                    rightBorder.backgroundColor = UIColor.orange.cgColor
+//                case String(labelTag.Cyan.rawValue):
+//                    rightBorder.backgroundColor = UIColor.cyan.cgColor
+//                case String(labelTag.Green.rawValue):
+//                    rightBorder.backgroundColor = UIColor.green.cgColor
+//                default:
+//                    print("Right border not displayed !!!!")
+//                    break
+//            }
+//        }
         
-        let dateLabel = UILabel(frame: CGRect(x: 5, y: 2, width: 60, height: 20))
-        dateLabel.text = "tomorrow"
-        dateLabel.font = UIFont(name: "Avenir", size: 13)
-        dateLabel.textColor = UIColor.red
         
-        let timeLabel = UILabel(frame: CGRect(x: 65, y: 2, width: 60, height: 20))
-        timeLabel.text = "8:00 pm"
-        timeLabel.font = UIFont(name: "Avenir", size: 13)
-        timeLabel.textColor = UIColor.red
+        let dateButton = UIButton(frame: CGRect(x: 5, y: 2, width: 60, height: 20))
+        dateButton.titleLabel!.text = "tomorrow"
+        dateButton.setTitle("tomorrow", for: UIControlState.normal)
+        dateButton.setTitleColor(UIColor.red, for: UIControlState.normal)
+        dateButton.titleLabel!.font = UIFont(name: "Avenir", size: 13)!
+        dateButton.addTarget(self, action: #selector(self.popDatepicker), for: UIControlEvents.touchUpInside)
         
+        
+//        let timeLabel = UILabel(frame: CGRect(x: 65, y: 2, width: 60, height: 20))
+//        timeLabel.text = "8:00 pm"
+//        timeLabel.font = UIFont(name: "Avenir", size: 13)
+//        timeLabel.textColor = UIColor.red
+        
+        //        textView.addSubview(timeLabel)
+        textView.addSubview(dateButton)
+
         let labelRadius = 5.0
         let labelWidth = 16
         let labelPosY = 6
@@ -130,8 +138,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         greenButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
         greenButton!.isUserInteractionEnabled = true
         
-        textView.addSubview(timeLabel)
-        textView.addSubview(dateLabel)
         
         hideLabels()
         
@@ -144,8 +150,32 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
     }
     
+    func popDatepicker(){
+        datePicker.datePickerMode = UIDatePickerMode.date
+        datePicker.addTarget(self, action: #selector(self.dateChanged(sender:)), for: UIControlEvents.valueChanged)        
+//        datePicker.frame = CGRect(x: 0.0, y: 250, width: UIScreen.main.bounds.width, height: 460)
+        
+        //you probably don't want to set background color as black
+        //picker.backgroundColor = UIColor.blackColor()
+        
+        
+        datePicker.becomeFirstResponder()
+    }
+    
+    func dateChanged(sender: UIDatePicker){
+        
+    }
+    
+
     func setFlag(sender: UIButton){
-        todoItem!.flag = String(sender.tag)
+        if(todoItem!.flag == String(sender.tag)){
+            todoItem!.flag = "-1"            
+        }
+        else{
+            todoItem!.flag = String(sender.tag)
+        }
+        
+        
         delegate!.cellFlagDidChange(editingCell: self)
         print(sender.tag)
     }
@@ -229,6 +259,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
+        print("current flag: ", todoItem?.flag ?? "nil")
         unhideLabels()
         delegate!.cellDidBeginEditing(editingCell: self)
     }

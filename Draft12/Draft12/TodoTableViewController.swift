@@ -73,6 +73,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
         cell.delegate = self
         cell.todoItem = items[indexPath.row]
+        
+        assignBorderColor(cell: cell)
+        
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
@@ -89,7 +92,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     //TodoItemTableViewCell delegate
-    
+  
     func cellHeightDidChange(editingCell: TodoItemTableViewCell, heightChange: CGFloat) {
         
         UIView.setAnimationsEnabled(false)
@@ -112,23 +115,36 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         })
         }
     
+    private func assignBorderColor (cell: TodoItemTableViewCell){
+        if let f = cell.todoItem?.flag{
+            switch f {
+            case "0" :
+                cell.rightBorder.backgroundColor = UIColor.red.cgColor
+                print("assignBorderColor: ", f)
+            case "1":
+                cell.rightBorder.backgroundColor = UIColor.orange.cgColor
+            case "2":
+                cell.rightBorder.backgroundColor = UIColor.cyan.cgColor
+            case "3":
+                cell.rightBorder.backgroundColor = UIColor.green.cgColor
+            case "-1":
+                cell.rightBorder.backgroundColor = UIColor.clear.cgColor
+                print("assignBorderColor: ", f)
+            default:
+                print("assignBorderColor: ", f)
+                fatalError()
+            }}
+    }
+    
+    
     func cellFlagDidChange(editingCell: TodoItemTableViewCell){
 //        print("current flag: ", editingCell.todoItem?.flag ?? "wrong flag")
         UIView.animate(withDuration: 0.5, animations: {() in
-            if let f = editingCell.todoItem?.flag{
-            switch f {
-            case "0" :
-                editingCell.rightBorder.backgroundColor = UIColor.red.cgColor
-            case "1":
-                editingCell.rightBorder.backgroundColor = UIColor.orange.cgColor
-            case "2":
-                editingCell.rightBorder.backgroundColor = UIColor.cyan.cgColor
-            case "3":
-                editingCell.rightBorder.backgroundColor = UIColor.green.cgColor
-            default:
-                break
-                }}}
+            self.assignBorderColor(cell: editingCell)
+        }
         )
+
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
         }
     
     func itemDeleted(item: TodoItem) {
@@ -212,7 +228,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     // indicates the state of this behavior
     var pullDownInProgress = false
     var clueView: UIView?
-    let marginalHeight = CGFloat(40)
+    let marginalHeight = CGFloat(26)
     var addClueLabel = UILabel()
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -230,21 +246,22 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("SS")
+        
         let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffset
+        if(scrollViewContentOffsetY <= -marginalHeight){
+            addClueLabel.text = "Release"
+        }
+        else{
+            addClueLabel.text = "Test"
+        }
         if pullDownInProgress && scrollViewContentOffsetY <= 0.0 {
             // maintain the location of the placeholder
             print(scrollViewContentOffsetY)
             addClueLabel.frame = CGRect(x: tableView.frame.size.width/2-30, y: -scrollViewContentOffsetY-25, width: 100, height: 30)
             clueView!.frame = CGRect(x: 0, y: scrollViewContentOffsetY,
                                      width: tableView.frame.size.width, height: -scrollViewContentOffsetY)
-            if(scrollViewContentOffsetY <= -marginalHeight){
-                addClueLabel.text = "Release"
-            }
-            else{
-                addClueLabel.text = "Test"
-            }
             //            addClueLabel!.alpha = min(1.0, -scrollViewContentOffsetY/marginalHeight)
-            
         } else {
             pullDownInProgress = false
         }
@@ -254,6 +271,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffset
         if pullDownInProgress && scrollViewContentOffsetY <= -marginalHeight{
+            clueView?.isHidden = true
             let newItem = TodoItem(context: context)
             let indexPath = IndexPath(row: 0, section: 0)
             items.insert(newItem, at: 0)
