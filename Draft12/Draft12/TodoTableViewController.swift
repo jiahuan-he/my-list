@@ -14,6 +14,17 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var initContentOffset: CGFloat = 0
     var blurView: UIVisualEffectView?
     
+    var barView = UIView()
+    
+    let datePickerHeight = CGFloat(150)
+    
+    var datePicker = UIDatePicker()
+    var doneButton = UIButton()
+    var cancelButton = UIButton()
+    var deleteButton = UIButton()
+    var buttonHeight = CGFloat(30)
+    var buttonWidth = CGFloat(40)
+    
     @IBOutlet weak var tableView: UITableView!
     
     var items: [TodoItem] = []
@@ -24,6 +35,28 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        datePicker.frame = CGRect(x:  0, y:  UIScreen.main.bounds.height - datePickerHeight - (self.navigationController?.navigationBar.bounds.height)! - 20, width:  UIScreen.main.bounds.width, height: datePickerHeight)
+        datePicker.layer.borderWidth = 1
+        datePicker.layer.borderColor = UIColor.green.cgColor
+        
+        tableView.addSubview(datePicker)
+        datePicker.isHidden = true
+        
+        barView.frame = CGRect(x: 0, y: datePicker.frame.origin.y - buttonHeight, width: UIScreen.main.bounds.width, height: buttonHeight)
+        barView.backgroundColor = UIColor.orange
+        barView.isHidden = true
+        tableView.addSubview(barView)
+        
+        doneButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonHeight)
+        doneButton.setTitle("DONE", for: UIControlState.normal)
+        doneButton.setTitleColor(UIColor.blue, for: UIControlState.normal)
+        doneButton.titleLabel?.font = UIFont(name: "Avenir", size: 13)!
+        doneButton.backgroundColor = UIColor.lightGray
+        barView.addSubview(doneButton)
+        
+        
+        
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorColor = UIColor.lightGray.withAlphaComponent(0.3)
 
@@ -36,6 +69,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         tableView.dataSource = self
         tableView.delegate = self
+//        tableView.backgroundColor = UIColor.lightGray
         
         //                tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
@@ -92,6 +126,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     //TodoItemTableViewCell delegate
+    
+    func popupDatePicker(editingCell: TodoItemTableViewCell) {
+        datePicker.backgroundColor = UIColor.lightGray
+        datePicker.isHidden = false
+        barView.isHidden = false
+        
+    }
   
     func cellHeightDidChange(editingCell: TodoItemTableViewCell, heightChange: CGFloat) {
         
@@ -141,9 +182,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
 //        print("current flag: ", editingCell.todoItem?.flag ?? "wrong flag")
         UIView.animate(withDuration: 0.5, animations: {() in
             self.assignBorderColor(cell: editingCell)
-        }
-        )
-
+        })
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         }
     
@@ -246,7 +285,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("SS")
         
         let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffset
         if(scrollViewContentOffsetY <= -marginalHeight){
@@ -258,7 +296,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if pullDownInProgress && scrollViewContentOffsetY <= 0.0 {
             // maintain the location of the placeholder
             print(scrollViewContentOffsetY)
-            addClueLabel.frame = CGRect(x: tableView.frame.size.width/2-30, y: -scrollViewContentOffsetY-25, width: 100, height: 30)
+            addClueLabel.frame = CGRect(x: tableView.frame.size.width/2-30, y: -scrollViewContentOffsetY-30, width: 100, height: 30)
             clueView!.frame = CGRect(x: 0, y: scrollViewContentOffsetY,
                                      width: tableView.frame.size.width, height: -scrollViewContentOffsetY)
             //            addClueLabel!.alpha = min(1.0, -scrollViewContentOffsetY/marginalHeight)

@@ -42,7 +42,7 @@
             <connections>
                 <outlet property="textView" destination="Z3M-Ab-AXi" id="KdU-zw-jqa"/>
             </connections>
-            <point key="canvasLocation" x="131" y="-269"/>
+            <point key="canvasLocation" x="131" y="-269.5"/>
         </tableViewCell>
     </objects>
 </document>

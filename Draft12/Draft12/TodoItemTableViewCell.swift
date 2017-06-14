@@ -11,6 +11,7 @@ protocol TodoItemTableViewCellDelegate{
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell)
     func cellDidEndEditing(editingCell: TodoItemTableViewCell)
     func cellFlagDidChange(editingCell: TodoItemTableViewCell)
+    func popupDatePicker(editingCell: TodoItemTableViewCell)
 }
 
 enum labelTag: Int {
@@ -72,7 +73,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
 //                    break
 //            }
 //        }
-        
+//        self.backgroundColor = UIColor.lightGray
+//        textView.backgroundColor = UIColor.lightGray
         
         let dateButton = UIButton(frame: CGRect(x: 5, y: 2, width: 60, height: 20))
         dateButton.titleLabel!.text = "tomorrow"
@@ -151,21 +153,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func popDatepicker(){
-        datePicker.datePickerMode = UIDatePickerMode.date
-        datePicker.addTarget(self, action: #selector(self.dateChanged(sender:)), for: UIControlEvents.valueChanged)        
-//        datePicker.frame = CGRect(x: 0.0, y: 250, width: UIScreen.main.bounds.width, height: 460)
-        
-        //you probably don't want to set background color as black
-        //picker.backgroundColor = UIColor.blackColor()
-        
-        
-        datePicker.becomeFirstResponder()
+        delegate!.popupDatePicker(editingCell: self)
     }
-    
-    func dateChanged(sender: UIDatePicker){
-        
-    }
-    
 
     func setFlag(sender: UIButton){
         if(todoItem!.flag == String(sender.tag)){
