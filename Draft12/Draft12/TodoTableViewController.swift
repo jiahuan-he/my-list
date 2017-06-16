@@ -9,6 +9,17 @@
 import UIKit
 import CoreData
 
+extension Date
+{
+    func toString( dateFormat format  : String ) -> String
+    {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        return dateFormatter.string(from: self)
+    }
+    
+}
+
 class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate {
     
     var initContentOffset: CGFloat = 0
@@ -17,6 +28,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var barView = UIView()
     
     let datePickerHeight = CGFloat(150)
+    
+    var editingCell: TodoItemTableViewCell?
     
     var datePicker = UIDatePicker()
     var doneButton = UIButton()
@@ -42,19 +55,36 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         tableView.addSubview(datePicker)
         datePicker.isHidden = true
+        datePicker.datePickerMode = .date
+        
         
         barView.frame = CGRect(x: 0, y: datePicker.frame.origin.y - buttonHeight, width: UIScreen.main.bounds.width, height: buttonHeight)
-        barView.backgroundColor = UIColor.orange
+        barView.backgroundColor = UIColor.blue
         barView.isHidden = true
         tableView.addSubview(barView)
         
-        doneButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonHeight)
-        doneButton.setTitle("DONE", for: UIControlState.normal)
-        doneButton.setTitleColor(UIColor.blue, for: UIControlState.normal)
-        doneButton.titleLabel?.font = UIFont(name: "Avenir", size: 13)!
-        doneButton.backgroundColor = UIColor.lightGray
-        barView.addSubview(doneButton)
+        cancelButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonHeight)
+        cancelButton.setTitle("CANCEL", for: UIControlState.normal)
+        cancelButton.setTitleColor(UIColor.gray, for: UIControlState.normal)
+        cancelButton.titleLabel?.font = UIFont(name: "Avenir", size: 13)!
+        cancelButton.sizeToFit()
+        barView.addSubview(cancelButton)
+        cancelButton.addTarget(self, action: #selector(self.cancelButtonPressed), for: UIControlEvents.touchUpInside)
         
+        
+        deleteButton.frame = CGRect(x: (UIScreen.main.bounds.width-buttonWidth)/2 , y: 0, width: buttonWidth, height: buttonHeight)
+        deleteButton.setTitle("DELETE", for: UIControlState.normal)
+        deleteButton.setTitleColor(UIColor.red, for: UIControlState.normal)
+        deleteButton.titleLabel?.font = UIFont(name: "Avenir", size: 13)!
+        deleteButton.sizeToFit()
+        barView.addSubview(deleteButton)
+        
+        doneButton.frame = CGRect(x: UIScreen.main.bounds.width-buttonWidth, y: 0, width: buttonWidth, height: buttonHeight)
+        doneButton.setTitle("DONE", for: UIControlState.normal)
+        doneButton.setTitleColor(UIColor.gray, for: UIControlState.normal)
+        doneButton.titleLabel?.font = UIFont(name: "Avenir", size: 13)!
+        barView.addSubview(doneButton)
+        doneButton.addTarget(self, action: #selector(self.doneButtonPressed), for: UIControlEvents.touchUpInside)
         
         
         tableView.showsVerticalScrollIndicator = false
@@ -63,15 +93,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         blurView = UIVisualEffectView()
         tableView.addSubview(blurView!)
-        //        tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 30
         tableView.rowHeight = UITableViewAutomaticDimension
         
         tableView.dataSource = self
         tableView.delegate = self
-//        tableView.backgroundColor = UIColor.lightGray
-        
-        //                tableView.register(TodoItemTableViewCell.self, forCellReuseIdentifier: "todoCell")
+
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
         
     }
@@ -109,7 +136,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.todoItem = items[indexPath.row]
         
         assignBorderColor(cell: cell)
-        
+        assignDateText(cell: cell)
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
@@ -125,13 +152,45 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         return UITableViewAutomaticDimension
     }
     
+    private func hidePicker(){
+        datePicker.isHidden = true
+        barView.isHidden = true
+    }
+    
+    // buttons helper function
+    func cancelButtonPressed(){
+       hidePicker()
+    }
+    
+    func doneButtonPressed(){
+        hidePicker()
+//        let timeFormatter = DateFormatter()
+//        timeFormatter.timeStyle = DateFormatter.Style.short
+//        let strDate = timeFormatter.string(from: datePicker.date)
+//        print(strDate)
+        
+        editingCell!.todoItem!.dueDate = datePicker.date as NSDate
+        let dateButton = editingCell!.dateButton
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        UIView.animate(withDuration: 0.2, animations: { () in
+            dateButton.setTitle(self.datePicker.date.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+        })
+//        let labelSize =  dateButton.titleLabel?.sizeThatFits(CGSize(width: dateButton.frame.size.width, height: CGFloat.greatestFiniteMagnitude)) ?? CGSize.zero
+//        let desiredButtonSize = CGSize(width: labelSize.width + dateButton.titleEdgeInsets.left + dateButton.titleEdgeInsets.right, height: labelSize.height + dateButton.titleEdgeInsets.top + dateButton.titleEdgeInsets.bottom)
+//        dateButton.titleLabel?.sizeThatFits(desiredButtonSize)
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        print(editingCell!.todoItem!.dueDate!.toString(dateFormat: "dd-MMM-yyyy"))
+        
+    }
+    
     //TodoItemTableViewCell delegate
     
     func popupDatePicker(editingCell: TodoItemTableViewCell) {
         datePicker.backgroundColor = UIColor.lightGray
+        datePicker.setDate(NSDate() as Date, animated: false)
         datePicker.isHidden = false
         barView.isHidden = false
-        
+        self.editingCell = editingCell
     }
   
     func cellHeightDidChange(editingCell: TodoItemTableViewCell, heightChange: CGFloat) {
@@ -175,6 +234,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 print("assignBorderColor: ", f)
                 fatalError()
             }}
+    }
+    
+    private func assignDateText (cell: TodoItemTableViewCell){
+        cell.dateButton.setTitle(cell.todoItem!.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "", for: UIControlState.normal)
     }
     
     

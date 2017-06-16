@@ -14,6 +14,18 @@ protocol TodoItemTableViewCellDelegate{
     func popupDatePicker(editingCell: TodoItemTableViewCell)
 }
 
+extension NSDate
+{
+    func toString( dateFormat format  : String ) -> String
+    {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        return dateFormatter.string(from: self as Date)
+    }
+    
+}
+
+
 enum labelTag: Int {
     case Red
     case Orange
@@ -30,7 +42,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
     let rightBorder = CALayer()
-    
+    let dateButton = UIButton()
     let datePicker = UIDatePicker()
     
     var todoItem: TodoItem?
@@ -76,9 +88,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
 //        self.backgroundColor = UIColor.lightGray
 //        textView.backgroundColor = UIColor.lightGray
         
-        let dateButton = UIButton(frame: CGRect(x: 5, y: 2, width: 60, height: 20))
-        dateButton.titleLabel!.text = "tomorrow"
-        dateButton.setTitle("tomorrow", for: UIControlState.normal)
+        dateButton.frame = CGRect(x: 5, y: 2, width: 100, height: 20)
+//        dateButton.setTitle(todoItem?.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "", for: UIControlState.normal)
+        dateButton.setTitle(todoItem?.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "tomorrow", for: UIControlState.normal)
+        dateButton.contentHorizontalAlignment = .left
         dateButton.setTitleColor(UIColor.red, for: UIControlState.normal)
         dateButton.titleLabel!.font = UIFont(name: "Avenir", size: 13)!
         dateButton.addTarget(self, action: #selector(self.popDatepicker), for: UIControlEvents.touchUpInside)
