@@ -118,7 +118,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func getData(){
         do {
-            items = try context.fetch(TodoItem.fetchRequest())
+            let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
+            let sortDescriptor = NSSortDescriptor(key: "dueDate", ascending: true)
+            fetchRequest.sortDescriptors = [sortDescriptor]
+            items = try context.fetch(fetchRequest)
             // Temp
             items.reverse()
         }
