@@ -132,12 +132,18 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.delegate = self
         cell.todoItem = items[indexPath.row]
         
-        assignBorderColor(cell: cell)
+        cell.rightBorder.backgroundColor = assignBorderColor(cell: cell)
         assignDateText(cell: cell)
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
         cell.dateButton.isEnabled = false
+        
+        var alpha = 0.0
+        if (UIColor(cgColor: assignBorderColor(cell: cell)) != UIColor.clear){
+            alpha = 0.05
+        }
+        cell.textView.backgroundColor = UIColor(cgColor: assignBorderColor(cell: cell)).withAlphaComponent(CGFloat(alpha))
         
         return cell
     }
@@ -225,25 +231,23 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         })
         }
     
-    private func assignBorderColor (cell: TodoItemTableViewCell){
+    private func assignBorderColor (cell: TodoItemTableViewCell) -> CGColor{
         if let f = cell.todoItem?.flag{
             switch f {
             case "0" :
-                cell.rightBorder.backgroundColor = UIColor.red.cgColor
-                print("assignBorderColor: ", f)
+                return UIColor.red.cgColor
             case "1":
-                cell.rightBorder.backgroundColor = UIColor.orange.cgColor
+                return UIColor.orange.cgColor
             case "2":
-                cell.rightBorder.backgroundColor = UIColor.cyan.cgColor
+                return UIColor.cyan.cgColor
             case "3":
-                cell.rightBorder.backgroundColor = UIColor.green.cgColor
+                return UIColor.green.cgColor
             case "-1":
-                cell.rightBorder.backgroundColor = UIColor.clear.cgColor
-                print("assignBorderColor: ", f)
+                return UIColor.clear.cgColor
             default:
-                print("assignBorderColor: ", f)
-                fatalError()
+                break
             }}
+        return UIColor.clear.cgColor
     }
     
     private func assignDateText (cell: TodoItemTableViewCell){
@@ -256,8 +260,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func cellFlagDidChange(editingCell: TodoItemTableViewCell){
 //        print("current flag: ", editingCell.todoItem?.flag ?? "wrong flag")
+        var alpha = 0.0
+        if (UIColor(cgColor: assignBorderColor(cell: editingCell)) != UIColor.clear){
+            alpha = 0.05
+        }
+        
         UIView.animate(withDuration: 0.5, animations: {() in
-            self.assignBorderColor(cell: editingCell)
+            editingCell.rightBorder.backgroundColor = self.assignBorderColor(cell: editingCell)
+            editingCell.textView.backgroundColor = UIColor(cgColor: self.assignBorderColor(cell: editingCell)).withAlphaComponent(CGFloat(alpha))
         })
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         }
@@ -415,7 +425,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             let newItem = TodoItem(context: context)
             let indexPath = IndexPath(row: 0, section: 0)
             items.insert(newItem, at: 0)
-            tableView.insertRows(at: [indexPath], with: .fade)
+            tableView.insertRows(at: [indexPath], with: .top)
             tableView.reloadData()
             (tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell).textView!.becomeFirstResponder()
             cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
