@@ -119,7 +119,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func getData(){
         do {
             let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
-            let sortDescriptor = NSSortDescriptor(key: "dueDate", ascending: true)
+            let sortDescriptor = NSSortDescriptor(key: "dueDate", ascending: false)
             fetchRequest.sortDescriptors = [sortDescriptor]
             items = try context.fetch(fetchRequest)
             // Temp
@@ -195,7 +195,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         resignAfterModifyingDate = true
         editingCell!.textView.becomeFirstResponder()
-        
         
     }
     
@@ -371,7 +370,17 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         else{
             (UIApplication.shared.delegate as! AppDelegate).saveContext()
         }
+        offset = 0
+        editingCell.dateButton.isEnabled = false
         
+        let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+        getData()
+        let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+        
+        // WOW! The API is AMAZING! Thanks Apple!
+        tableView.beginUpdates()
+        tableView.moveRow(at: fromPath, to: toPath)
+        tableView.endUpdates()
     }
     
     // MARK: - UIScrollViewDelegate methods
