@@ -60,13 +60,15 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     var originalCenter = CGPoint()
     var deleteOnDragRelease = false
-    var completeOnDragRelease = false      
+    var completeOnDragRelease = false
+    
+    let borderWidth = CGFloat(6)
     
     override func awakeFromNib() {
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         textView.textContainerInset = UIEdgeInsetsMake(20, 2, 15, 2)
         
-        rightBorder.frame = CGRect(x: screenSize.width-6, y: 0, width: 6, height: textView.frame.height)
+        rightBorder.frame = CGRect(x: screenSize.width-borderWidth, y: 0, width: borderWidth, height: 500)
         textView.layer.addSublayer(rightBorder)
 
 // BUG HERE: todoItem is not initialized here! WHY
@@ -89,20 +91,12 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
 //        textView.backgroundColor = UIColor.lightGray
         
         dateButton.frame = CGRect(x: 5, y: 2, width: 100, height: 20)
-//        dateButton.setTitle(todoItem?.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "", for: UIControlState.normal)
-//        dateButton.setTitle(todoItem?.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "tomorrow", for: UIControlState.normal)
         dateButton.contentHorizontalAlignment = .left
         dateButton.setTitleColor(UIColor.red, for: UIControlState.normal)
         dateButton.titleLabel!.font = UIFont(name: "Avenir", size: 13)!
         dateButton.addTarget(self, action: #selector(self.popDatepicker), for: UIControlEvents.touchUpInside)
         dateButton.isHidden = true
         
-//        let timeLabel = UILabel(frame: CGRect(x: 65, y: 2, width: 60, height: 20))
-//        timeLabel.text = "8:00 pm"
-//        timeLabel.font = UIFont(name: "Avenir", size: 13)
-//        timeLabel.textColor = UIColor.red
-        
-        //        textView.addSubview(timeLabel)
         textView.addSubview(dateButton)
 
         let labelRadius = 5.0

@@ -219,18 +219,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.endUpdates()
         UIView.setAnimationsEnabled(true)
         
-        let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-        for cell in visibleCells {
-            if cell !== editingCell {
-                cell.textView.isEditable = false
-                //                    cell.alpha = 0.3
-            }
-            cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
-        }
-        UIView.animate(withDuration: 0.2, animations: { () in
-            self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: heightChange)
-
-        })
+        
+                    let visibleCells = self.tableView.visibleCells as! [TodoItemTableViewCell]
+                    for cell in visibleCells {
+                        if cell !== editingCell {
+                            cell.textView.isEditable = false
+                            //                    cell.alpha = 0.3
+                        }
+                        cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
+                    }
+        
+        
+//        UIView.animate(withDuration: 0.2, animations: { () in
+////            self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: heightChange)
+//
+//        })
         }
     
     private func assignBorderColor (cell: TodoItemTableViewCell) -> CGColor{
@@ -373,15 +376,19 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         offset = 0
         editingCell.dateButton.isEnabled = false
         
-        let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-        getData()
-        let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+        if items.contains(editingCell.todoItem!) {
+            let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+            getData()
+            let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+            
+            // WOW! The API is AMAZING! Thanks Apple!
+            tableView.beginUpdates()
+            tableView.moveRow(at: fromPath, to: toPath)
+            tableView.endUpdates()
+
+        }
         
-        // WOW! The API is AMAZING! Thanks Apple!
-        tableView.beginUpdates()
-        tableView.moveRow(at: fromPath, to: toPath)
-        tableView.endUpdates()
-    }
+            }
     
     // MARK: - UIScrollViewDelegate methods
     // contains scrollViewDidScroll, and other methods, to keep track of dragging the scrollView
