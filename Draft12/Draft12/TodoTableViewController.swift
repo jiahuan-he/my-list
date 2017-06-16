@@ -21,6 +21,8 @@ extension Date
 }
 
 class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate {
+    var modifyingDate = false
+    var resignAfterModifyingDate = false
     
     var initContentOffset: CGFloat = 0
     var blurView: UIVisualEffectView?
@@ -63,20 +65,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         barView.isHidden = true
         tableView.addSubview(barView)
         
-        cancelButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonHeight)
-        cancelButton.setTitle("CANCEL", for: UIControlState.normal)
-        cancelButton.setTitleColor(UIColor.gray, for: UIControlState.normal)
-        cancelButton.titleLabel?.font = UIFont(name: "Avenir", size: 13)!
-        cancelButton.sizeToFit()
-        barView.addSubview(cancelButton)
-        cancelButton.addTarget(self, action: #selector(self.cancelButtonPressed), for: UIControlEvents.touchUpInside)
         
         
-        deleteButton.frame = CGRect(x: (UIScreen.main.bounds.width-buttonWidth)/2 , y: 0, width: buttonWidth, height: buttonHeight)
+        deleteButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonHeight)
         deleteButton.setTitle("DELETE", for: UIControlState.normal)
         deleteButton.setTitleColor(UIColor.red, for: UIControlState.normal)
         deleteButton.titleLabel?.font = UIFont(name: "Avenir", size: 13)!
         deleteButton.sizeToFit()
+        
+        deleteButton.addTarget(self, action: #selector(self.deleteButtonPressed), for: UIControlEvents.touchUpInside)
         barView.addSubview(deleteButton)
         
         doneButton.frame = CGRect(x: UIScreen.main.bounds.width-buttonWidth, y: 0, width: buttonWidth, height: buttonHeight)
@@ -140,6 +137,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
+        cell.dateButton.isEnabled = false
         
         return cell
     }
@@ -158,39 +156,51 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     // buttons helper function
-    func cancelButtonPressed(){
-       hidePicker()
+
+    
+    func deleteButtonPressed(){
+        modifyingDate = false
+        hidePicker()
+        editingCell!.todoItem!.dueDate = nil
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        
+        UIView.animate(withDuration: 0, animations: {() in
+            self.editingCell!.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
+        })
+        resignAfterModifyingDate = true
+        editingCell!.textView.becomeFirstResponder()
     }
     
     func doneButtonPressed(){
+        modifyingDate = false
         hidePicker()
-//        let timeFormatter = DateFormatter()
-//        timeFormatter.timeStyle = DateFormatter.Style.short
-//        let strDate = timeFormatter.string(from: datePicker.date)
-//        print(strDate)
-        
         editingCell!.todoItem!.dueDate = datePicker.date as NSDate
         let dateButton = editingCell!.dateButton
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         UIView.animate(withDuration: 0.2, animations: { () in
             dateButton.setTitle(self.datePicker.date.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
         })
-//        let labelSize =  dateButton.titleLabel?.sizeThatFits(CGSize(width: dateButton.frame.size.width, height: CGFloat.greatestFiniteMagnitude)) ?? CGSize.zero
-//        let desiredButtonSize = CGSize(width: labelSize.width + dateButton.titleEdgeInsets.left + dateButton.titleEdgeInsets.right, height: labelSize.height + dateButton.titleEdgeInsets.top + dateButton.titleEdgeInsets.bottom)
-//        dateButton.titleLabel?.sizeThatFits(desiredButtonSize)
+
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         print(editingCell!.todoItem!.dueDate!.toString(dateFormat: "dd-MMM-yyyy"))
+        
+        resignAfterModifyingDate = true
+        editingCell!.textView.becomeFirstResponder()
+        
         
     }
     
     //TodoItemTableViewCell delegate
     
     func popupDatePicker(editingCell: TodoItemTableViewCell) {
+        modifyingDate = true
+        
         datePicker.backgroundColor = UIColor.lightGray
         datePicker.setDate(NSDate() as Date, animated: false)
         datePicker.isHidden = false
         barView.isHidden = false
         self.editingCell = editingCell
+        editingCell.textView.resignFirstResponder()
     }
   
     func cellHeightDidChange(editingCell: TodoItemTableViewCell, heightChange: CGFloat) {
@@ -237,7 +247,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     private func assignDateText (cell: TodoItemTableViewCell){
-        cell.dateButton.setTitle(cell.todoItem!.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "", for: UIControlState.normal)
+        if(cell.todoItem!.dueDate != nil){
+            cell.dateButton.isHidden = false
+        }
+        cell.dateButton.setTitle(cell.todoItem!.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "Add Due Date", for: UIControlState.normal)
     }
     
     
@@ -263,9 +276,17 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-        offset = tableView.contentOffset.y - editingCell.frame.origin.y
-        offset = initContentOffset + offset!
-        self.blurView!.isHidden = false
+        self.blurView!.isHidden = true
+        editingCell.dateButton.isEnabled = true
+        if resignAfterModifyingDate{
+            resignAfterModifyingDate = false
+            return
+        }
+        
+            offset = tableView.contentOffset.y - editingCell.frame.origin.y
+            offset = initContentOffset + offset!
+        
+        
         // Important feature: scrolview content offset !!
         print("content Offset " , tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
@@ -277,11 +298,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         print("blur y: ",y, "height: ", tableView.bounds.height - y)
         blurView!.effect = blurEffect
         blurView!.alpha = 0
+        
         for cell in visibleCells {
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
             })
         }
+        
+        if(editingCell.todoItem!.dueDate == nil){
+            editingCell.dateButton.isHidden = false
+            UIView.animate(withDuration: 0.3, animations: {() in
+                editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
+            })
+        }
+        
+        
         UIView.animate(withDuration: 0.3, animations: {() in
             self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: self.offset!)
         })
@@ -293,8 +324,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
+        if(modifyingDate == true){
+            return
+        }
+        if(editingCell.todoItem?.dueDate == nil){
+            editingCell.dateButton.isHidden = true
+        }
+        assignDateText(cell: editingCell)
         
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
+        print("offset " , self.offset!)
         for cell: TodoItemTableViewCell in visibleCells {
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)

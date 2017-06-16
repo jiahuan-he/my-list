@@ -90,12 +90,12 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         dateButton.frame = CGRect(x: 5, y: 2, width: 100, height: 20)
 //        dateButton.setTitle(todoItem?.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "", for: UIControlState.normal)
-        dateButton.setTitle(todoItem?.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "tomorrow", for: UIControlState.normal)
+//        dateButton.setTitle(todoItem?.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "tomorrow", for: UIControlState.normal)
         dateButton.contentHorizontalAlignment = .left
         dateButton.setTitleColor(UIColor.red, for: UIControlState.normal)
         dateButton.titleLabel!.font = UIFont(name: "Avenir", size: 13)!
         dateButton.addTarget(self, action: #selector(self.popDatepicker), for: UIControlEvents.touchUpInside)
-        
+        dateButton.isHidden = true
         
 //        let timeLabel = UILabel(frame: CGRect(x: 65, y: 2, width: 60, height: 20))
 //        timeLabel.text = "8:00 pm"
@@ -246,7 +246,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         let calcHeight = textView.sizeThatFits(textView.frame.size).height
         
         if startHeight != calcHeight{
-//            print(calcHeight - startHeight)
             delegate?.cellHeightDidChange(editingCell: self, heightChange: calcHeight - startHeight)
         }
     }
