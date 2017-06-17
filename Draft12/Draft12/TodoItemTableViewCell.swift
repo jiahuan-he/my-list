@@ -45,6 +45,11 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     let dateButton = UIButton()
     let datePicker = UIDatePicker()
     
+    var crossLabel = UIImageView()
+    var checkLabel = UIImageView()
+    let cueLabelWidth = CGFloat(26)
+    
+    
     var todoItem: TodoItem?
         //for testing purpose
     {
@@ -59,12 +64,25 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     var greenButton: UIButton?
     
     var originalCenter = CGPoint()
+    var originalCrossCenter = CGPoint()
     var deleteOnDragRelease = false
     var completeOnDragRelease = false
+    let insetPortion = CGFloat(0.96)
     
     let borderWidth = CGFloat(6)
     
     override func awakeFromNib() {
+//        if FileManager.default.fileExists(atPath: "img/crossMark.png") {
+//            let url = NSURL(string: "img/crossMark.png")
+//            let data = NSData(contentsOf: url! as URL)
+//            crossLabel.image = UIImage(data: data! as Data)
+//        }
+        crossLabel.image = UIImage(named: "img/crossMark.png")
+        crossLabel.frame = CGRect(x: insetPortion*UIScreen.main.bounds.width-cueLabelWidth, y: frame.height/3-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
+        addSubview(crossLabel)
+        sendSubview(toBack: crossLabel)
+        self.contentView.backgroundColor = UIColor.white
+        
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         textView.textContainerInset = UIEdgeInsetsMake(20, 2, 15, 2)
         
@@ -182,15 +200,19 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         if recognizer.state == .began {
             // when the gesture begins, record the current center location
             originalCenter = center
+            originalCrossCenter = crossLabel.center
         }
         
         // 2
         if recognizer.state == .changed {
             let translation = recognizer.translation(in: self)
             center = CGPoint(x: originalCenter.x + translation.x, y: originalCenter.y)
-//            print(center.x, "  ",center.y)
+            crossLabel.center = CGPoint(x: originalCrossCenter.x - translation.x, y: originalCrossCenter.y)
             deleteOnDragRelease = (frame.origin.x < -frame.size.width / 2.0)
             completeOnDragRelease = (frame.origin.x > frame.size.width / 2.0)
+            
+//            crossLabel.tintColor = UIColor.red
+            
         }
         
         // 3
@@ -203,6 +225,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
                 if delegate != nil && todoItem != nil {
                     // notify the delegate that this item should be deleted
                     delegate!.itemDeleted(item: self.todoItem!)
+                    
                     //                    itemCompleteLayer.isHidden = !itemCompleteLayer.isHidden
                     //                    UIView.animate(withDuration: 0.2, animations:
                     //                        {
@@ -219,6 +242,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
                 UIView.animate(withDuration: 0.2, animations:
                     {
                         self.frame = originalFrame
+                        self.crossLabel.center = self.originalCrossCenter
                 })
             }
         }

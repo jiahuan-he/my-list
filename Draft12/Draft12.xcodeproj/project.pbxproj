@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A750CA91EF49FA6000DAFE9 /* img in Resources */ = {isa = PBXBuildFile; fileRef = 3A750CA81EF49FA6000DAFE9 /* img */; };
 		3AD7808E1EB078BB007FDE5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */; };
 		3AD780931EB078BB007FDE5E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AD780911EB078BB007FDE5E /* Main.storyboard */; };
 		3AD780961EB078BB007FDE5E /* Draft12.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3AD780941EB078BB007FDE5E /* Draft12.xcdatamodeld */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A750CA81EF49FA6000DAFE9 /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; path = img; sourceTree = "<group>"; };
 		3AD7808A1EB078BA007FDE5E /* Draft12.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Draft12.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3AD780921EB078BB007FDE5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 		3AD7808C1EB078BA007FDE5E /* Draft12 */ = {
 			isa = PBXGroup;
 			children = (
+				3A750CA81EF49FA6000DAFE9 /* img */,
 				3AD780A81EB07A7D007FDE5E /* toolbarView.swift */,
 				3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */,
 				3AD780911EB078BB007FDE5E /* Main.storyboard */,
@@ -136,6 +139,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A750CA91EF49FA6000DAFE9 /* img in Resources */,
 				3AD7809B1EB078BB007FDE5E /* LaunchScreen.storyboard in Resources */,
 				3AD780981EB078BB007FDE5E /* Assets.xcassets in Resources */,
 				3AD780A71EB07971007FDE5E /* TodoItemTableViewCell.xib in Resources */,

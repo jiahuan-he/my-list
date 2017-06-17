@@ -9,6 +9,13 @@
 import UIKit
 import CoreData
 
+struct Color{
+    static let text = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+    static let cellBackground = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+    static let tableViewBackground = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+
+}
+
 extension Date
 {
     func toString( dateFormat format  : String ) -> String
@@ -285,7 +292,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         //        tableView.reloadData()
         tableView.beginUpdates()
         let indexPathForRow = NSIndexPath(row: itemIndex, section: 0)
-        tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .top)
+        tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .left)
         tableView.endUpdates()
     }
     
@@ -317,6 +324,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         for cell in visibleCells {
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
+                if cell != editingCell{
+                   cell.alpha = CGFloat(0.4)
+                }
+                else{
+//                    cell.textView.backgroundColor = cell.textView.backgroundColor?.withAlphaComponent(0.1)
+                }
             })
         }
         
