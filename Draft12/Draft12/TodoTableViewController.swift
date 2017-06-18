@@ -183,6 +183,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         UIView.animate(withDuration: 0, animations: {() in
             self.editingCell!.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
         })
+        editingCell!.isUserInteractionEnabled = true
         resignAfterModifyingDate = true
         editingCell!.textView.becomeFirstResponder()
     }
@@ -200,6 +201,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         print(editingCell!.todoItem!.dueDate!.toString(dateFormat: "dd-MMM-yyyy"))
         
+        editingCell!.isUserInteractionEnabled = true
         resignAfterModifyingDate = true
         editingCell!.textView.becomeFirstResponder()
         
@@ -208,12 +210,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     //TodoItemTableViewCell delegate
     
     func popupDatePicker(editingCell: TodoItemTableViewCell) {
-        modifyingDate = true
         
+        
+        modifyingDate = true
         datePicker.backgroundColor = UIColor.lightGray
         datePicker.setDate(NSDate() as Date, animated: false)
         datePicker.isHidden = false
         barView.isHidden = false
+        
+        editingCell.isUserInteractionEnabled = false
+        
         self.editingCell = editingCell
         editingCell.textView.resignFirstResponder()
     }
