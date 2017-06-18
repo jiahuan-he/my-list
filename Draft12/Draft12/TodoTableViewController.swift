@@ -9,10 +9,15 @@
 import UIKit
 import CoreData
 
+struct Font{
+    static let text = "ArialMT"
+}
+
 struct Color{
-    static let text = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-    static let cellBackground = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-    static let tableViewBackground = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+    static let text = UIColor(red: 64/255, green: 81/255, blue: 78/255, alpha: 1)
+//    static let text = UIColor.blue
+    static let cellBackground = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
+    static let tableViewBackground = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 
 }
 
@@ -77,7 +82,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         deleteButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonHeight)
         deleteButton.setTitle("DELETE", for: UIControlState.normal)
         deleteButton.setTitleColor(UIColor.red, for: UIControlState.normal)
-        deleteButton.titleLabel?.font = UIFont(name: "Avenir", size: 13)!
+        deleteButton.titleLabel?.font = UIFont(name: Font.text, size: 13)!
         deleteButton.sizeToFit()
         
         deleteButton.addTarget(self, action: #selector(self.deleteButtonPressed), for: UIControlEvents.touchUpInside)
@@ -86,14 +91,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         doneButton.frame = CGRect(x: UIScreen.main.bounds.width-buttonWidth, y: 0, width: buttonWidth, height: buttonHeight)
         doneButton.setTitle("DONE", for: UIControlState.normal)
         doneButton.setTitleColor(UIColor.gray, for: UIControlState.normal)
-        doneButton.titleLabel?.font = UIFont(name: "Avenir", size: 13)!
+        doneButton.titleLabel?.font = UIFont(name: Font.text, size: 13)!
         barView.addSubview(doneButton)
         doneButton.addTarget(self, action: #selector(self.doneButtonPressed), for: UIControlEvents.touchUpInside)
         
         
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorColor = UIColor.lightGray.withAlphaComponent(0.3)
-
+        tableView.backgroundColor = Color.tableViewBackground
         
         blurView = UIVisualEffectView()
         tableView.addSubview(blurView!)
@@ -154,6 +159,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             alpha = 0.05
         }
         cell.textView.backgroundColor = UIColor(cgColor: assignBorderColor(cell: cell)).withAlphaComponent(CGFloat(alpha))
+        cell.textView.backgroundColor = Color.cellBackground
+        cell.textView.textColor = Color.text
         
         return cell
     }
@@ -261,7 +268,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             case "3":
                 return UIColor.green.cgColor
             case "-1":
-                return UIColor.clear.cgColor
+                return Color.cellBackground as! CGColor
             default:
                 break
             }}
@@ -334,7 +341,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                    cell.alpha = CGFloat(0.4)
                 }
                 else{
-//                    cell.textView.backgroundColor = cell.textView.backgroundColor?.withAlphaComponent(0.1)
+
                 }
             })
         }
@@ -422,7 +429,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         clueView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        addClueLabel.font = UIFont(name: "ArialMT ", size: 8)
+        addClueLabel.font = UIFont(name: Font.text, size: 8)
         addClueLabel.textColor = UIColor.black
         
         //        // this behavior starts when a user pulls down while at the top of the table

@@ -77,14 +77,17 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
 //            let data = NSData(contentsOf: url! as URL)
 //            crossLabel.image = UIImage(data: data! as Data)
 //        }
+        textView.font = UIFont(name: Font.text, size: 16)
         crossLabel.image = UIImage(named: "img/crossMark.png")
         crossLabel.frame = CGRect(x: insetPortion*UIScreen.main.bounds.width-cueLabelWidth, y: frame.height/3-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
         addSubview(crossLabel)
         sendSubview(toBack: crossLabel)
         self.contentView.backgroundColor = UIColor.white
+        self.textView.backgroundColor = Color.cellBackground
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
-        textView.textContainerInset = UIEdgeInsetsMake(20, 2, 15, 2)
+        textView.textContainerInset = UIEdgeInsetsMake(24, 2, 15, 2)
+        
         
         rightBorder.frame = CGRect(x: screenSize.width-borderWidth, y: 0, width: borderWidth, height: 500)
         textView.layer.addSublayer(rightBorder)
@@ -108,10 +111,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
 //        self.backgroundColor = UIColor.lightGray
 //        textView.backgroundColor = UIColor.lightGray
         
-        dateButton.frame = CGRect(x: 5, y: 2, width: 100, height: 20)
+        dateButton.frame = CGRect(x: 5.5, y: 4, width: 100, height: 20)
         dateButton.contentHorizontalAlignment = .left
         dateButton.setTitleColor(UIColor.red, for: UIControlState.normal)
-        dateButton.titleLabel!.font = UIFont(name: "Avenir", size: 13)!
+        dateButton.titleLabel!.font = UIFont(name: Font.text, size: 13)!
         dateButton.addTarget(self, action: #selector(self.popDatepicker), for: UIControlEvents.touchUpInside)
         dateButton.isHidden = true
         
