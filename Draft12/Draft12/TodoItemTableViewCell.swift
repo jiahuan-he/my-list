@@ -70,6 +70,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     let insetPortion = CGFloat(0.96)
     
     let borderWidth = CGFloat(6)
+    let separator = CALayer()
+    let separatorWidth = CGFloat(1)
     
     override func awakeFromNib() {
 //        if FileManager.default.fileExists(atPath: "img/crossMark.png") {
@@ -77,6 +79,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
 //            let data = NSData(contentsOf: url! as URL)
 //            crossLabel.image = UIImage(data: data! as Data)
 //        }
+        
+        
+        
         textView.font = UIFont(name: Font.text, size: 16)
         crossLabel.image = UIImage(named: "img/crossMark.png")
         crossLabel.frame = CGRect(x: insetPortion*UIScreen.main.bounds.width-cueLabelWidth, y: frame.height/3-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
@@ -87,10 +92,12 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         textView.textContainerInset = UIEdgeInsetsMake(24, 2, 15, 2)
+
+        separator.backgroundColor = Color.text.cgColor
+        layer.addSublayer(rightBorder)
+        layer.addSublayer(separator)
+//        textView.layer.addSublayer(separator)
         
-        
-        rightBorder.frame = CGRect(x: screenSize.width-borderWidth, y: 0, width: borderWidth, height: 500)
-        textView.layer.addSublayer(rightBorder)
 
 // BUG HERE: todoItem is not initialized here! WHY
 //        if let todoFlag = todoItem?.flag{
@@ -209,7 +216,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         // 2
         if recognizer.state == .changed {
             let translation = recognizer.translation(in: self)
-            center = CGPoint(x: originalCenter.x + translation.x, y: originalCenter.y)
+            center = CGPoint(x: originalCenter.x + translation.x, y: originalCenter.y)                        
             crossLabel.center = CGPoint(x: originalCrossCenter.x - translation.x, y: originalCrossCenter.y)
             deleteOnDragRelease = (frame.origin.x < -frame.size.width / 2.0)
             completeOnDragRelease = (frame.origin.x > frame.size.width / 2.0)
@@ -267,8 +274,15 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         let calcHeight = textView.sizeThatFits(textView.frame.size).height
         
         if startHeight != calcHeight{
+            
             delegate?.cellHeightDidChange(editingCell: self, heightChange: calcHeight - startHeight)
         }
+    }
+    
+//    
+    override func layoutSubviews() {
+        rightBorder.frame = CGRect(x: screenSize.width-borderWidth, y: 0, width: borderWidth, height: frame.height)
+        separator.frame = CGRect(x: 0, y: frame.height-separatorWidth, width: UIScreen.main.bounds.width, height: separatorWidth)
     }
     
     // prevent appending new line.

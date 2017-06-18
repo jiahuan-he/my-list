@@ -14,10 +14,10 @@ struct Font{
 }
 
 struct Color{
-    static let text = UIColor(red: 64/255, green: 81/255, blue: 78/255, alpha: 1)
-//    static let text = UIColor.blue
-    static let cellBackground = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
-    static let tableViewBackground = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+    static let text = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+    //    static let text = UIColor.blue
+    static let cellBackground = UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)
+    static let tableViewBackground = UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1)
 
 }
 
@@ -97,7 +97,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         tableView.showsVerticalScrollIndicator = false
-        tableView.separatorColor = UIColor.lightGray.withAlphaComponent(0.3)
+//        tableView.separatorColor = UIColor.lightGray.withAlphaComponent(0.3)
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.none
+        
         tableView.backgroundColor = Color.tableViewBackground
         
         blurView = UIVisualEffectView()
@@ -248,7 +250,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                         }
                         cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
                     }
-        
+                    
         
 //        UIView.animate(withDuration: 0.2, animations: { () in
 ////            self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: heightChange)
@@ -429,7 +431,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         clueView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        addClueLabel.font = UIFont(name: Font.text, size: 8)
+        addClueLabel.font = UIFont(name: Font.text, size: 15)
         addClueLabel.textColor = UIColor.black
         
         //        // this behavior starts when a user pulls down while at the top of the table
@@ -442,6 +444,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let maxOffsetY = CGFloat(-100)
+        
+        print("scroll: ",scrollView.contentOffset.y)
+        if scrollView.contentOffset.y < maxOffsetY{
+            scrollView.contentOffset.y = maxOffsetY
+        }
         
         let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffset
         if(scrollViewContentOffsetY <= -marginalHeight){
@@ -471,7 +480,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             let indexPath = IndexPath(row: 0, section: 0)
             items.insert(newItem, at: 0)
             tableView.insertRows(at: [indexPath], with: .top)
-            tableView.reloadData()
+//            tableView.reloadData()
             (tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell).textView!.becomeFirstResponder()
             cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
         }
