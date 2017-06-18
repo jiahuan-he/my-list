@@ -69,7 +69,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     var completeOnDragRelease = false
     let insetPortion = CGFloat(0.96)
     
-    let borderWidth = CGFloat(6)
+    let borderWidth = CGFloat(7)
+    let borderInsetY = CGFloat(3)
+    let borderInsetX = CGFloat(2)
     let separator = CALayer()
     let separatorWidth = CGFloat(1)
     
@@ -93,7 +95,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         textView.textContainerInset = UIEdgeInsetsMake(24, 2, 15, 2)
 
-        separator.backgroundColor = Color.text.cgColor
+        
+        rightBorder.cornerRadius = 3.0
+        separator.backgroundColor = Color.separator.cgColor
         layer.addSublayer(rightBorder)
         layer.addSublayer(separator)
 //        textView.layer.addSublayer(separator)
@@ -281,7 +285,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
 //    
     override func layoutSubviews() {
-        rightBorder.frame = CGRect(x: screenSize.width-borderWidth, y: 0, width: borderWidth, height: frame.height)
+        rightBorder.frame = CGRect(x: screenSize.width-borderWidth-borderInsetX, y: borderInsetY, width: borderWidth, height: frame.height - 2*borderInsetY)
+        
         separator.frame = CGRect(x: 0, y: frame.height-separatorWidth, width: UIScreen.main.bounds.width, height: separatorWidth)
     }
     

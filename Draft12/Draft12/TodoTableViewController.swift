@@ -10,14 +10,19 @@ import UIKit
 import CoreData
 
 struct Font{
-    static let text = "ArialMT"
+    static let text = "ArialRoundedMTBold"
+    static let navigationBarText = "ArialRoundedMTBold"
 }
 
 struct Color{
-    static let text = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-    //    static let text = UIColor.blue
-    static let cellBackground = UIColor(red: 65/255, green: 65/255, blue: 65/255, alpha: 1)
-    static let tableViewBackground = UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 1)
+    static let text = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
+
+    static let cellBackground = UIColor(red: 50/255, green: 50/255, blue: 50/255, alpha: 1)
+    static let tableViewBackground = UIColor(red: 55/255, green: 60/255, blue: 58/255, alpha: 1)
+    static let navigationBar = tableViewBackground
+    static let navigationBarText = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
+    static let separator = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
+
 
 }
 
@@ -60,8 +65,18 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var offset: CGFloat?
     //    var headerView: UIView?
     
+    
+    
     override func viewDidLoad() {
+        UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
         super.viewDidLoad()
+        
+     
+            
+        navigationController?.navigationBar.barTintColor = Color.navigationBar
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: Color.navigationBarText, NSFontAttributeName: UIFont(name: Font.navigationBarText, size: 20)!]
+        
+        
         
         datePicker.frame = CGRect(x:  0, y:  UIScreen.main.bounds.height - datePickerHeight - (self.navigationController?.navigationBar.bounds.height)! - 20, width:  UIScreen.main.bounds.width, height: datePickerHeight)
         datePicker.layer.borderWidth = 1
@@ -104,7 +119,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         blurView = UIVisualEffectView()
         tableView.addSubview(blurView!)
-        tableView.estimatedRowHeight = 30
+        tableView.estimatedRowHeight = 80
         tableView.rowHeight = UITableViewAutomaticDimension
         
         tableView.dataSource = self
@@ -114,11 +129,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
     }
     
+
     override func viewWillAppear(_ animated: Bool) {
         
-//        let item1 = TodoItem(context: context)
-//        item1.name = "item1"
-//        item1.isComplete = false
+        super.viewWillAppear(animated)
+        
+
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         getData()
@@ -270,7 +286,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             case "3":
                 return UIColor.green.cgColor
             case "-1":
-                return Color.cellBackground as! CGColor
+                return Color.cellBackground.cgColor
+//                return UIColor.clear.cgColor
             default:
                 break
             }}
@@ -445,7 +462,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        let maxOffsetY = CGFloat(-100)
+        let maxOffsetY = CGFloat(-110)
         
         print("scroll: ",scrollView.contentOffset.y)
         if scrollView.contentOffset.y < maxOffsetY{
@@ -478,8 +495,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             clueView?.isHidden = true
             let newItem = TodoItem(context: context)
             let indexPath = IndexPath(row: 0, section: 0)
+            tableView.beginUpdates()
             items.insert(newItem, at: 0)
             tableView.insertRows(at: [indexPath], with: .top)
+            tableView.endUpdates()
 //            tableView.reloadData()
             (tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell).textView!.becomeFirstResponder()
             cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
