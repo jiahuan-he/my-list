@@ -22,8 +22,18 @@ struct Color{
     static let navigationBar = tableViewBackground
     static let navigationBarText = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
     static let separator = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
+}
 
+struct FlagColor{
+    static let n1 = Color.cellBackground
+    static let c0 = UIColor.red
+    static let c1 = UIColor.orange
+    static let c2 = UIColor.cyan
+    static let c3 = UIColor.green
+}
 
+struct Alpha {
+    static let notEditingCell = CGFloat(0.4)
 }
 
 extension Date
@@ -42,7 +52,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var resignAfterModifyingDate = false
     
     var initContentOffset: CGFloat = 0
-    var blurView: UIVisualEffectView?
     
     var barView = UIView()
     
@@ -112,13 +121,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         tableView.showsVerticalScrollIndicator = false
-//        tableView.separatorColor = UIColor.lightGray.withAlphaComponent(0.3)
         tableView.separatorStyle = UITableViewCellSeparatorStyle.none
         
         tableView.backgroundColor = Color.tableViewBackground
-        
-        blurView = UIVisualEffectView()
-        tableView.addSubview(blurView!)
+
         tableView.estimatedRowHeight = 80
         tableView.rowHeight = UITableViewAutomaticDimension
         
@@ -165,19 +171,18 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.delegate = self
         cell.todoItem = items[indexPath.row]
         
-        cell.rightBorder.backgroundColor = assignBorderColor(cell: cell)
+        cell.rightBorder.backgroundColor = assignBorderColor(cell: cell).cgColor
         assignDateText(cell: cell)
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
         cell.dateButton.isEnabled = false
         
-        var alpha = 0.0
-        if (UIColor(cgColor: assignBorderColor(cell: cell)) != UIColor.clear){
-            alpha = 0.05
-        }
-        cell.textView.backgroundColor = UIColor(cgColor: assignBorderColor(cell: cell)).withAlphaComponent(CGFloat(alpha))
-        cell.textView.backgroundColor = Color.cellBackground
+        
+        
+
+//        cell.textView.backgroundColor = assignBorderColor(cell: cell)
+//        cell.textView.backgroundColor = Color.cellBackground
         cell.textView.textColor = Color.text
         
         return cell
@@ -262,7 +267,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     for cell in visibleCells {
                         if cell !== editingCell {
                             cell.textView.isEditable = false
-                            //                    cell.alpha = 0.3
+                            cell.alpha = Alpha.notEditingCell
                         }
                         cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
                     }
@@ -274,24 +279,24 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
 //        })
         }
     
-    private func assignBorderColor (cell: TodoItemTableViewCell) -> CGColor{
+    private func assignBorderColor (cell: TodoItemTableViewCell) -> UIColor{
         if let f = cell.todoItem?.flag{
             switch f {
             case "0" :
-                return UIColor.red.cgColor
+                return UIColor.red
             case "1":
-                return UIColor.orange.cgColor
+                return UIColor.orange
             case "2":
-                return UIColor.cyan.cgColor
+                return UIColor.cyan
             case "3":
-                return UIColor.green.cgColor
+                return UIColor.green
             case "-1":
-                return Color.cellBackground.cgColor
+                return Color.cellBackground
 //                return UIColor.clear.cgColor
             default:
                 break
             }}
-        return UIColor.clear.cgColor
+        return UIColor.clear
     }
     
     private func assignDateText (cell: TodoItemTableViewCell){
@@ -303,15 +308,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     func cellFlagDidChange(editingCell: TodoItemTableViewCell){
-//        print("current flag: ", editingCell.todoItem?.flag ?? "wrong flag")
-        var alpha = 0.0
-        if (UIColor(cgColor: assignBorderColor(cell: editingCell)) != UIColor.clear){
-            alpha = 0.05
-        }
         
         UIView.animate(withDuration: 0.5, animations: {() in
-            editingCell.rightBorder.backgroundColor = self.assignBorderColor(cell: editingCell)
-            editingCell.textView.backgroundColor = UIColor(cgColor: self.assignBorderColor(cell: editingCell)).withAlphaComponent(CGFloat(alpha))
+            editingCell.rightBorder.backgroundColor = self.assignBorderColor(cell: editingCell).cgColor
+//            editingCell.textView.backgroundColor = self.assignBorderColor(cell: editingCell)
         })
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         }
@@ -330,7 +330,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-        self.blurView!.isHidden = true
+        
         editingCell.dateButton.isEnabled = true
         if resignAfterModifyingDate{
             resignAfterModifyingDate = false
@@ -344,20 +344,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         // Important feature: scrolview content offset !!
         print("content Offset " , tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-        let blurEffect = UIBlurEffect(style: .dark)
-        let y = editingCell.frame.origin.y + editingCell.frame.height
-        let screenHeight = UIScreen.main.bounds.height
+
         
-        blurView!.frame = CGRect(x: 0, y: y, width: editingCell.bounds.width, height: screenHeight - editingCell.bounds.height )
-        print("blur y: ",y, "height: ", tableView.bounds.height - y)
-        blurView!.effect = blurEffect
-        blurView!.alpha = 0
-        
+
         for cell in visibleCells {
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
                 if cell != editingCell{
-                   cell.alpha = CGFloat(0.4)
+                   cell.alpha = Alpha.notEditingCell
                 }
                 else{
 
@@ -366,19 +360,18 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         if(editingCell.todoItem!.dueDate == nil){
-            editingCell.dateButton.isHidden = false
-            UIView.animate(withDuration: 0.3, animations: {() in
-                editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
-            })
+            editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
+            UIView.transition(with: editingCell.dateButton, duration: 0.4, options: .transitionCrossDissolve, animations:{ _ in
+                    editingCell.dateButton.isHidden = false
+                }, completion: nil)
         }
         
         
         UIView.animate(withDuration: 0.3, animations: {() in
-            self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: self.offset!)
         })
         
         UIView.animate(withDuration: 0.5, animations: {() in
-            self.blurView!.alpha = 0.90
+            
             self.tableView.separatorColor = UIColor.clear
         })
     }
@@ -388,7 +381,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             return
         }
         if(editingCell.todoItem?.dueDate == nil){
-            editingCell.dateButton.isHidden = true
+            UIView.transition(with: editingCell.dateButton, duration: 0.3, options: .transitionCrossDissolve, animations:{ _ in
+                editingCell.dateButton.isHidden = true
+            }, completion: nil)
         }
         assignDateText(cell: editingCell)
         
@@ -399,15 +394,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
             })
         }
-        UIView.animate(withDuration: 0.3, animations: {() in
-            self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: -self.offset!)
-        })
-        
+
         UIView.animate(withDuration: 0.5, animations: {() in
-            self.blurView!.alpha = 0
-            self.tableView.separatorColor = UIColor.lightGray.withAlphaComponent(0.3)
+            
+            
         }, completion: {(finished: Bool) in
-            self.blurView!.isHidden = true
+            
             for cell: TodoItemTableViewCell in visibleCells {
                 cell.textView.isEditable = true}
         })

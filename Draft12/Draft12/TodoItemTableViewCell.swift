@@ -301,28 +301,55 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         print("current flag: ", todoItem?.flag ?? "nil")
-        unhideLabels()
+        UIView.animate(withDuration: 0.5, animations: {() in
+            self.unhideLabels()
+        })
+        
         delegate!.cellDidBeginEditing(editingCell: self)
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        hideLabels()
+        
+        self.hideLabels()
         todoItem!.name = textView.text!
         delegate!.cellDidEndEditing(editingCell: self)
     }
     
     private func hideLabels(){
-        orangeButton!.isHidden = true
-        cyanButton!.isHidden = true
-        redButton!.isHidden = true
-        greenButton!.isHidden = true
+        UIView.transition(with: self.orangeButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.orangeButton!.isHidden = true
+        }, completion: nil)
+        UIView.transition(with: self.cyanButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.cyanButton!.isHidden = true
+        }, completion: nil)
+        UIView.transition(with: self.redButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.redButton!.isHidden = true
+        }, completion: nil)
+        UIView.transition(with: self.greenButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.greenButton!.isHidden = true
+        }, completion: nil)
     }
     
     private func unhideLabels(){
-        orangeButton!.isHidden = false
-        cyanButton!.isHidden = false
-        redButton!.isHidden = false
-        greenButton!.isHidden = false
+//        UIView.trans(withDuration: 0.5, animations: {() in
+//        self.orangeButton!.isHidden = false
+//        self.cyanButton!.isHidden = false
+//        self.redButton!.isHidden = false
+//        self.greenButton!.isHidden = false
+//        })
+        
+        UIView.transition(with: self.orangeButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.orangeButton!.isHidden = false
+        }, completion: nil)
+        UIView.transition(with: self.cyanButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.cyanButton!.isHidden = false
+        }, completion: nil)
+        UIView.transition(with: self.redButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.redButton!.isHidden = false
+        }, completion: nil)
+        UIView.transition(with: self.greenButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.greenButton!.isHidden = false
+        }, completion: nil)
     }
 }
 
