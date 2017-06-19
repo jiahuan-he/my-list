@@ -22,7 +22,6 @@ extension NSDate
         dateFormatter.dateFormat = format
         return dateFormatter.string(from: self as Date)
     }
-    
 }
 
 
@@ -52,7 +51,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     var todoItem: TodoItem?
         //for testing purpose
-    {
+        {
         didSet{
             textView.text = todoItem?.name
         }
@@ -65,9 +64,11 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     var originalCenter = CGPoint()
     var originalCrossCenter = CGPoint()
+    var originalCheckCenter = CGPoint()
     var deleteOnDragRelease = false
     var completeOnDragRelease = false
-    let insetPortion = CGFloat(0.96)
+    let crossInsetProp = CGFloat(0.92)
+    let checkInsetProp = CGFloat(0.06)
     
     let borderWidth = CGFloat(7)
     let borderInsetY = CGFloat(3)
@@ -75,62 +76,78 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     let separator = CALayer()
     let separatorWidth = CGFloat(1)
     
+    let crossImage = UIImage(named: "img/cross2.png")
+    let checkImage = UIImage(named: "img/check2.png")
+    
     override func awakeFromNib() {
-//        if FileManager.default.fileExists(atPath: "img/crossMark.png") {
-//            let url = NSURL(string: "img/crossMark.png")
-//            let data = NSData(contentsOf: url! as URL)
-//            crossLabel.image = UIImage(data: data! as Data)
-//        }
+        //        if FileManager.default.fileExists(atPath: "img/crossMark.png") {
+        //            let url = NSURL(string: "img/crossMark.png")
+        //            let data = NSData(contentsOf: url! as URL)
+        //            crossLabel.image = UIImage(data: data! as Data)
+        //        }
         
+        textView.keyboardAppearance = UIKeyboardAppearance.dark
         
+        textView.font = Font.text
         
-        textView.font = UIFont(name: Font.text, size: 16)
-        crossLabel.image = UIImage(named: "img/crossMark.png")
-        crossLabel.frame = CGRect(x: insetPortion*UIScreen.main.bounds.width-cueLabelWidth, y: frame.height/3-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
+        let renderedCrossImage = crossImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        crossLabel.image = renderedCrossImage
+        crossLabel.tintColor = Color.crossLabel
+        
+        let renderedCheckImage = checkImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        checkLabel.image = renderedCheckImage
+        checkLabel.tintColor = Color.text
+        
+        checkLabel.frame = CGRect(x: checkInsetProp*UIScreen.main.bounds.width, y: frame.height/2-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
+        
+        crossLabel.frame = CGRect(x: crossInsetProp*UIScreen.main.bounds.width-cueLabelWidth, y: frame.height/2-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
+        
+        addSubview(checkLabel)
         addSubview(crossLabel)
         sendSubview(toBack: crossLabel)
+        sendSubview(toBack: checkLabel)
         self.contentView.backgroundColor = UIColor.white
         self.textView.backgroundColor = Color.cellBackground
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         textView.textContainerInset = UIEdgeInsetsMake(24, 2, 15, 2)
-
+        
         
         rightBorder.cornerRadius = 3.0
         separator.backgroundColor = Color.separator.cgColor
         layer.addSublayer(rightBorder)
         layer.addSublayer(separator)
-//        textView.layer.addSublayer(separator)
+        //        textView.layer.addSublayer(separator)
         
-
-// BUG HERE: todoItem is not initialized here! WHY
-//        if let todoFlag = todoItem?.flag{
-//                switch todoFlag {
-//                case String(labelTag.Red.rawValue) :
-//                    rightBorder.backgroundColor = UIColor.red.cgColor                    
-//                case String(labelTag.Orange.rawValue):
-//                    rightBorder.backgroundColor = UIColor.orange.cgColor
-//                case String(labelTag.Cyan.rawValue):
-//                    rightBorder.backgroundColor = UIColor.cyan.cgColor
-//                case String(labelTag.Green.rawValue):
-//                    rightBorder.backgroundColor = UIColor.green.cgColor
-//                default:
-//                    print("Right border not displayed !!!!")
-//                    break
-//            }
-//        }
-//        self.backgroundColor = UIColor.lightGray
-//        textView.backgroundColor = UIColor.lightGray
+        
+        // BUG HERE: todoItem is not initialized here! WHY
+        //        if let todoFlag = todoItem?.flag{
+        //                switch todoFlag {
+        //                case String(labelTag.Red.rawValue) :
+        //                    rightBorder.backgroundColor = UIColor.red.cgColor
+        //                case String(labelTag.Orange.rawValue):
+        //                    rightBorder.backgroundColor = UIColor.orange.cgColor
+        //                case String(labelTag.Cyan.rawValue):
+        //                    rightBorder.backgroundColor = UIColor.cyan.cgColor
+        //                case String(labelTag.Green.rawValue):
+        //                    rightBorder.backgroundColor = UIColor.green.cgColor
+        //                default:
+        //                    print("Right border not displayed !!!!")
+        //                    break
+        //            }
+        //        }
+        //        self.backgroundColor = UIColor.lightGray
+        //        textView.backgroundColor = UIColor.lightGray
         
         dateButton.frame = CGRect(x: 5.5, y: 4, width: 100, height: 20)
         dateButton.contentHorizontalAlignment = .left
-        dateButton.setTitleColor(UIColor.red, for: UIControlState.normal)
-        dateButton.titleLabel!.font = UIFont(name: Font.text, size: 13)!
+        dateButton.setTitleColor(Color.dateButton, for: UIControlState.normal)
+        dateButton.titleLabel!.font = Font.dateButton
         dateButton.addTarget(self, action: #selector(self.popDatepicker), for: UIControlEvents.touchUpInside)
         dateButton.isHidden = true
         
         textView.addSubview(dateButton)
-
+        
         let labelRadius = 5.0
         let labelWidth = 16
         let labelPosY = 6
@@ -194,10 +211,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     func popDatepicker(){
         delegate!.popupDatePicker(editingCell: self)
     }
-
+    
     func setFlag(sender: UIButton){
         if(todoItem!.flag == String(sender.tag)){
-            todoItem!.flag = "-1"            
+            todoItem!.flag = "-1"
         }
         else{
             todoItem!.flag = String(sender.tag)
@@ -208,24 +225,35 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         print(sender.tag)
     }
     
+    
     func handlePan(recognizer: UIPanGestureRecognizer){
-        
+        let maxTransation = frame.size.width/4.0
         // 1
         if recognizer.state == .began {
             // when the gesture begins, record the current center location
             originalCenter = center
             originalCrossCenter = crossLabel.center
+            originalCheckCenter = checkLabel.center
         }
         
         // 2
         if recognizer.state == .changed {
             let translation = recognizer.translation(in: self)
-            center = CGPoint(x: originalCenter.x + translation.x, y: originalCenter.y)                        
-            crossLabel.center = CGPoint(x: originalCrossCenter.x - translation.x, y: originalCrossCenter.y)
-            deleteOnDragRelease = (frame.origin.x < -frame.size.width / 2.0)
-            completeOnDragRelease = (frame.origin.x > frame.size.width / 2.0)
-            
-//            crossLabel.tintColor = UIColor.red
+            if maxTransation <= -translation.x{
+                center = CGPoint(x: originalCenter.x - maxTransation, y: originalCenter.y)
+                crossLabel.center = CGPoint(x: originalCrossCenter.x + maxTransation, y: originalCrossCenter.y)
+                checkLabel.center = CGPoint(x: originalCheckCenter.x + maxTransation, y: originalCheckCenter.y)
+                crossLabel.tintColor = UIColor.red
+            }
+            else{
+                crossLabel.tintColor = Color.crossLabel
+                center = CGPoint(x: originalCenter.x + translation.x, y: originalCenter.y)
+                crossLabel.center = CGPoint(x: originalCrossCenter.x - translation.x, y: originalCrossCenter.y)
+                checkLabel.center = CGPoint(x: originalCheckCenter.x - translation.x, y: originalCheckCenter.y)
+            }
+            deleteOnDragRelease = (frame.origin.x <= -maxTransation)
+            completeOnDragRelease = (frame.origin.x >= maxTransation)
+
             
         }
         
@@ -239,12 +267,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
                 if delegate != nil && todoItem != nil {
                     // notify the delegate that this item should be deleted
                     delegate!.itemDeleted(item: self.todoItem!)
-                    
-                    //                    itemCompleteLayer.isHidden = !itemCompleteLayer.isHidden
-                    //                    UIView.animate(withDuration: 0.2, animations:
-                    //                        {
-                    //                            self.frame = originalFrame
-                    //                    })
                 }
             }
             else if completeOnDragRelease {
@@ -257,6 +279,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
                     {
                         self.frame = originalFrame
                         self.crossLabel.center = self.originalCrossCenter
+                        self.checkLabel.center = self.originalCheckCenter
                 })
             }
         }
@@ -283,11 +306,12 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         }
     }
     
-//    
+    //
     override func layoutSubviews() {
         rightBorder.frame = CGRect(x: screenSize.width-borderWidth-borderInsetX, y: borderInsetY, width: borderWidth, height: frame.height - 2*borderInsetY)
-        
+        crossLabel.frame = CGRect(x: crossInsetProp*UIScreen.main.bounds.width-cueLabelWidth, y: frame.height/2-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
         separator.frame = CGRect(x: 0, y: frame.height-separatorWidth, width: UIScreen.main.bounds.width, height: separatorWidth)
+                checkLabel.frame = CGRect(x: checkInsetProp*UIScreen.main.bounds.width, y: frame.height/2-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
     }
     
     // prevent appending new line.
@@ -331,12 +355,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     private func unhideLabels(){
-//        UIView.trans(withDuration: 0.5, animations: {() in
-//        self.orangeButton!.isHidden = false
-//        self.cyanButton!.isHidden = false
-//        self.redButton!.isHidden = false
-//        self.greenButton!.isHidden = false
-//        })
         
         UIView.transition(with: self.orangeButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
             self.orangeButton!.isHidden = false
