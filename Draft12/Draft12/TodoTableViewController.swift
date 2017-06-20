@@ -9,17 +9,22 @@
 import UIKit
 import CoreData
 
+struct ScreenSize {
+    static let w = UIScreen.main.bounds.width
+    static let h = UIScreen.main.bounds.height
+}
+
 struct Font{
-    static let text = UIFont(name: "ArialRoundedMTBold", size: 16)
-    static let dateButton = UIFont(name: "Arial-BoldItalicMT", size: 13)
-    static let button = UIFont(name: "ArialRoundedMTBold", size: 13)
-    static let clue = UIFont(name: "ArialRoundedMTBold", size: 15)
-    static let navigationBarText = UIFont(name: "ArialRoundedMTBold", size: 20)
+    static let text = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 16))
+    static let dateButton = UIFont(name: "Arial-BoldItalicMT", size: sizeConvert(size: 13))
+    static let button = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
+    static let clue = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 15))
+    static let navigationBarText = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 20))
 }
 
 struct Color{
-    static let text = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
     
+    static let text = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
     static let cellBackground = UIColor(red: 50/255, green: 50/255, blue: 50/255, alpha: 1)
     static let tableViewBackground = UIColor(red: 55/255, green: 60/255, blue: 58/255, alpha: 1)
     static let navigationBar = tableViewBackground
@@ -52,27 +57,26 @@ extension Date
         dateFormatter.dateFormat = format
         return dateFormatter.string(from: self)
     }
-    
 }
 
 class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate {
     var modifyingDate = false
     var resignAfterModifyingDate = false
+    var createdNewCell = false
     
     var initContentOffset: CGFloat = 0
     
     var barView = UIView()
     
-    let datePickerHeight = CGFloat(150)
+    let datePickerHeight = ScreenSize.h/3.6
     
     var editingCell: TodoItemTableViewCell?
     
     var datePicker = UIDatePicker()
     var doneButton = UIButton()
-    var cancelButton = UIButton()
     var deleteButton = UIButton()
-    var buttonHeight = CGFloat(30)
-    var buttonWidth = CGFloat(40)
+    var buttonHeight = ScreenSize.h/18
+    var buttonWidth = ScreenSize.w/6
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -85,7 +89,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     override func viewDidLoad() {
-        
+        print("Screen height: ", ScreenSize.h)
+        print("Screen width: ", ScreenSize.w)
         
         UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
         super.viewDidLoad()
@@ -93,13 +98,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         navigationController?.navigationBar.barTintColor = Color.navigationBar
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: Color.navigationBarText, NSFontAttributeName: Font.navigationBarText!]
         
-        
-        
-        datePicker.frame = CGRect(x:  0, y:  UIScreen.main.bounds.height - datePickerHeight - (self.navigationController?.navigationBar.bounds.height)! - 20, width:  UIScreen.main.bounds.width, height: datePickerHeight)
+        datePicker.frame = CGRect(x:  0, y:  ScreenSize.h*0.61, width:  UIScreen.main.bounds.width, height: datePickerHeight)
         datePicker.layer.borderWidth = 1
         datePicker.layer.borderColor = UIColor.green.cgColor
         
-        tableView.addSubview(datePicker)
+        self.view.addSubview(datePicker)
+//        tableView.addSubview(datePicker)
         datePicker.isHidden = true
         datePicker.datePickerMode = .date
         
@@ -111,19 +115,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         
-        deleteButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonHeight)
+        deleteButton.sizeToFit()
+        deleteButton.frame = CGRect(x: 0.015*ScreenSize.w, y: 0, width: buttonWidth, height: buttonHeight)
         deleteButton.setTitle("DELETE", for: UIControlState.normal)
         deleteButton.setTitleColor(UIColor.red, for: UIControlState.normal)
         deleteButton.titleLabel?.font = Font.button
-        deleteButton.sizeToFit()
         
         deleteButton.addTarget(self, action: #selector(self.deleteButtonPressed), for: UIControlEvents.touchUpInside)
         barView.addSubview(deleteButton)
-        
+        doneButton.sizeToFit()
         doneButton.frame = CGRect(x: UIScreen.main.bounds.width-buttonWidth, y: 0, width: buttonWidth, height: buttonHeight)
+        
         doneButton.setTitle("DONE", for: UIControlState.normal)
         doneButton.setTitleColor(UIColor.gray, for: UIControlState.normal)
         doneButton.titleLabel?.font = Font.button
+        
         barView.addSubview(doneButton)
         doneButton.addTarget(self, action: #selector(self.doneButtonPressed), for: UIControlEvents.touchUpInside)
         
@@ -158,10 +164,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func getData(){
         do {
-            let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
+            
             let sortDate = NSSortDescriptor(key: "dueDate", ascending: true)
             let sortComplete = NSSortDescriptor(key: "isComplete", ascending: true)
             
+            let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
             fetchRequest.sortDescriptors = [sortComplete, sortDate]
             items = try context.fetch(fetchRequest)
         }
@@ -182,7 +189,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.layoutMargins = UIEdgeInsets.zero
         cell.dateButton.isEnabled = false
         if cell.todoItem!.isComplete{
-                cell.textView.backgroundColor = Color.complete
+            cell.textView.backgroundColor = Color.complete
         }
         else{
             cell.textView.backgroundColor = Color.cellBackground
@@ -244,7 +251,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     //TodoItemTableViewCell delegate
     
     func popupDatePicker(editingCell: TodoItemTableViewCell) {
-        
+        self.navigationItem.leftBarButtonItem?.isEnabled = false
         
         modifyingDate = true
         datePicker.backgroundColor = UIColor.lightGray
@@ -358,7 +365,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-        
+        self.navigationItem.leftBarButtonItem?.isEnabled = false
         editingCell.dateButton.isEnabled = true
         if resignAfterModifyingDate{
             resignAfterModifyingDate = false
@@ -394,14 +401,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }, completion: nil)
         }
         
-        
-        UIView.animate(withDuration: 0.3, animations: {() in
-        })
-        
-        UIView.animate(withDuration: 0.5, animations: {() in
-            
-            self.tableView.separatorColor = UIColor.clear
-        })
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
@@ -442,17 +441,19 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         editingCell.dateButton.isEnabled = false
         
         if items.contains(editingCell.todoItem!) {
-            let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-            getData()
-            let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
             
             // WOW! The API is AMAZING! Thanks Apple!
             tableView.beginUpdates()
-            tableView.moveRow(at: fromPath, to: toPath)
+            if !createdNewCell{
+                let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+                getData()
+                let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+                tableView.moveRow(at: fromPath, to: toPath)
+            }
             tableView.endUpdates()
-            
         }
-        
+        createdNewCell = false
+        self.navigationItem.leftBarButtonItem?.isEnabled = true
     }
     
     // MARK: - UIScrollViewDelegate methods
@@ -463,7 +464,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     // indicates the state of this behavior
     var pullDownInProgress = false
     var clueView: UIView?
-    let marginalHeight = CGFloat(26)
+    let marginalHeight = sizeConvert(size: 26)
     var addClueLabel = UILabel()
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -482,7 +483,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        let maxOffsetY = CGFloat(-110)
+        let maxOffsetY = sizeConvert(size: -110)
         
         print("scroll: ",scrollView.contentOffset.y)
         if scrollView.contentOffset.y < maxOffsetY{
@@ -499,7 +500,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if pullDownInProgress && scrollViewContentOffsetY <= 0.0 {
             // maintain the location of the placeholder
             print(scrollViewContentOffsetY)
-            addClueLabel.frame = CGRect(x: tableView.frame.size.width/2-30, y: -scrollViewContentOffsetY-30, width: 100, height: 30)
+            addClueLabel.frame = CGRect(x: tableView.frame.size.width/2-30, y: -scrollViewContentOffsetY-sizeConvert(size: 30), width: sizeConvert(size: 100), height: sizeConvert(size: 30))
             clueView!.frame = CGRect(x: 0, y: scrollViewContentOffsetY,
                                      width: tableView.frame.size.width, height: -scrollViewContentOffsetY)
             //            addClueLabel!.alpha = min(1.0, -scrollViewContentOffsetY/marginalHeight)
@@ -521,6 +522,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             tableView.endUpdates()
             //            tableView.reloadData()
             (tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell).textView!.becomeFirstResponder()
+            createdNewCell = true
             cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
         }
     }

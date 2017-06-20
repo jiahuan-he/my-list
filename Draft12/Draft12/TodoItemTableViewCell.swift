@@ -34,6 +34,9 @@ enum labelTag: Int {
     case Green
 }
 
+func sizeConvert(size: CGFloat) -> CGFloat {
+    return (size*ScreenSize.w)/320
+}
 
 import UIKit
 
@@ -48,7 +51,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     var crossLabel = UIImageView()
     var checkLabel = UIImageView()
-    let cueLabelWidth = CGFloat(26)
+    let cueLabelWidth = sizeConvert(size: 26)
     
     
     var todoItem: TodoItem?
@@ -72,11 +75,11 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     let crossInsetProp = CGFloat(0.92)
     let checkInsetProp = CGFloat(0.06)
     
-    let borderWidth = CGFloat(7)
-    let borderInsetY = CGFloat(5)
-    let borderInsetX = CGFloat(6)
+    let borderWidth = sizeConvert(size: 7)
+    let borderInsetY = sizeConvert(size: 5)
+    let borderInsetX = sizeConvert(size: 6)
     let separator = CALayer()
-    let separatorWidth = CGFloat(1)
+    let separatorWidth = sizeConvert(size: 1)
     
     let crossImage = UIImage(named: "img/cross2.png")
     let checkImage = UIImage(named: "img/check2.png")
@@ -113,7 +116,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         backgroundColor = Color.cellBackground
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
-        textView.textContainerInset = UIEdgeInsetsMake(24, 2, 15, 10)
+        textView.textContainerInset = UIEdgeInsetsMake(sizeConvert(size: 24), sizeConvert(size: 2), sizeConvert(size: 15), sizeConvert(size: 10))
         
         
         
@@ -143,7 +146,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         //        self.backgroundColor = UIColor.lightGray
         //        textView.backgroundColor = UIColor.lightGray
         
-        dateButton.frame = CGRect(x: 5.5, y: 4, width: 100, height: 20)
+        dateButton.frame = CGRect(x: sizeConvert(size: 5.5), y: sizeConvert(size: 4), width: sizeConvert(size: 100), height: sizeConvert(size: 20))
         dateButton.contentHorizontalAlignment = .left
         dateButton.setTitleColor(Color.dateButton, for: UIControlState.normal)
         dateButton.titleLabel!.font = Font.dateButton
@@ -153,10 +156,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         textView.addSubview(dateButton)
         
         let labelRadius = 5.0
-        let labelWidth = 16
-        let labelPosY = 6
-        let labelPosX = 205
-        let distance = 25
+        let labelWidth = sizeConvert(size: 16)
+        let labelPosY = sizeConvert(size: 6)
+        let labelPosX = sizeConvert(size: 205)
+        let distance = sizeConvert(size: 25)
         
         redButton = UIButton(frame: CGRect(x: labelPosX, y: labelPosY, width: labelWidth, height: labelWidth))
         redButton!.backgroundColor = UIColor.red
