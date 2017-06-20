@@ -28,7 +28,7 @@ struct Color{
     static let dateButton = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let cue = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let crossLabel = Color.text
-    
+    static let complete = #colorLiteral(red: 0.389069068, green: 0.6680877221, blue: 0.3690772652, alpha: 1)
 }
 
 struct FlagColor{
@@ -162,11 +162,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func getData(){
         do {
             let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
-            let sortDescriptor = NSSortDescriptor(key: "dueDate", ascending: false)
-            fetchRequest.sortDescriptors = [sortDescriptor]
+            let sortDate = NSSortDescriptor(key: "dueDate", ascending: true)
+            let sortComplete = NSSortDescriptor(key: "isComplete", ascending: true)
+            
+            fetchRequest.sortDescriptors = [sortComplete, sortDate]
             items = try context.fetch(fetchRequest)
-            // Temp
-            items.reverse()
         }
         catch{
             print("Wrong")
@@ -184,6 +184,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
         cell.dateButton.isEnabled = false
+        if cell.todoItem!.isComplete{
+                cell.textView.backgroundColor = Color.complete
+        }
+        else{
+            cell.textView.backgroundColor = Color.cellBackground
+        }
         
         
         
@@ -335,6 +341,29 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let indexPathForRow = NSIndexPath(row: itemIndex, section: 0)
         tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .left)
         tableView.endUpdates()
+    }
+    
+    func itemComplete(editingCell: TodoItemTableViewCell){
+        editingCell.todoItem?.isComplete = !(editingCell.todoItem?.isComplete)!
+        if (editingCell.todoItem?.isComplete)! {
+            editingCell.textView.backgroundColor = Color.complete
+        }
+        else{
+            editingCell.textView.backgroundColor = Color.cellBackground
+        }
+        
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        if items.contains(editingCell.todoItem!) {
+            let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+            getData()
+            let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+            // WOW! The API is AMAZING! Thanks Apple!
+            tableView.beginUpdates()
+            tableView.moveRow(at: fromPath, to: toPath)
+            tableView.endUpdates()
+            
+        }
+        
     }
     
     

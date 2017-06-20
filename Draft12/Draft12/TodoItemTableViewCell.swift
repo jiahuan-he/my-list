@@ -8,10 +8,12 @@
 protocol TodoItemTableViewCellDelegate{
     func cellHeightDidChange(editingCell: TodoItemTableViewCell, heightChange: CGFloat)
     func itemDeleted(item: TodoItem)
+    func itemComplete(editingCell: TodoItemTableViewCell)
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell)
     func cellDidEndEditing(editingCell: TodoItemTableViewCell)
     func cellFlagDidChange(editingCell: TodoItemTableViewCell)
     func popupDatePicker(editingCell: TodoItemTableViewCell)
+    
 }
 
 extension NSDate
@@ -36,7 +38,7 @@ enum labelTag: Int {
 import UIKit
 
 class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
-    
+    var beingEditing = false
     @IBOutlet var textView: UITextView!
     var delegate: TodoItemTableViewCellDelegate?
     let screenSize: CGRect = UIScreen.main.bounds
@@ -245,8 +247,15 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
                 checkLabel.center = CGPoint(x: originalCheckCenter.x + maxTransation, y: originalCheckCenter.y)
                 crossLabel.tintColor = UIColor.red
             }
+            else if translation.x >= maxTransation{
+                center = CGPoint(x: originalCenter.x + maxTransation, y: originalCenter.y)
+                crossLabel.center = CGPoint(x: originalCrossCenter.x - maxTransation, y: originalCrossCenter.y)
+                checkLabel.center = CGPoint(x: originalCheckCenter.x - maxTransation, y: originalCheckCenter.y)
+                checkLabel.tintColor = UIColor.green
+            }
             else{
                 crossLabel.tintColor = Color.crossLabel
+                checkLabel.tintColor = Color.crossLabel
                 center = CGPoint(x: originalCenter.x + translation.x, y: originalCenter.y)
                 crossLabel.center = CGPoint(x: originalCrossCenter.x - translation.x, y: originalCrossCenter.y)
                 checkLabel.center = CGPoint(x: originalCheckCenter.x - translation.x, y: originalCheckCenter.y)
@@ -259,6 +268,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         // 3
         if recognizer.state == .ended {
+            crossLabel.tintColor = Color.crossLabel
+            checkLabel.tintColor = Color.crossLabel
             // the frame this cell had before user dragged it
             let originalFrame = CGRect(x: 0, y: frame.origin.y,
                                        width: bounds.size.width, height: bounds.size.height)
@@ -270,8 +281,15 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
                 }
             }
             else if completeOnDragRelease {
-                todoItem!.isComplete = !todoItem!.isComplete
-                UIView.animate(withDuration: 0.5, animations: {self.frame = originalFrame})
+                UIView.animate(withDuration: 0.5, animations: {
+                    self.frame = originalFrame
+                    self.crossLabel.center = self.originalCrossCenter
+                    self.checkLabel.center = self.originalCheckCenter
+                }
+                    
+                )
+                delegate?.itemComplete(editingCell: self)
+                
             }
             else {
                 // if the item is not being deleted, snap back to the original location
@@ -286,6 +304,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if beingEditing {
+           return false
+        }
         if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
             let translation = panGestureRecognizer.translation(in: superview!)
             if fabs(translation.x) > fabs(translation.y) {
@@ -324,6 +345,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
+        beingEditing = true
         print("current flag: ", todoItem?.flag ?? "nil")
         UIView.animate(withDuration: 0.5, animations: {() in
             self.unhideLabels()
@@ -333,7 +355,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        
+        beingEditing = false
         self.hideLabels()
         todoItem!.name = textView.text!
         delegate!.cellDidEndEditing(editingCell: self)
