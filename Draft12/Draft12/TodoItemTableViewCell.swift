@@ -73,8 +73,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     let checkInsetProp = CGFloat(0.06)
     
     let borderWidth = CGFloat(7)
-    let borderInsetY = CGFloat(3)
-    let borderInsetX = CGFloat(2)
+    let borderInsetY = CGFloat(5)
+    let borderInsetX = CGFloat(6)
     let separator = CALayer()
     let separatorWidth = CGFloat(1)
     
@@ -110,9 +110,11 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         sendSubview(toBack: checkLabel)
         self.contentView.backgroundColor = UIColor.white
         self.textView.backgroundColor = Color.cellBackground
+        backgroundColor = Color.cellBackground
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
-        textView.textContainerInset = UIEdgeInsetsMake(24, 2, 15, 2)
+        textView.textContainerInset = UIEdgeInsetsMake(24, 2, 15, 10)
+        
         
         
         rightBorder.cornerRadius = 3.0

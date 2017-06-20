@@ -28,7 +28,8 @@ struct Color{
     static let dateButton = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let cue = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let crossLabel = Color.text
-    static let complete = #colorLiteral(red: 0.389069068, green: 0.6680877221, blue: 0.3690772652, alpha: 1)
+    
+    static let complete = #colorLiteral(red: 0.02237439216, green: 0.6006702094, blue: 0.1028243576, alpha: 1)
 }
 
 struct FlagColor{
@@ -146,13 +147,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
-        
-        
-        
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         getData()
         tableView.reloadData()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -190,12 +187,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         else{
             cell.textView.backgroundColor = Color.cellBackground
         }
-        
-        
-        
-        
-        //        cell.textView.backgroundColor = assignBorderColor(cell: cell)
-        //        cell.textView.backgroundColor = Color.cellBackground
         cell.textView.textColor = Color.text
         
         return cell
@@ -296,16 +287,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if let f = cell.todoItem?.flag{
             switch f {
             case "0" :
-                return UIColor.red
+                return FlagColor.c0
             case "1":
-                return UIColor.orange
+                return FlagColor.c1
             case "2":
-                return UIColor.cyan
+                return FlagColor.c2
             case "3":
-                return UIColor.green
+                return FlagColor.c3
             case "-1":
-                return Color.cellBackground
-            //                return UIColor.clear.cgColor
+                return FlagColor.n1
             default:
                 break
             }}
