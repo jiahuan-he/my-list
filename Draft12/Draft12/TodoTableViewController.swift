@@ -47,6 +47,7 @@ struct FlagColor{
 
 struct Alpha {
     static let notEditingCell = CGFloat(0.3)
+    static let complete = CGFloat(0.5)
 }
 
 
@@ -74,7 +75,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         default:
             return CGFloat(0)
         }
-
+        
     }
     
     var initContentOffset: CGFloat = 0
@@ -201,7 +202,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if cell.todoItem != nil{
             if cell.todoItem!.dueDate != nil{
                 cell.dateButton.isHidden = false
-                cell.dateButton.setTitle(cell.todoItem!.dueDate!.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+                if NSCalendar.current.isDateInToday(cell.todoItem!.dueDate! as Date){
+                    cell.dateButton.setTitle("Today", for: UIControlState.normal)
+                }
+                else if NSCalendar.current.isDateInTomorrow(cell.todoItem!.dueDate! as Date){
+                    cell.dateButton.setTitle("Tomorrow", for: UIControlState.normal)
+                }
+                else{
+                    cell.dateButton.setTitle(cell.todoItem!.dueDate!.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+                }
+                
             }
         }
         
@@ -209,13 +219,31 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
         cell.dateButton.isEnabled = false
+        
+        
+        let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: cell.textView.text)
         if cell.todoItem!.isComplete{
-            cell.textView.backgroundColor = Color.complete
+            attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
+            cell.textView.attributedText = attributeString
+            cell.textView.font = Font.text
+            cell.textView.textColor = Color.complete
+            cell.dateButton.alpha = Alpha.complete
+            cell.rightBorder.opacity = Float(Alpha.complete)
+            //            editingCell.textView.backgroundColor = Color.complete
         }
         else{
-            cell.textView.backgroundColor = Color.cellBackground
+            //            editingCell.textView.backgroundColor = Color.cellBackground
+            attributeString.removeAttribute(NSStrikethroughColorAttributeName, range: NSMakeRange(0, attributeString.length))
+            cell.textView.attributedText = attributeString
+            cell.textView.font = Font.text
+            cell.textView.textColor = Color.text
+            cell.dateButton.alpha = 1
+            cell.rightBorder.opacity = 1
+            //            editingCell.textView
+            
         }
-        cell.textView.textColor = Color.text
+        
+        
         
         return cell
     }
@@ -257,11 +285,20 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let dateButton = editingCell!.dateButton
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         UIView.animate(withDuration: 0.2, animations: { () in
-            dateButton.setTitle(self.datePicker.date.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+            if NSCalendar.current.isDateInToday(self.datePicker.date as Date){
+                dateButton.setTitle("Today", for: UIControlState.normal)
+            }
+            else if NSCalendar.current.isDateInTomorrow(self.datePicker.date as Date){
+                dateButton.setTitle("Tomorrow", for: UIControlState.normal)
+            }
+            else{
+                dateButton.setTitle(self.datePicker.date.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+            }
+            
         })
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
-
+        
         
         editingCell!.isUserInteractionEnabled = true
         resignAfterModifyingDate = true
@@ -339,6 +376,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if(cell.todoItem!.dueDate != nil){
             cell.dateButton.isHidden = false
         }
+        else if NSCalendar.current.isDateInTomorrow(cell.todoItem!.dueDate! as Date){
+            cell.dateButton.setTitle("Tomorrow", for: UIControlState.normal)
+        }
         cell.dateButton.setTitle(cell.todoItem!.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "Add Due Date", for: UIControlState.normal)
     }
     
@@ -368,11 +408,26 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func itemComplete(editingCell: TodoItemTableViewCell){
         editingCell.todoItem?.isComplete = !(editingCell.todoItem?.isComplete)!
+        let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: editingCell.textView.text)
         if (editingCell.todoItem?.isComplete)! {
-            editingCell.textView.backgroundColor = Color.complete
+            attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
+            editingCell.textView.attributedText = attributeString
+            editingCell.textView.font = Font.text
+            editingCell.textView.textColor = Color.complete
+            editingCell.dateButton.alpha = Alpha.complete
+            editingCell.rightBorder.opacity = Float(Alpha.complete)
+            //            editingCell.textView.backgroundColor = Color.complete
         }
         else{
-            editingCell.textView.backgroundColor = Color.cellBackground
+            //            editingCell.textView.backgroundColor = Color.cellBackground
+            attributeString.removeAttribute(NSStrikethroughColorAttributeName, range: NSMakeRange(0, attributeString.length))
+            editingCell.textView.attributedText = attributeString
+            editingCell.textView.font = Font.text
+            editingCell.textView.textColor = Color.text
+            editingCell.dateButton.alpha = 1
+            editingCell.rightBorder.opacity = 1
+            //            editingCell.textView
+            
         }
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
@@ -435,7 +490,22 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 editingCell.dateButton.isHidden = true
             }, completion: nil)
         }
-        assignDateText(cell: editingCell)
+        if(editingCell.todoItem!.dueDate != nil){
+            editingCell.dateButton.isHidden = false
+            if NSCalendar.current.isDateInToday(editingCell.todoItem!.dueDate! as Date){
+                editingCell.dateButton.setTitle("Today", for: UIControlState.normal)
+            }
+            else if NSCalendar.current.isDateInTomorrow(editingCell.todoItem!.dueDate! as Date){
+                editingCell.dateButton.setTitle("Tomorrow", for: UIControlState.normal)
+            }
+            else{
+                editingCell.dateButton.setTitle(editingCell.todoItem!.dueDate?.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+            }
+        }
+        else{
+            editingCell.dateButton.isHidden = true
+        }
+
         
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         print("offset " , self.offset!)
@@ -467,12 +537,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             // WOW! The API is AMAZING! Thanks Apple!
             tableView.beginUpdates()
-//            if !createdNewCell{
-                let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-                getData()
-                let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-                tableView.moveRow(at: fromPath, to: toPath)
-//            }
+            //            if !createdNewCell{
+            let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+            getData()
+            let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+            tableView.moveRow(at: fromPath, to: toPath)
+            //            }
             tableView.endUpdates()
         }
         createdNewCell = false

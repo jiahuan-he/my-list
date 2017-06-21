@@ -352,6 +352,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         return true
     }
     
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        return !(todoItem?.isComplete)!
+    }
+    
     func textViewDidBeginEditing(_ textView: UITextView) {
         beingEditing = true
         print("current flag: ", todoItem?.flag ?? "nil")
