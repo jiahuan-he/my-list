@@ -49,6 +49,7 @@ struct Alpha {
     static let notEditingCell = CGFloat(0.3)
 }
 
+
 extension Date
 {
     func toString( dateFormat format  : String ) -> String
@@ -63,6 +64,18 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var modifyingDate = false
     var resignAfterModifyingDate = false
     var createdNewCell = false
+    
+    var pickerOffset: CGFloat{
+        switch UIScreen.main.bounds.width {
+        case 375:
+            return CGFloat(30)
+        case 414:
+            return CGFloat(40)
+        default:
+            return CGFloat(0)
+        }
+
+    }
     
     var initContentOffset: CGFloat = 0
     
@@ -98,12 +111,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         navigationController?.navigationBar.barTintColor = Color.navigationBar
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: Color.navigationBarText, NSFontAttributeName: Font.navigationBarText!]
         
-        datePicker.frame = CGRect(x:  0, y:  ScreenSize.h*0.61, width:  UIScreen.main.bounds.width, height: datePickerHeight)
+        
+        datePicker.frame = CGRect(x:  0, y:  ScreenSize.h - datePicker.frame.height  - pickerOffset, width:  UIScreen.main.bounds.width, height: datePickerHeight)
         datePicker.layer.borderWidth = 1
         datePicker.layer.borderColor = UIColor.green.cgColor
         
+        print("VIEW x", self.view.frame.origin.x)
+        print("VIEW y", self.view.frame.origin.y)
         self.view.addSubview(datePicker)
-//        tableView.addSubview(datePicker)
         datePicker.isHidden = true
         datePicker.datePickerMode = .date
         
@@ -183,7 +198,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.todoItem = items[indexPath.row]
         
         cell.rightBorder.backgroundColor = assignBorderColor(cell: cell).cgColor
-        assignDateText(cell: cell)
+        if cell.todoItem != nil{
+            if cell.todoItem!.dueDate != nil{
+                cell.dateButton.isHidden = false
+                cell.dateButton.setTitle(cell.todoItem!.dueDate!.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+            }
+        }
+        
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
@@ -240,7 +261,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         })
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
-        print(editingCell!.todoItem!.dueDate!.toString(dateFormat: "dd-MMM-yyyy"))
+
         
         editingCell!.isUserInteractionEnabled = true
         resignAfterModifyingDate = true
@@ -251,11 +272,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     //TodoItemTableViewCell delegate
     
     func popupDatePicker(editingCell: TodoItemTableViewCell) {
+        tableView.isScrollEnabled = false
         self.navigationItem.leftBarButtonItem?.isEnabled = false
         
         modifyingDate = true
-        datePicker.backgroundColor = UIColor.lightGray
+        datePicker.backgroundColor = Color.cellBackground
+        datePicker.setValue(Color.text, forKey: "textColor")
+        
+        datePicker.setValue(false, forKey: "highlightsToday")
         datePicker.setDate(NSDate() as Date, animated: false)
+        
         datePicker.isHidden = false
         barView.isHidden = false
         
@@ -354,17 +380,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
             getData()
             let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-            // WOW! The API is AMAZING! Thanks Apple!
             tableView.beginUpdates()
             tableView.moveRow(at: fromPath, to: toPath)
             tableView.endUpdates()
             
         }
-        
     }
     
-    
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
+        tableView.isScrollEnabled = false
         self.navigationItem.leftBarButtonItem?.isEnabled = false
         editingCell.dateButton.isEnabled = true
         if resignAfterModifyingDate{
@@ -389,7 +413,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     cell.alpha = Alpha.notEditingCell
                 }
                 else{
-                    
                 }
             })
         }
@@ -444,16 +467,17 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             // WOW! The API is AMAZING! Thanks Apple!
             tableView.beginUpdates()
-            if !createdNewCell{
+//            if !createdNewCell{
                 let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
                 getData()
                 let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
                 tableView.moveRow(at: fromPath, to: toPath)
-            }
+//            }
             tableView.endUpdates()
         }
         createdNewCell = false
         self.navigationItem.leftBarButtonItem?.isEnabled = true
+        tableView.isScrollEnabled = true
     }
     
     // MARK: - UIScrollViewDelegate methods

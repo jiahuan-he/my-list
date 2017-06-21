@@ -111,16 +111,18 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         addSubview(crossLabel)
         sendSubview(toBack: crossLabel)
         sendSubview(toBack: checkLabel)
-        self.contentView.backgroundColor = UIColor.white
+        self.contentView.backgroundColor = Color.cellBackground
         self.textView.backgroundColor = Color.cellBackground
         backgroundColor = Color.cellBackground
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
-        textView.textContainerInset = UIEdgeInsetsMake(sizeConvert(size: 24), sizeConvert(size: 2), sizeConvert(size: 15), sizeConvert(size: 10))
+        textView.textContainerInset = UIEdgeInsetsMake(sizeConvert(size: 26), sizeConvert(size: 2), sizeConvert(size: 15), sizeConvert(size: 10))
         
         
         
-        rightBorder.cornerRadius = 3.0
+        
+        
+        rightBorder.cornerRadius = sizeConvert(size: 3.0)
         separator.backgroundColor = Color.separator.cgColor
         layer.addSublayer(rightBorder)
         layer.addSublayer(separator)
@@ -148,6 +150,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         dateButton.frame = CGRect(x: sizeConvert(size: 5.5), y: sizeConvert(size: 4), width: sizeConvert(size: 100), height: sizeConvert(size: 20))
         dateButton.contentHorizontalAlignment = .left
+        dateButton.setTitle("Add Due Date", for: UIControlState.normal)
         dateButton.setTitleColor(Color.dateButton, for: UIControlState.normal)
         dateButton.titleLabel!.font = Font.dateButton
         dateButton.addTarget(self, action: #selector(self.popDatepicker), for: UIControlEvents.touchUpInside)
@@ -156,10 +159,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         textView.addSubview(dateButton)
         
         let labelRadius = 5.0
-        let labelWidth = sizeConvert(size: 16)
+        let labelWidth = sizeConvert(size: 18)
         let labelPosY = sizeConvert(size: 6)
-        let labelPosX = sizeConvert(size: 205)
-        let distance = sizeConvert(size: 25)
+        let labelPosX = sizeConvert(size: 195)
+        let distance = sizeConvert(size: 28)
         
         redButton = UIButton(frame: CGRect(x: labelPosX, y: labelPosY, width: labelWidth, height: labelWidth))
         redButton!.backgroundColor = UIColor.red
