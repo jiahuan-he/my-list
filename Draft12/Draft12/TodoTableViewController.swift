@@ -50,6 +50,10 @@ struct Alpha {
     static let complete = CGFloat(0.5)
 }
 
+struct DateFormat {
+    static let normal = "yyyy-MM-dd, E HH:mm "
+    static let timeOnly = "HH:mm"
+}
 
 extension Date
 {
@@ -121,7 +125,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         print("VIEW y", self.view.frame.origin.y)
         self.view.addSubview(datePicker)
         datePicker.isHidden = true
-        datePicker.datePickerMode = .date
+        datePicker.datePickerMode = .dateAndTime
         
         
         barView.frame = CGRect(x: 0, y: datePicker.frame.origin.y - buttonHeight, width: UIScreen.main.bounds.width, height: buttonHeight)
@@ -163,8 +167,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
         
-    }
-    
+    }    
     
     override func viewWillAppear(_ animated: Bool) {
         
@@ -202,16 +205,24 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if cell.todoItem != nil{
             if cell.todoItem!.dueDate != nil{
                 cell.dateButton.isHidden = false
-                if NSCalendar.current.isDateInToday(cell.todoItem!.dueDate! as Date){
-                    cell.dateButton.setTitle("Today", for: UIControlState.normal)
+                let pickerDate = cell.todoItem!.dueDate! as Date
+                var date: String = ""
+                if NSCalendar.current.isDateInToday(pickerDate){
+                    date = "Today @ " + cell.todoItem!.dueDate!.toString(dateFormat: DateFormat.timeOnly)
                 }
-                else if NSCalendar.current.isDateInTomorrow(cell.todoItem!.dueDate! as Date){
-                    cell.dateButton.setTitle("Tomorrow", for: UIControlState.normal)
+                else if NSCalendar.current.isDateInTomorrow(pickerDate){
+                    date = "Tomorrow @ " + cell.todoItem!.dueDate!.toString(dateFormat: DateFormat.timeOnly)
                 }
                 else{
-                    cell.dateButton.setTitle(cell.todoItem!.dueDate!.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+                    date = cell.todoItem!.dueDate!.toString(dateFormat: DateFormat.normal)
+                    date.insert("@", at: date.index(date.startIndex, offsetBy: 15))
+                    date.insert(" ", at: date.index(date.startIndex, offsetBy: 15
+                    
+                    ))
                 }
-                
+                cell.dateButton.setTitle(date, for: UIControlState.normal)
+                cell.dateButton.titleLabel?.sizeToFit()
+                cell.dateButton.sizeToFit()
             }
         }
         
@@ -285,15 +296,26 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let dateButton = editingCell!.dateButton
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         UIView.animate(withDuration: 0.2, animations: { () in
-            if NSCalendar.current.isDateInToday(self.datePicker.date as Date){
-                dateButton.setTitle("Today", for: UIControlState.normal)
+            
+            
+            let pickerDate = self.datePicker.date as Date
+            
+            var date = ""
+            if NSCalendar.current.isDateInToday(pickerDate){
+                date = "Today @ " + pickerDate.toString(dateFormat: DateFormat.timeOnly)
+                
             }
-            else if NSCalendar.current.isDateInTomorrow(self.datePicker.date as Date){
-                dateButton.setTitle("Tomorrow", for: UIControlState.normal)
+            else if NSCalendar.current.isDateInTomorrow(pickerDate){
+                date = "Tomorrow @ " + pickerDate.toString(dateFormat: DateFormat.timeOnly)
             }
             else{
-                dateButton.setTitle(self.datePicker.date.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+                date = pickerDate.toString(dateFormat: DateFormat.normal)
+                date.insert("@", at: date.index(date.startIndex, offsetBy: 15))
+                date.insert(" ", at: date.index(date.startIndex, offsetBy: 15))
             }
+            dateButton.setTitle(date, for: UIControlState.normal)
+            dateButton.titleLabel?.sizeToFit()
+            dateButton.sizeToFit()
             
         })
         
@@ -317,7 +339,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         datePicker.setValue(Color.text, forKey: "textColor")
         
         datePicker.setValue(false, forKey: "highlightsToday")
-        datePicker.setDate(NSDate() as Date, animated: false)
+        if editingCell.todoItem?.dueDate == nil{
+            datePicker.setDate(NSDate() as Date, animated: false)
+        }
+        else {
+            datePicker.setDate(editingCell.todoItem!.dueDate! as Date, animated: false)
+        }
         
         datePicker.isHidden = false
         barView.isHidden = false
@@ -372,15 +399,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         return UIColor.clear
     }
     
-    private func assignDateText (cell: TodoItemTableViewCell){
-        if(cell.todoItem!.dueDate != nil){
-            cell.dateButton.isHidden = false
-        }
-        else if NSCalendar.current.isDateInTomorrow(cell.todoItem!.dueDate! as Date){
-            cell.dateButton.setTitle("Tomorrow", for: UIControlState.normal)
-        }
-        cell.dateButton.setTitle(cell.todoItem!.dueDate?.toString(dateFormat: "dd-MMM-yyyy") ?? "Add Due Date", for: UIControlState.normal)
-    }
     
     
     func cellFlagDidChange(editingCell: TodoItemTableViewCell){
@@ -459,13 +477,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         print("content Offset " , tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         
-        
-        
         for cell in visibleCells {
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
                 if cell != editingCell{
                     cell.alpha = Alpha.notEditingCell
+                    cell.textView.isEditable = false
                 }
                 else{
                 }
@@ -492,20 +509,32 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         if(editingCell.todoItem!.dueDate != nil){
             editingCell.dateButton.isHidden = false
-            if NSCalendar.current.isDateInToday(editingCell.todoItem!.dueDate! as Date){
-                editingCell.dateButton.setTitle("Today", for: UIControlState.normal)
+            
+            let pickerDate = editingCell.todoItem!.dueDate! as Date
+            var date = ""
+            if NSCalendar.current.isDateInToday(pickerDate){
+                date = "Today @ " + pickerDate.toString(dateFormat: DateFormat.timeOnly)
+                
+                
             }
-            else if NSCalendar.current.isDateInTomorrow(editingCell.todoItem!.dueDate! as Date){
-                editingCell.dateButton.setTitle("Tomorrow", for: UIControlState.normal)
+            else if NSCalendar.current.isDateInTomorrow(pickerDate){
+                date = "Tomorrow @ " + pickerDate.toString(dateFormat: DateFormat.timeOnly)
+                
             }
             else{
-                editingCell.dateButton.setTitle(editingCell.todoItem!.dueDate?.toString(dateFormat: "dd-MMM-yyyy"), for: UIControlState.normal)
+                date = pickerDate.toString(dateFormat: DateFormat.normal)
+                date.insert("@", at: date.index(date.startIndex, offsetBy: 15))
+                date.insert(" ", at: date.index(date.startIndex, offsetBy: 15))
             }
+            editingCell.dateButton.setTitle(date, for: UIControlState.normal)
+            editingCell.dateButton.titleLabel?.sizeToFit()
+            editingCell.dateButton.sizeToFit()
+            
         }
         else{
             editingCell.dateButton.isHidden = true
         }
-
+        
         
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         print("offset " , self.offset!)
@@ -521,7 +550,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }, completion: {(finished: Bool) in
             
             for cell: TodoItemTableViewCell in visibleCells {
-                cell.textView.isEditable = true}
+                cell.textView.isEditable = true
+            }
         })
         
         if editingCell.todoItem?.name == "" {
