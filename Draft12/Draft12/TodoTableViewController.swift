@@ -100,10 +100,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var items: [TodoItem] = []
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    //    var editingOffset: CGFloat?
     var offset: CGFloat?
-    //    var headerView: UIView?
-    
     
     
     override func viewDidLoad() {
@@ -150,7 +147,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         barView.addSubview(doneButton)
         doneButton.addTarget(self, action: #selector(self.doneButtonPressed), for: UIControlEvents.touchUpInside)
-        
         
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorStyle = UITableViewCellSeparatorStyle.none
@@ -210,10 +206,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func getData(){
         do {
-            
             let sortDate = NSSortDescriptor(key: "dueDate", ascending: true)
             let sortComplete = NSSortDescriptor(key: "isComplete", ascending: true)
-            
             let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
             fetchRequest.sortDescriptors = [sortComplete, sortDate]
             items = try context.fetch(fetchRequest)
@@ -225,6 +219,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
+//        cell.textView.attributedText = nil
         cell.delegate = self
         cell.todoItem = items[indexPath.row]
         
@@ -260,8 +255,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: cell.textView.text)
+        attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
         if cell.todoItem!.isComplete{
-            attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
             cell.textView.attributedText = attributeString
             cell.textView.font = Font.text
             cell.textView.textColor = Color.complete
@@ -270,9 +265,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             //            editingCell.textView.backgroundColor = Color.complete
         }
         else{
-            //            editingCell.textView.backgroundColor = Color.cellBackground
             attributeString.removeAttribute(NSStrikethroughColorAttributeName, range: NSMakeRange(0, attributeString.length))
-            cell.textView.attributedText = attributeString
+//            cell.textView.attributedText = attributeString
+            cell.textView.typingAttributes = [:]
             cell.textView.font = Font.text
             cell.textView.textColor = Color.text
             cell.dateButton.alpha = 1
@@ -280,8 +275,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             //            editingCell.textView
             
         }
-        
-        
         
         return cell
     }
@@ -443,15 +436,19 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         //        tableView.reloadData()
         tableView.beginUpdates()
         let indexPathForRow = NSIndexPath(row: itemIndex, section: 0)
+        let deletedCell = tableView.cellForRow(at: indexPathForRow as IndexPath) as! TodoItemTableViewCell
+        deletedCell.todoItem?.isComplete = false
+//        deletedCell.textView.attributedText = nil
         tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .left)
         tableView.endUpdates()
+        
     }
     
     func itemComplete(editingCell: TodoItemTableViewCell){
-        editingCell.todoItem?.isComplete = !(editingCell.todoItem?.isComplete)!
+        editingCell.todoItem!.isComplete = !editingCell.todoItem!.isComplete
         let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: editingCell.textView.text)
+        attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
         if (editingCell.todoItem?.isComplete)! {
-            attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
             editingCell.textView.attributedText = attributeString
             editingCell.textView.font = Font.text
             editingCell.textView.textColor = Color.complete
@@ -461,8 +458,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         else{
             //            editingCell.textView.backgroundColor = Color.cellBackground
+//            editingCell.textView.attributedText = attributeString
             attributeString.removeAttribute(NSStrikethroughColorAttributeName, range: NSMakeRange(0, attributeString.length))
-            editingCell.textView.attributedText = attributeString
+//            editingCell.textView.attributedText = attributeString
+            editingCell.textView.typingAttributes = [:]
+            editingCell.textView.text = editingCell.todoItem?.name
             editingCell.textView.font = Font.text
             editingCell.textView.textColor = Color.text
             editingCell.dateButton.alpha = 1
@@ -668,7 +668,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             tableView.insertRows(at: [indexPath], with: .top)
             tableView.endUpdates()
             //            tableView.reloadData()
-            (tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell).textView!.becomeFirstResponder()
+            let newCell = tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell
+            newCell.textView!.becomeFirstResponder()
+//            newCell.textView.attributedText = nil
             createdNewCell = true
             cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
         }
