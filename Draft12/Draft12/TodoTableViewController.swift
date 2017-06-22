@@ -513,9 +513,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         if(editingCell.todoItem!.dueDate == nil){
             editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
-            UIView.transition(with: editingCell.dateButton, duration: 0.4, options: .transitionCrossDissolve, animations:{ _ in
                 editingCell.dateButton.isHidden = false
-            }, completion: nil)
+            
         }
         
     }
