@@ -62,10 +62,10 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         }
     }
     
-    var redButton: UIButton?
-    var orangeButton: UIButton?
-    var cyanButton: UIButton?
-    var greenButton: UIButton?
+    var aButton: UIButton?
+    var bButton: UIButton?
+    var cButton: UIButton?
+    var dButton: UIButton?
     
     var originalCenter = CGPoint()
     var originalCrossCenter = CGPoint()
@@ -165,47 +165,47 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         let labelPosX = sizeConvert(size: 195)
         let distance = sizeConvert(size: 28)
         
-        redButton = UIButton(frame: CGRect(x: labelPosX, y: labelPosY, width: labelWidth, height: labelWidth))
-        redButton!.backgroundColor = UIColor.red
-        redButton!.layer.masksToBounds = true
-        redButton!.layer.cornerRadius = CGFloat(labelRadius)
+        aButton = UIButton(frame: CGRect(x: labelPosX, y: labelPosY, width: labelWidth, height: labelWidth))
+        aButton!.backgroundColor = UIColor.red
+        aButton!.layer.masksToBounds = true
+        aButton!.layer.cornerRadius = CGFloat(labelRadius)
         
-        orangeButton = UIButton(frame: CGRect(x: labelPosX+distance, y: labelPosY, width: labelWidth, height: labelWidth))
-        orangeButton!.backgroundColor = UIColor.orange
-        orangeButton!.layer.cornerRadius = CGFloat(labelRadius)
-        orangeButton!.layer.masksToBounds = true
+        bButton = UIButton(frame: CGRect(x: labelPosX+distance, y: labelPosY, width: labelWidth, height: labelWidth))
+        bButton!.backgroundColor = UIColor.orange
+        bButton!.layer.cornerRadius = CGFloat(labelRadius)
+        bButton!.layer.masksToBounds = true
         
-        cyanButton = UIButton(frame: CGRect(x: labelPosX+2*distance, y: labelPosY, width: labelWidth, height: labelWidth))
-        cyanButton!.backgroundColor = UIColor.cyan
-        cyanButton!.layer.masksToBounds = true
-        cyanButton!.layer.cornerRadius = CGFloat(labelRadius)
+        cButton = UIButton(frame: CGRect(x: labelPosX+2*distance, y: labelPosY, width: labelWidth, height: labelWidth))
+        cButton!.backgroundColor = UIColor.cyan
+        cButton!.layer.masksToBounds = true
+        cButton!.layer.cornerRadius = CGFloat(labelRadius)
         
-        greenButton = UIButton(frame: CGRect(x: labelPosX+3*distance, y: labelPosY, width: labelWidth, height: labelWidth))
-        greenButton!.backgroundColor = UIColor.green
-        greenButton!.layer.masksToBounds = true
-        greenButton!.layer.cornerRadius = CGFloat(labelRadius)
+        dButton = UIButton(frame: CGRect(x: labelPosX+3*distance, y: labelPosY, width: labelWidth, height: labelWidth))
+        dButton!.backgroundColor = UIColor.green
+        dButton!.layer.masksToBounds = true
+        dButton!.layer.cornerRadius = CGFloat(labelRadius)
         
-        textView.addSubview(redButton!)
-        textView.addSubview(orangeButton!)
-        textView.addSubview(cyanButton!)
-        textView.addSubview(greenButton!)
+        textView.addSubview(aButton!)
+        textView.addSubview(bButton!)
+        textView.addSubview(cButton!)
+        textView.addSubview(dButton!)
         
-        redButton!.tag = labelTag.Red.rawValue
-        orangeButton!.tag = labelTag.Orange.rawValue
-        cyanButton!.tag = labelTag.Cyan.rawValue
-        greenButton!.tag = labelTag.Green.rawValue
+        aButton!.tag = labelTag.Red.rawValue
+        bButton!.tag = labelTag.Orange.rawValue
+        cButton!.tag = labelTag.Cyan.rawValue
+        dButton!.tag = labelTag.Green.rawValue
         
-        redButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
-        redButton!.isUserInteractionEnabled = true
+        aButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
+        aButton!.isUserInteractionEnabled = true
         
-        orangeButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
-        orangeButton!.isUserInteractionEnabled = true
+        bButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
+        bButton!.isUserInteractionEnabled = true
         
-        cyanButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
-        cyanButton!.isUserInteractionEnabled = true
+        cButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
+        cButton!.isUserInteractionEnabled = true
         
-        greenButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
-        greenButton!.isUserInteractionEnabled = true
+        dButton!.addTarget(self, action: #selector(self.setFlag(sender:)), for: UIControlEvents.touchUpInside)
+        dButton!.isUserInteractionEnabled = true
         
         
         hideLabels()
@@ -230,7 +230,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         else{
             todoItem!.flag = String(sender.tag)
         }
-        
         
         delegate!.cellFlagDidChange(editingCell: self)
         print(sender.tag)
@@ -375,33 +374,33 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     private func hideLabels(){
-        UIView.transition(with: self.orangeButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
-            self.orangeButton!.isHidden = true
+        UIView.transition(with: self.bButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.bButton!.isHidden = true
         }, completion: nil)
-        UIView.transition(with: self.cyanButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
-            self.cyanButton!.isHidden = true
+        UIView.transition(with: self.cButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.cButton!.isHidden = true
         }, completion: nil)
-        UIView.transition(with: self.redButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
-            self.redButton!.isHidden = true
+        UIView.transition(with: self.aButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.aButton!.isHidden = true
         }, completion: nil)
-        UIView.transition(with: self.greenButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
-            self.greenButton!.isHidden = true
+        UIView.transition(with: self.dButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.dButton!.isHidden = true
         }, completion: nil)
     }
     
     private func unhideLabels(){
         
-        UIView.transition(with: self.orangeButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
-            self.orangeButton!.isHidden = false
+        UIView.transition(with: self.bButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.bButton!.isHidden = false
         }, completion: nil)
-        UIView.transition(with: self.cyanButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
-            self.cyanButton!.isHidden = false
+        UIView.transition(with: self.cButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.cButton!.isHidden = false
         }, completion: nil)
-        UIView.transition(with: self.redButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
-            self.redButton!.isHidden = false
+        UIView.transition(with: self.aButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.aButton!.isHidden = false
         }, completion: nil)
-        UIView.transition(with: self.greenButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
-            self.greenButton!.isHidden = false
+        UIView.transition(with: self.dButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+            self.dButton!.isHidden = false
         }, completion: nil)
     }
 }

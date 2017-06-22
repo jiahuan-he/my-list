@@ -133,8 +133,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         barView.isHidden = true
         tableView.addSubview(barView)
         
-        
-        
         deleteButton.sizeToFit()
         deleteButton.frame = CGRect(x: 0.015*ScreenSize.w, y: 0, width: buttonWidth, height: buttonHeight)
         deleteButton.setTitle("DELETE", for: UIControlState.normal)
@@ -167,7 +165,36 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
         
-    }    
+        let tableTap = UITapGestureRecognizer(target: self, action: #selector(self.handleTableTap(_:)))
+        tableView.addGestureRecognizer(tableTap)
+        
+    }
+    
+    func handleTableTap(_ sender: UITapGestureRecognizer){
+        editingCell!.textView.resignFirstResponder()
+//        cellDidEndEditing(editingCell: self.editingCell!)
+        
+    }
+    
+    func assignOpacity(cell: TodoItemTableViewCell){
+        
+            cell.aButton?.alpha = 0.5
+            cell.bButton?.alpha = 0.5
+            cell.cButton?.alpha = 0.5
+            cell.dButton?.alpha = 0.5
+            switch Int(cell.todoItem!.flag!)! {
+            case 0:
+            cell.aButton!.alpha = 1
+            case 1:
+            cell.bButton!.alpha = 1
+            case 2:
+            cell.cButton!.alpha = 1
+            case 3:
+            cell.dButton!.alpha = 1
+            default:
+                break
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         
@@ -318,9 +345,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             dateButton.sizeToFit()
             
         })
-        
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
-        
         
         editingCell!.isUserInteractionEnabled = true
         resignAfterModifyingDate = true
@@ -399,11 +424,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         return UIColor.clear
     }
     
-    
-    
     func cellFlagDidChange(editingCell: TodoItemTableViewCell){
-        
         UIView.animate(withDuration: 0.5, animations: {() in
+            self.assignOpacity(cell: editingCell)
             editingCell.rightBorder.backgroundColor = self.assignBorderColor(cell: editingCell).cgColor
             //            editingCell.textView.backgroundColor = self.assignBorderColor(cell: editingCell)
         })
@@ -461,6 +484,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
+        self.editingCell = editingCell
+        assignOpacity(cell: editingCell)
         tableView.isScrollEnabled = false
         self.navigationItem.leftBarButtonItem?.isEnabled = false
         editingCell.dateButton.isEnabled = true
@@ -472,11 +497,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         offset = tableView.contentOffset.y - editingCell.frame.origin.y
         offset = initContentOffset + offset!
         
-        
         // Important feature: scrolview content offset !!
-        print("content Offset " , tableView.contentOffset.y)
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-        
         for cell in visibleCells {
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
@@ -499,6 +521,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
+        
         if(modifyingDate == true){
             return
         }
@@ -639,6 +662,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if pullDownInProgress && scrollViewContentOffsetY <= -marginalHeight{
             clueView?.isHidden = true
             let newItem = TodoItem(context: context)
+            newItem.flag = "0"
             let indexPath = IndexPath(row: 0, section: 0)
             tableView.beginUpdates()
             items.insert(newItem, at: 0)
