@@ -146,7 +146,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         dateButton.addTarget(self, action: #selector(self.popDatepicker), for: UIControlEvents.touchUpInside)
         dateButton.isHidden = true
         
-        
         textView.addSubview(dateButton)
         
         let labelRadius = 5.0
@@ -208,6 +207,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         addGestureRecognizer(panRecognizer)
         
     }
+    
+   
     
     func popDatepicker(){
         delegate!.popupDatePicker(editingCell: self)

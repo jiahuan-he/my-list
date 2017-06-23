@@ -164,11 +164,38 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let tableTap = UITapGestureRecognizer(target: self, action: #selector(self.handleTableTap(_:)))
         tableView.addGestureRecognizer(tableTap)
         
+        initNavButton()
     }
     
     func handleTableTap(_ sender: UITapGestureRecognizer){
         editingCell!.textView.resignFirstResponder()
 //        cellDidEndEditing(editingCell: self.editingCell!)
+        
+    }
+    
+    var rightNavButton = UIButton(type: .custom)
+    var leftNavButton = UIButton(type: .custom)
+    private func initNavButton(){
+        
+        leftNavButton.setImage(UIImage(named: "img/filter"), for: .normal)
+        leftNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(size: 25), height: sizeConvert(size: 25))
+        leftNavButton.addTarget(self, action: #selector(self.handleLeftNavButton), for: .touchUpInside)
+        let item1 = UIBarButtonItem(customView: leftNavButton)
+        
+        rightNavButton.setImage(UIImage(named: "img/settings"), for: .normal)
+        rightNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(25), height: sizeConvert(25))
+        rightNavButton.addTarget(self, action: #selector(self.handleRightNavButton), for: .touchUpInside)
+        let item2 = UIBarButtonItem(customView: rightNavButton)
+        
+        self.navigationItem.setRightBarButton(item2, animated: true)
+        self.navigationItem.setLeftBarButton(item1, animated: true)
+    }
+    
+    func handleRightNavButton(){
+        
+    }
+    
+    func handleLeftNavButton(){
         
     }
     
