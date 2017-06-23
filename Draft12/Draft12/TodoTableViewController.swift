@@ -262,6 +262,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             cell.textView.textColor = Color.complete
             cell.dateButton.alpha = Alpha.complete
             cell.rightBorder.opacity = Float(Alpha.complete)
+            cell.textView.typingAttributes = [:]
             //            editingCell.textView.backgroundColor = Color.complete
         }
         else{
@@ -316,7 +317,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let dateButton = editingCell!.dateButton
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         UIView.animate(withDuration: 0.2, animations: { () in
-            
             
             let pickerDate = self.datePicker.date as Date
             
@@ -479,7 +479,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             tableView.beginUpdates()
             tableView.moveRow(at: fromPath, to: toPath)
             tableView.endUpdates()
-            
+        }
+        let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+        for cell in vCells{
+            if !(cell.todoItem?.isComplete)!{
+                cell.textView.typingAttributes = [:]
+            }
         }
     }
     
@@ -514,7 +519,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if(editingCell.todoItem!.dueDate == nil){
             editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
                 editingCell.dateButton.isHidden = false
-            
         }
         
     }
@@ -670,7 +674,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             //            tableView.reloadData()
             let newCell = tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell
             newCell.textView!.becomeFirstResponder()
-//            newCell.textView.attributedText = nil
             createdNewCell = true
             cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
         }

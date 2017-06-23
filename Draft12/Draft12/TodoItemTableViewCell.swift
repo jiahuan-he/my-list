@@ -53,7 +53,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     var checkLabel = UIImageView()
     let cueLabelWidth = sizeConvert(size: 26)
     
-    
     var todoItem: TodoItem?
         //for testing purpose
         {
@@ -85,11 +84,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     let checkImage = UIImage(named: "img/check2.png")
     
     override func awakeFromNib() {
-        //        if FileManager.default.fileExists(atPath: "img/crossMark.png") {
-        //            let url = NSURL(string: "img/crossMark.png")
-        //            let data = NSData(contentsOf: url! as URL)
-        //            crossLabel.image = UIImage(data: data! as Data)
-        //        }
         
         textView.keyboardAppearance = UIKeyboardAppearance.dark
         
@@ -117,11 +111,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         textView.textContainerInset = UIEdgeInsetsMake(sizeConvert(size: 26), sizeConvert(size: 2), sizeConvert(size: 15), sizeConvert(size: 10))
-        
-        
-        
-        
-        
+    
         rightBorder.cornerRadius = sizeConvert(size: 3.0)
         separator.backgroundColor = Color.separator.cgColor
         layer.addSublayer(rightBorder)
