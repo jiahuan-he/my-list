@@ -38,13 +38,15 @@ class FilterView: UIView {
         addSubview(flagView)
         
         initTextLabels()
-        initCheckBox()
         initFlagLabels()
+        initCheckBox()
 
     }
     
     let uncheckedImage = UIImage(named: "img/unchecked.png")
     let checkedImage = UIImage(named: "img/checked.png")
+    let labelButtonDistance = ScreenSize.w/14
+    
     func initCheckBox(){
         let renderedUncheckedImage = uncheckedImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         todayButton.setImage(renderedUncheckedImage, for: .normal)
@@ -57,9 +59,29 @@ class FilterView: UIView {
         tomorrowButton.frame = tomorrowLabel.frame.offsetBy(dx: tomorrowLabel.frame.width+ScreenSize.w/18, dy: 0)
         tomorrowButton.frame.size.width = tomorrowButton.frame.size.height
         
+        f1Button.frame = f1.frame.offsetBy(dx: labelButtonDistance, dy: 0)
+        f1Button.setImage(renderedUncheckedImage, for: .normal)
+        f1Button.tintColor = Color.crossLabel
+        
+        f2Button.frame = f2.frame.offsetBy(dx: labelButtonDistance, dy: 0)
+        f2Button.setImage(renderedUncheckedImage, for: .normal)
+        f2Button.tintColor = Color.crossLabel
+        
+        f3Button.frame = f3.frame.offsetBy(dx: labelButtonDistance, dy: 0)
+        f3Button.setImage(renderedUncheckedImage, for: .normal)
+        f3Button.tintColor = Color.crossLabel
+        
+        f4Button.frame = f4.frame.offsetBy(dx: labelButtonDistance, dy: 0)
+        f4Button.setImage(renderedUncheckedImage, for: .normal)
+        f4Button.tintColor = Color.crossLabel
         
         dateView.addSubview(todayButton)
         dateView.addSubview(tomorrowButton)
+        
+        flagView.addSubview(f1Button)
+        flagView.addSubview(f2Button)
+        flagView.addSubview(f3Button)
+        flagView.addSubview(f4Button)
     }
     
     func initTextLabels(){
@@ -92,32 +114,32 @@ class FilterView: UIView {
     }
     
     let labelRadius = 5.0
-    let flagLabelDistance = ScreenSize.w/6
+    let flagLabelDistance = ScreenSize.w/5
     func initFlagLabels(){
         
         
-        f1.frame = flagLabel.frame.offsetBy(dx: flagLabel.frame.width + ScreenSize.w/18, dy: 0)
+        f1.frame = flagLabel.frame.offsetBy(dx: flagLabel.frame.width + ScreenSize.w/20, dy: 0)
         f1.backgroundColor = Color.f1
         f1.layer.masksToBounds = true
         f1.layer.cornerRadius = CGFloat(labelRadius)
         f1.frame.size.width = f1.frame.size.height
         flagView.addSubview(f1)
         
-        f2.frame = flagLabel.frame.offsetBy(dx: flagLabel.frame.width + ScreenSize.w/18 + flagLabelDistance, dy: 0)
+        f2.frame = flagLabel.frame.offsetBy(dx: flagLabel.frame.width + ScreenSize.w/20 + flagLabelDistance, dy: 0)
         f2.backgroundColor = Color.f2
         f2.layer.masksToBounds = true
         f2.layer.cornerRadius = CGFloat(labelRadius)
         f2.frame.size.width = f2.frame.size.height
         flagView.addSubview(f2)
         
-        f3.frame = flagLabel.frame.offsetBy(dx: flagLabel.frame.width + ScreenSize.w/18 + 2*flagLabelDistance, dy: 0)
+        f3.frame = flagLabel.frame.offsetBy(dx: flagLabel.frame.width + ScreenSize.w/20 + 2*flagLabelDistance, dy: 0)
         f3.backgroundColor = Color.f3
         f3.layer.masksToBounds = true
         f3.layer.cornerRadius = CGFloat(labelRadius)
         f3.frame.size.width = f3.frame.size.height
         flagView.addSubview(f3)
         
-        f4.frame = flagLabel.frame.offsetBy(dx: flagLabel.frame.width + ScreenSize.w/18 + 3*flagLabelDistance, dy: 0)
+        f4.frame = flagLabel.frame.offsetBy(dx: flagLabel.frame.width + ScreenSize.w/20 + 3*flagLabelDistance, dy: 0)
         f4.backgroundColor = Color.f4
         f4.layer.masksToBounds = true
         f4.layer.cornerRadius = CGFloat(labelRadius)

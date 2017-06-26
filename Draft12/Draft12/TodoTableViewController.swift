@@ -194,6 +194,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         rightNavButton.addTarget(self, action: #selector(self.handleRightNavButton), for: .touchUpInside)
         let item2 = UIBarButtonItem(customView: rightNavButton)
         
+        
         self.navigationItem.setRightBarButton(item2, animated: true)
         self.navigationItem.setLeftBarButton(item1, animated: true)
         
@@ -207,10 +208,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var filterView = FilterView(frame: CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/6))
     func handleLeftNavButton(){
         
-//        tableView.contentOffset = CGPoint(x: 0, y: tableView.contentOffset.y-filterView.frame.height)
-        
         filterView.isHidden = false
-//        filterView.backgroundColor = UIColor.blue
+        let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+        print(filterView.frame.height)
+        UIView.animate(withDuration: 0.5, animations: {() in
+            for cell in vCells{
+            cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterView.frame.height)
+            }})
+        
+
     }
     
     func assignOpacity(cell: TodoItemTableViewCell){
