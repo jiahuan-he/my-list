@@ -33,8 +33,11 @@ struct Color{
     static let dateButton = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let cue = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let crossLabel = Color.text
-    
     static let complete = #colorLiteral(red: 0.02237439216, green: 0.6006702094, blue: 0.1028243576, alpha: 1)
+    static let f1 = UIColor.red
+    static let f2 = UIColor.orange
+    static let f3 = UIColor.cyan
+    static let f4 = UIColor.green
 }
 
 struct FlagColor{
@@ -165,6 +168,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.addGestureRecognizer(tableTap)
         
         initNavButton()
+        
+        
+        filterView.isHidden = true
+        tableView.addSubview(filterView)
     }
     
     func handleTableTap(_ sender: UITapGestureRecognizer){
@@ -183,20 +190,27 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let item1 = UIBarButtonItem(customView: leftNavButton)
         
         rightNavButton.setImage(UIImage(named: "img/settings"), for: .normal)
-        rightNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(25), height: sizeConvert(25))
+        rightNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(size: 25), height: sizeConvert(size: 25))
         rightNavButton.addTarget(self, action: #selector(self.handleRightNavButton), for: .touchUpInside)
         let item2 = UIBarButtonItem(customView: rightNavButton)
         
         self.navigationItem.setRightBarButton(item2, animated: true)
         self.navigationItem.setLeftBarButton(item1, animated: true)
+        
+        
     }
     
     func handleRightNavButton(){
         
     }
     
+    var filterView = FilterView(frame: CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/6))
     func handleLeftNavButton(){
         
+//        tableView.contentOffset = CGPoint(x: 0, y: tableView.contentOffset.y-filterView.frame.height)
+        
+        filterView.isHidden = false
+//        filterView.backgroundColor = UIColor.blue
     }
     
     func assignOpacity(cell: TodoItemTableViewCell){
