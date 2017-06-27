@@ -16,7 +16,7 @@ struct ScreenSize {
 
 struct Font{
     static let text = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 16))
-    static let dateButton = UIFont(name: "Arial-BoldItalicMT", size: sizeConvert(size: 13))
+    static let dateButton = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
     static let button = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
     static let clue = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 15))
     static let navigationBarText = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 20))
@@ -30,6 +30,8 @@ struct Color{
     static let navigationBar = tableViewBackground
     static let navigationBarText = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
     static let separator = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
+    static let settingLabel = Color.text
+    static let settingText = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 1)
     static let dateButton = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let cue = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let crossLabel = Color.text
@@ -305,7 +307,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-    var filterView = FilterView(frame: CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/6))
+    var filterView = FilterView(frame: CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/5))
     var isFiltering: Bool = false{
         didSet{
             if isFiltering == true{
