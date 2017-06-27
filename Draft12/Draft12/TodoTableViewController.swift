@@ -34,10 +34,13 @@ struct Color{
     static let cue = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let crossLabel = Color.text
     static let complete = #colorLiteral(red: 0.02237439216, green: 0.6006702094, blue: 0.1028243576, alpha: 1)
-    static let f1 = UIColor.red
-    static let f2 = UIColor.orange
-    static let f3 = UIColor.cyan
-    static let f4 = UIColor.green
+    static let f0 = UIColor.red
+    static let f1 = UIColor.orange
+    static let f2 = UIColor.cyan
+    static let f3 = UIColor.green
+    static let remove = UIColor.red
+    static let done = UIColor.gray
+    static let filtering = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 }
 
 struct FlagColor{
@@ -68,7 +71,7 @@ extension Date
     }
 }
 
-class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate {
+class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate, FilterViewDelegate{
     var modifyingDate = false
     var resignAfterModifyingDate = false
     var createdNewCell = false
@@ -95,7 +98,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var datePicker = UIDatePicker()
     var doneButton = UIButton()
-    var deleteButton = UIButton()
+    var removeButton = UIButton()
     var buttonHeight = ScreenSize.h/18
     var buttonWidth = ScreenSize.w/6
     
@@ -127,20 +130,19 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         datePicker.isHidden = true
         datePicker.datePickerMode = .dateAndTime
         
-        
         barView.frame = CGRect(x: 0, y: datePicker.frame.origin.y - buttonHeight, width: UIScreen.main.bounds.width, height: buttonHeight)
         barView.backgroundColor = UIColor.blue
         barView.isHidden = true
         tableView.addSubview(barView)
         
-        deleteButton.sizeToFit()
-        deleteButton.frame = CGRect(x: 0.015*ScreenSize.w, y: 0, width: buttonWidth, height: buttonHeight)
-        deleteButton.setTitle("DELETE", for: UIControlState.normal)
-        deleteButton.setTitleColor(UIColor.red, for: UIControlState.normal)
-        deleteButton.titleLabel?.font = Font.button
+        removeButton.sizeToFit()
+        removeButton.frame = CGRect(x: 0.015*ScreenSize.w, y: 0, width: buttonWidth, height: buttonHeight)
+        removeButton.setTitle("REMOVE", for: UIControlState.normal)
+        removeButton.setTitleColor(UIColor.red, for: UIControlState.normal)
+        removeButton.titleLabel?.font = Font.button
         
-        deleteButton.addTarget(self, action: #selector(self.deleteButtonPressed), for: UIControlEvents.touchUpInside)
-        barView.addSubview(deleteButton)
+        removeButton.addTarget(self, action: #selector(self.removeButtonPressed), for: UIControlEvents.touchUpInside)
+        barView.addSubview(removeButton)
         doneButton.sizeToFit()
         doneButton.frame = CGRect(x: UIScreen.main.bounds.width-buttonWidth, y: 0, width: buttonWidth, height: buttonHeight)
         
@@ -169,12 +171,114 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         initNavButton()
         filterView.isHidden = true
+        filterView.delegate = self
         tableView.addSubview(filterView)
     }
     
     func handleTableTap(_ sender: UITapGestureRecognizer){
         editingCell!.textView.resignFirstResponder()
         //        cellDidEndEditing(editingCell: self.editingCell!)
+        
+    }
+    
+    var tomorrowPredicate: NSPredicate?
+    var f0Predicate: NSPredicate?
+    var f1Predicate: NSPredicate?
+    var f2Predicate: NSPredicate?
+    var f3Predicate: NSPredicate?
+    struct predicate {
+        static let today = NSPredicate(format: "dueDate = %@", NSDate())
+//        static let tomorrow = 
+        static let f0 = NSPredicate(format: "flag = %@", "0")
+        static let f1 = NSPredicate(format: "flag = %@", "1")
+        static let f2 = NSPredicate(format: "flag = %@", "2")
+        static let f3 = NSPredicate(format: "flag = %@", "3")
+    }
+    
+    func doneFiltering(todayChecked: Bool, tomorrowChecked: Bool, f0Checked: Bool, f1Checked: Bool, f2Checked: Bool, f3Checked: Bool) {
+        isFiltering = false
+        if todayChecked{
+            if !subPredicates.contains(predicate.today){
+                subPredicates.append(predicate.today)
+            }
+        }
+        else{
+            if let index = subPredicates.index(of: predicate.today){
+                subPredicates.remove(at: index)
+            }
+        }
+        
+        if tomorrowChecked{
+//            let toa = Calendar.current.date(byAdding: .day, value: 1, to: NSDate() as Date)
+//            let newPredicate = NSPredicate(format: "dueDate", toa)
+//            subPredicates.append(newPredicate)
+        }
+        if f0Checked{
+            if !subPredicates.contains(predicate.f0){
+                subPredicates.append(predicate.f0)
+            }
+        }
+        else{
+            if let index = subPredicates.index(of: predicate.f0){
+                subPredicates.remove(at: index)
+            }
+        }
+        
+        
+        if f1Checked{
+            if !subPredicates.contains(predicate.f1){
+                subPredicates.append(predicate.f1)
+            }
+        }
+        else{
+            if let index = subPredicates.index(of: predicate.f1){
+                subPredicates.remove(at: index)
+            }
+        }
+        if f2Checked{
+            if !subPredicates.contains(predicate.f2){
+            subPredicates.append(predicate.f2)
+            }
+        }
+        else{
+            if let index = subPredicates.index(of: predicate.f2){
+                subPredicates.remove(at: index)
+                
+            }
+        }
+        if f3Checked{
+            if !subPredicates.contains(predicate.f3){
+            subPredicates.append(predicate.f3)
+            }
+        }
+        else{
+            if let index = subPredicates.index(of: predicate.f3){
+                subPredicates.remove(at: index)
+            }
+        }
+        
+        if todayChecked || tomorrowChecked || f0Checked || f1Checked || f2Checked || f3Checked{
+            leftNavButton.tintColor = Color.filtering
+            UserDefaults.standard.set(todayChecked, forKey: "todayChecked")
+            UserDefaults.standard.set(tomorrowChecked, forKey: "tomorrowChecked")
+            UserDefaults.standard.set(f0Checked, forKey: "f0Checked")
+            UserDefaults.standard.set(f1Checked, forKey: "f1Checked")
+            UserDefaults.standard.set(f2Checked, forKey: "f2Checked")
+            UserDefaults.standard.set(f3Checked, forKey: "f3Checked")
+        }
+        
+        getData()
+        let section = NSIndexSet(index: 0)
+        filterView.isHidden = true
+        tableView.reloadSections(section as IndexSet, with: .automatic)
+//        UIView.transition(with: tableView,
+//                          duration: 0.35,
+//                          options: .transitionCrossDissolve,
+//                          animations: { self.tableView.reloadData() })
+        
+    }
+    
+    func removeFiltering() {
         
     }
     
@@ -201,10 +305,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-    var filterView = FilterView(frame: CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/7))
+    var filterView = FilterView(frame: CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/6))
     var isFiltering: Bool = false{
         didSet{
             if isFiltering == true{
+                self.filterView.isHidden = false
                 tableTap!.isEnabled = false
                 let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
                 for cell in vCells{
@@ -213,6 +318,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 }
             }
             else{
+                self.filterView.isHidden = true
                 tableTap!.isEnabled = true
                 let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
                 for cell in vCells{
@@ -222,10 +328,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
     }
+    
     func handleLeftNavButton(){
         if isFiltering == false {
             isFiltering = true
-            self.filterView.isHidden = false
             let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
             UIView.animate(withDuration: 0.5, animations: {() in
                 for cell in vCells{
@@ -233,19 +339,17 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterView.frame.height)
                 }})
         }
-        else{
-            isFiltering = false
-            self.filterView.isHidden = true
-            let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
-            UIView.animate(withDuration: 0.5, animations: {() in
-                for cell in vCells{
-                    cell.alpha = 1
-                    cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.filterView.frame.height)
-                }})
-        }
+//        else{
+//            isFiltering = false
+//            self.filterView.isHidden = true
+//            let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+//            UIView.animate(withDuration: 0.5, animations: {() in
+//                for cell in vCells{
+//                    cell.alpha = 1
+//                    cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.filterView.frame.height)
+//                }})
+//        }
     }
-    
-    
     
     func assignOpacity(cell: TodoItemTableViewCell){
         
@@ -278,12 +382,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         initContentOffset = -tableView.contentOffset.y
     }
     
+    var subPredicates : [NSPredicate] = []
     func getData(){
         do {
             let sortDate = NSSortDescriptor(key: "dueDate", ascending: true)
             let sortComplete = NSSortDescriptor(key: "isComplete", ascending: true)
+            
             let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
             fetchRequest.sortDescriptors = [sortComplete, sortDate]
+            
+            if !subPredicates.isEmpty{
+                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: subPredicates)
+                fetchRequest.predicate = compoundPredicate
+            }
+            
+            
             items = try context.fetch(fetchRequest)
         }
         catch{
@@ -350,7 +463,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             //            editingCell.textView
             
         }
-        
         return cell
     }
     
@@ -368,9 +480,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     // buttons helper function
-    
-    
-    func deleteButtonPressed(){
+    func removeButtonPressed(){
         modifyingDate = false
         hidePicker()
         editingCell!.todoItem!.dueDate = nil
@@ -455,7 +565,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.endUpdates()
         UIView.setAnimationsEnabled(true)
         
-        
         let visibleCells = self.tableView.visibleCells as! [TodoItemTableViewCell]
         for cell in visibleCells {
             if cell !== editingCell {
@@ -464,12 +573,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
         }
-        
-        
-        //        UIView.animate(withDuration: 0.2, animations: { () in
-        ////            self.blurView!.frame = self.blurView!.frame.offsetBy(dx: 0, dy: heightChange)
-        //
-        //        })
     }
     
     private func assignBorderColor (cell: TodoItemTableViewCell) -> UIColor{
@@ -507,7 +610,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         context.delete(item)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
-        //        tableView.reloadData()
         tableView.beginUpdates()
         let indexPathForRow = NSIndexPath(row: itemIndex, section: 0)
         let deletedCell = tableView.cellForRow(at: indexPathForRow as IndexPath) as! TodoItemTableViewCell
@@ -745,7 +847,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             items.insert(newItem, at: 0)
             tableView.insertRows(at: [indexPath], with: .top)
             tableView.endUpdates()
-            //            tableView.reloadData()
             let newCell = tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell
             newCell.textView!.becomeFirstResponder()
             createdNewCell = true

@@ -155,22 +155,22 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         let distance = sizeConvert(size: 28)
         
         aButton = UIButton(frame: CGRect(x: labelPosX, y: labelPosY, width: labelWidth, height: labelWidth))
-        aButton!.backgroundColor = Color.f1
+        aButton!.backgroundColor = Color.f0
         aButton!.layer.masksToBounds = true
         aButton!.layer.cornerRadius = CGFloat(labelRadius)
         
         bButton = UIButton(frame: CGRect(x: labelPosX+distance, y: labelPosY, width: labelWidth, height: labelWidth))
-        bButton!.backgroundColor = Color.f2
+        bButton!.backgroundColor = Color.f1
         bButton!.layer.cornerRadius = CGFloat(labelRadius)
         bButton!.layer.masksToBounds = true
         
         cButton = UIButton(frame: CGRect(x: labelPosX+2*distance, y: labelPosY, width: labelWidth, height: labelWidth))
-        cButton!.backgroundColor = Color.f3
+        cButton!.backgroundColor = Color.f2
         cButton!.layer.masksToBounds = true
         cButton!.layer.cornerRadius = CGFloat(labelRadius)
         
         dButton = UIButton(frame: CGRect(x: labelPosX+3*distance, y: labelPosY, width: labelWidth, height: labelWidth))
-        dButton!.backgroundColor = Color.f4
+        dButton!.backgroundColor = Color.f3
         dButton!.layer.masksToBounds = true
         dButton!.layer.cornerRadius = CGFloat(labelRadius)
         
