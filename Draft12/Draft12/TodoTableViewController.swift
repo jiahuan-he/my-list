@@ -768,14 +768,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if items.contains(editingCell.todoItem!) {
             
             // WOW! The API is AMAZING! Thanks Apple!
-            tableView.beginUpdates()
-            //            if !createdNewCell{
-            let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-            getData()
-            let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-            tableView.moveRow(at: fromPath, to: toPath)
-            //            }
-            tableView.endUpdates()
+//            tableView.beginUpdates()
+//            //            if !createdNewCell{
+//            let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+//            getData()
+//            let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+//            tableView.moveRow(at: fromPath, to: toPath)
+//            //            }
+//            tableView.endUpdates()
+            let index = NSIndexSet(index: 0)
+            tableView.reloadSections(index as IndexSet, with: .automatic)
         }
         createdNewCell = false
         self.navigationItem.leftBarButtonItem?.isEnabled = true
