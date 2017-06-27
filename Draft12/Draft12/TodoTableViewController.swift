@@ -104,7 +104,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var items: [TodoItem] = []
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var offset: CGFloat?
-    
+    var tableTap: UITapGestureRecognizer?
+
     
     override func viewDidLoad() {
         print("Screen height: ", ScreenSize.h)
@@ -115,7 +116,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         navigationController?.navigationBar.barTintColor = Color.navigationBar
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: Color.navigationBarText, NSFontAttributeName: Font.navigationBarText!]
-        
         
         datePicker.frame = CGRect(x:  0, y:  ScreenSize.h - datePicker.frame.height  - pickerOffset, width:  UIScreen.main.bounds.width, height: datePickerHeight)
         datePicker.layer.borderWidth = 1
@@ -164,19 +164,17 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         tableView.register(UINib(nibName: "TodoItemTableViewCell", bundle: nil), forCellReuseIdentifier: "todoCell")
         
-        let tableTap = UITapGestureRecognizer(target: self, action: #selector(self.handleTableTap(_:)))
-        tableView.addGestureRecognizer(tableTap)
+        tableTap = UITapGestureRecognizer(target: self, action: #selector(self.handleTableTap(_:)))
+        tableView.addGestureRecognizer(tableTap!)
         
         initNavButton()
-        
-        
         filterView.isHidden = true
         tableView.addSubview(filterView)
     }
     
     func handleTableTap(_ sender: UITapGestureRecognizer){
         editingCell!.textView.resignFirstResponder()
-//        cellDidEndEditing(editingCell: self.editingCell!)
+        //        cellDidEndEditing(editingCell: self.editingCell!)
         
     }
     
@@ -194,53 +192,82 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         rightNavButton.addTarget(self, action: #selector(self.handleRightNavButton), for: .touchUpInside)
         let item2 = UIBarButtonItem(customView: rightNavButton)
         
-        
         self.navigationItem.setRightBarButton(item2, animated: true)
         self.navigationItem.setLeftBarButton(item1, animated: true)
-        
-        
     }
     
     func handleRightNavButton(){
         
     }
     
-    var filterView = FilterView(frame: CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/6))
-    func handleLeftNavButton(){
-        
-        filterView.isHidden = false
-        let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
-        print(filterView.frame.height)
-        UIView.animate(withDuration: 0.5, animations: {() in
-            for cell in vCells{
-            cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterView.frame.height)
-            }})
-        
-
+    
+    var filterView = FilterView(frame: CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/7))
+    var isFiltering: Bool = false{
+        didSet{
+            if isFiltering == true{
+                tableTap!.isEnabled = false
+                let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+                for cell in vCells{
+                    cell.isUserInteractionEnabled = false
+                    cell.textView.isUserInteractionEnabled = false
+                }
+            }
+            else{
+                tableTap!.isEnabled = true
+                let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+                for cell in vCells{
+                    cell.isUserInteractionEnabled = true
+                    cell.textView.isUserInteractionEnabled = true
+                }
+            }
+        }
     }
+    func handleLeftNavButton(){
+        if isFiltering == false {
+            isFiltering = true
+            self.filterView.isHidden = false
+            let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+            UIView.animate(withDuration: 0.5, animations: {() in
+                for cell in vCells{
+                    cell.alpha = Alpha.notEditingCell
+                    cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterView.frame.height)
+                }})
+        }
+        else{
+            isFiltering = false
+            self.filterView.isHidden = true
+            let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+            UIView.animate(withDuration: 0.5, animations: {() in
+                for cell in vCells{
+                    cell.alpha = 1
+                    cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.filterView.frame.height)
+                }})
+        }
+    }
+    
+    
     
     func assignOpacity(cell: TodoItemTableViewCell){
         
-            cell.aButton?.alpha = 0.5
-            cell.bButton?.alpha = 0.5
-            cell.cButton?.alpha = 0.5
-            cell.dButton?.alpha = 0.5
-            switch Int(cell.todoItem!.flag!)! {
-            case 0:
+        cell.aButton?.alpha = 0.5
+        cell.bButton?.alpha = 0.5
+        cell.cButton?.alpha = 0.5
+        cell.dButton?.alpha = 0.5
+        switch Int(cell.todoItem!.flag!)! {
+        case 0:
             cell.aButton!.alpha = 1
-            case 1:
+        case 1:
             cell.bButton!.alpha = 1
-            case 2:
+        case 2:
             cell.cButton!.alpha = 1
-            case 3:
+        case 3:
             cell.dButton!.alpha = 1
-            default:
-                break
+        default:
+            break
         }
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
         super.viewWillAppear(animated)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         getData()
@@ -266,7 +293,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
-//        cell.textView.attributedText = nil
+        //        cell.textView.attributedText = nil
         cell.delegate = self
         cell.todoItem = items[indexPath.row]
         
@@ -286,7 +313,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     date = cell.todoItem!.dueDate!.toString(dateFormat: DateFormat.normal)
                     date.insert("@", at: date.index(date.startIndex, offsetBy: 15))
                     date.insert(" ", at: date.index(date.startIndex, offsetBy: 15
-                    
+                        
                     ))
                 }
                 cell.dateButton.setTitle(date, for: UIControlState.normal)
@@ -314,7 +341,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         else{
             attributeString.removeAttribute(NSStrikethroughColorAttributeName, range: NSMakeRange(0, attributeString.length))
-//            cell.textView.attributedText = attributeString
+            //            cell.textView.attributedText = attributeString
             cell.textView.typingAttributes = [:]
             cell.textView.font = Font.text
             cell.textView.textColor = Color.text
@@ -485,7 +512,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let indexPathForRow = NSIndexPath(row: itemIndex, section: 0)
         let deletedCell = tableView.cellForRow(at: indexPathForRow as IndexPath) as! TodoItemTableViewCell
         deletedCell.todoItem?.isComplete = false
-//        deletedCell.textView.attributedText = nil
+        //        deletedCell.textView.attributedText = nil
         tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .left)
         tableView.endUpdates()
         
@@ -505,9 +532,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         else{
             //            editingCell.textView.backgroundColor = Color.cellBackground
-//            editingCell.textView.attributedText = attributeString
+            //            editingCell.textView.attributedText = attributeString
             attributeString.removeAttribute(NSStrikethroughColorAttributeName, range: NSMakeRange(0, attributeString.length))
-//            editingCell.textView.attributedText = attributeString
+            //            editingCell.textView.attributedText = attributeString
             editingCell.textView.typingAttributes = [:]
             editingCell.textView.text = editingCell.todoItem?.name
             editingCell.textView.font = Font.text
@@ -565,7 +592,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         if(editingCell.todoItem!.dueDate == nil){
             editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
-                editingCell.dateButton.isHidden = false
+            editingCell.dateButton.isHidden = false
         }
         
     }

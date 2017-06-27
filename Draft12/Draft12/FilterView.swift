@@ -19,37 +19,116 @@ class FilterView: UIView {
     var f2 = UILabel()
     var f3 = UILabel()
     var f4 = UILabel()
-    var checkBox = UIButton()
-    var todayButton = UIButton()
-    var tomorrowButton = UIButton()
-    var f1Button = UIButton()
-    var f2Button = UIButton()
-    var f3Button = UIButton()
-    var f4Button = UIButton()
+//    var checkBox = UIButton()
+    var todayButton = UIButton(type: .custom)
+    
+    var tomorrowButton = UIButton(type: .custom)
+    var f1Button = UIButton(type: .custom)
+    
+    var f2Button = UIButton(type: .custom)
+    var f3Button = UIButton(type: .custom)
+    var f4Button = UIButton(type: .custom)
+    
+    var isTodayChecked = false {
+        didSet{
+            if isTodayChecked{
+                todayButton.setImage(renderedCheckedImage, for: .normal)
+            }
+            else{
+                todayButton.setImage(renderedUncheckedImage, for: .normal)
+            }
+        }
+    }
+    
+    var isTomorrowChecked = false {
+        didSet{
+            if isTomorrowChecked{
+                tomorrowButton.setImage(renderedCheckedImage, for: .normal)
+            }
+            else{
+                tomorrowButton.setImage(renderedUncheckedImage, for: .normal)
+            }
+        }
+    }
+    
+    var isF1Checked = false {
+        didSet{
+            if isF1Checked{
+                f1Button.setImage(renderedCheckedImage, for: .normal)
+            }
+            else{
+                f1Button.setImage(renderedUncheckedImage, for: .normal)
+            }
+        }
+    }
+    
+    var isF2Checked = false {
+        didSet{
+            if isF2Checked{
+                f2Button.setImage(renderedCheckedImage, for: .normal)
+            }
+            else{
+                f2Button.setImage(renderedUncheckedImage, for: .normal)
+            }
+        }
+    }
+    
+    var isF3Checked = false {
+        didSet{
+            if isF3Checked{
+                f3Button.setImage(renderedCheckedImage, for: .normal)
+            }
+            else{
+                f3Button.setImage(renderedUncheckedImage, for: .normal)
+            }
+        }
+    }
+    
+    var isF4Checked = false {
+        didSet{
+            if isF4Checked{
+                f4Button.setImage(renderedCheckedImage, for: .normal)
+            }
+            else{
+                f4Button.setImage(renderedUncheckedImage, for: .normal)
+            }
+        }
+    }
+    
+    let uncheckedImage = UIImage(named: "img/unchecked.png")
+    let checkedImage = UIImage(named: "img/checked.png")
+    var renderedUncheckedImage = UIImage()
+    var renderedCheckedImage = UIImage()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         backgroundColor = Color.cellBackground
         dateView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height/2)
         flagView.frame = CGRect(x: 0, y: frame.height/2, width: frame.width, height: frame.height/2)
         dateView.backgroundColor = UIColor.blue
         flagView.backgroundColor = UIColor.brown
+        
+//        isUserInteractionEnabled = true
+//        dateView.isUserInteractionEnabled = true
+//        flagView.isUserInteractionEnabled = true
         addSubview(dateView)
         addSubview(flagView)
         
         initTextLabels()
         initFlagLabels()
         initCheckBox()
-
     }
-    
-    let uncheckedImage = UIImage(named: "img/unchecked.png")
-    let checkedImage = UIImage(named: "img/checked.png")
+
     let labelButtonDistance = ScreenSize.w/14
     
     func initCheckBox(){
-        let renderedUncheckedImage = uncheckedImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        
+        renderedUncheckedImage = uncheckedImage!.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        renderedCheckedImage = checkedImage!.withRenderingMode((UIImageRenderingMode.alwaysTemplate))
+        
         todayButton.setImage(renderedUncheckedImage, for: .normal)
+        todayButton.setImage(renderedCheckedImage, for: .selected)
         todayButton.tintColor = Color.crossLabel
         todayButton.frame = todayLabel.frame.offsetBy(dx: todayLabel.frame.width+ScreenSize.w/18, dy: 0)
         todayButton.frame.size.width = todayButton.frame.size.height
@@ -82,7 +161,42 @@ class FilterView: UIView {
         flagView.addSubview(f2Button)
         flagView.addSubview(f3Button)
         flagView.addSubview(f4Button)
+        
+        todayButton.addTarget(self, action: #selector(self.checkToday), for: UIControlEvents.touchUpInside)
+        todayButton.isUserInteractionEnabled = true
+        tomorrowButton.addTarget(self, action: #selector(self.checkTomorrow), for: UIControlEvents.touchUpInside)
+        tomorrowButton.isUserInteractionEnabled = true
+        f1Button.addTarget(self, action: #selector(self.checkF1), for: .touchUpInside)
+        f2Button.addTarget(self, action: #selector(self.checkF2), for: .touchUpInside)
+        f3Button.addTarget(self, action: #selector(self.checkF3), for: .touchUpInside)
+        f4Button.addTarget(self, action: #selector(self.checkF4), for: .touchUpInside)
     }
+    func checkToday(){
+        isTodayChecked = !isTodayChecked
+    }
+    
+    func checkTomorrow(){
+        isTomorrowChecked = !isTomorrowChecked
+    }
+    
+    func checkF1(){
+        isF1Checked = !isF1Checked
+    }
+    
+    func checkF2(){
+        isF2Checked = !isF2Checked
+    }
+    
+    func checkF3(){
+        isF3Checked = !isF3Checked
+    }
+    
+    func checkF4(){
+        isF4Checked = !isF4Checked
+    }
+    
+    
+    
     
     func initTextLabels(){
         todayLabel.textColor = Color.text
