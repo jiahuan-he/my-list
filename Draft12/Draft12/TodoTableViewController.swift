@@ -125,13 +125,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         navigationController?.navigationBar.barTintColor = Color.navigationBar
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: Color.navigationBarText, NSFontAttributeName: Font.navigationBarText!]
         
-        datePicker.frame = CGRect(x:  0, y:  ScreenSize.h - datePicker.frame.height  - pickerOffset, width:  UIScreen.main.bounds.width, height: datePickerHeight)
-//        datePicker.layer.borderWidth = 1
-//        datePicker.layer.borderColor = UIColor.green.cgColor
+        datePicker.frame = CGRect(x:  0, y:  ScreenSize.h - datePickerHeight, width:  UIScreen.main.bounds.width, height: datePickerHeight)
+        
+        datePicker.layer.borderWidth = 1
+        datePicker.layer.borderColor = UIColor.green.cgColor
         
         print("VIEW x", self.view.frame.origin.x)
         print("VIEW y", self.view.frame.origin.y)
-        self.view.addSubview(datePicker)
+//        self.view.addSubview(datePicker)
+        UIApplication.shared.keyWindow?.addSubview(datePicker)
+        
         datePicker.isHidden = true
         datePicker.datePickerMode = .dateAndTime
         
@@ -140,7 +143,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         barView.layer.borderColor = Color.separator.cgColor
         barView.layer.borderWidth = 1
         barView.isHidden = true
-        tableView.addSubview(barView)
+        UIApplication.shared.keyWindow?.addSubview(barView)
         
         
         removeButton.frame = CGRect(x: 0.015*ScreenSize.w, y: 0, width: buttonWidth, height: buttonHeight)
