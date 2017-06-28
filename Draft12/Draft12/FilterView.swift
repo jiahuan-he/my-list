@@ -9,7 +9,7 @@
 import UIKit
 
 protocol FilterViewDelegate{
-    func doneFiltering(todayChecked: Bool, tomorrowChecked: Bool, f0Checked: Bool, f1Checked: Bool, f2Checked: Bool, f3Checked: Bool)
+    func doneFiltering(todaySelected: Bool, tomorrowSelected: Bool, f0Selected: Bool, f1Selected: Bool, f2Selected: Bool, f3Selected: Bool)
     func removeFiltering()
 }
 
@@ -332,7 +332,7 @@ class FilterView: UIView {
     }
     
     func donePressed(){
-//        delegate!.doneFiltering(todayChecked: isTodayChecked, tomorrowChecked: isTodayChecked, f0Checked: isF0Selected, f1Checked: isF1Selected, f2Checked: isF2Selected, f3Checked: isF3Selected)
+        delegate!.doneFiltering(todaySelected: isTodaySelected, tomorrowSelected: isTomorrowSelected, f0Selected: isF0Selected, f1Selected: isF1Selected, f2Selected: isF2Selected, f3Selected: isF3Selected)
     }
     
     

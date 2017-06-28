@@ -206,9 +206,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         static let f3 = NSPredicate(format: "flag = %@", "3")
     }
     
-    func doneFiltering(todayChecked: Bool, tomorrowChecked: Bool, f0Checked: Bool, f1Checked: Bool, f2Checked: Bool, f3Checked: Bool) {
+    func doneFiltering(todaySelected: Bool, tomorrowSelected: Bool, f0Selected: Bool, f1Selected: Bool, f2Selected: Bool, f3Selected: Bool) {
         isFiltering = false
-        if todayChecked{
+        if todaySelected{
             if !subPredicates.contains(predicate.today){
                 subPredicates.append(predicate.today)
             }
@@ -219,12 +219,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
         
-        if tomorrowChecked{
+        if tomorrowSelected{
 //            let toa = Calendar.current.date(byAdding: .day, value: 1, to: NSDate() as Date)
 //            let newPredicate = NSPredicate(format: "dueDate", toa)
 //            subPredicates.append(newPredicate)
         }
-        if f0Checked{
+        if f0Selected{
             if !subPredicates.contains(predicate.f0){
                 subPredicates.append(predicate.f0)
             }
@@ -236,7 +236,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         
-        if f1Checked{
+        if f1Selected{
             if !subPredicates.contains(predicate.f1){
                 subPredicates.append(predicate.f1)
             }
@@ -246,7 +246,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 subPredicates.remove(at: index)
             }
         }
-        if f2Checked{
+        if f2Selected{
             if !subPredicates.contains(predicate.f2){
             subPredicates.append(predicate.f2)
             }
@@ -257,7 +257,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 
             }
         }
-        if f3Checked{
+        if f3Selected{
             if !subPredicates.contains(predicate.f3){
             subPredicates.append(predicate.f3)
             }
@@ -268,14 +268,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
         
-        if todayChecked || tomorrowChecked || f0Checked || f1Checked || f2Checked || f3Checked{
+        if todaySelected || tomorrowSelected || f0Selected || f1Selected || f2Selected || f3Selected{
             leftNavButton.tintColor = Color.filtering
-            UserDefaults.standard.set(todayChecked, forKey: "todayChecked")
-            UserDefaults.standard.set(tomorrowChecked, forKey: "tomorrowChecked")
-            UserDefaults.standard.set(f0Checked, forKey: "f0Checked")
-            UserDefaults.standard.set(f1Checked, forKey: "f1Checked")
-            UserDefaults.standard.set(f2Checked, forKey: "f2Checked")
-            UserDefaults.standard.set(f3Checked, forKey: "f3Checked")
+            UserDefaults.standard.set(todaySelected, forKey: "todaySelected")
+            UserDefaults.standard.set(tomorrowSelected, forKey: "tomorrowSelected")
+            UserDefaults.standard.set(f0Selected, forKey: "f0Selected")
+            UserDefaults.standard.set(f1Selected, forKey: "f1Selected")
+            UserDefaults.standard.set(f2Selected, forKey: "f2Selected")
+            UserDefaults.standard.set(f3Selected, forKey: "f3Selected")
         }
         
         getData()
@@ -341,9 +341,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func handleLeftNavButton(){
-        
-        
-        
+                        
         if isFiltering == false {
             tableView.setContentOffset(initContentOffset, animated: false)
 
@@ -412,11 +410,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
             fetchRequest.sortDescriptors = [sortComplete, sortDate]
-            
-            if !subPredicates.isEmpty{
-                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: subPredicates)
-                fetchRequest.predicate = compoundPredicate
-            }
+//            
+//            if !subPredicates.isEmpty{
+//                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: subPredicates)
+//                fetchRequest.predicate = compoundPredicate
+//            }
             
             
             items = try context.fetch(fetchRequest)
@@ -630,12 +628,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if items.contains(item){
             items.remove(at: itemIndex)
         }
+        item.dueDate = nil
+        item.flag = nil
         context.delete(item)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         tableView.beginUpdates()
         let indexPathForRow = NSIndexPath(row: itemIndex, section: 0)
-        let deletedCell = tableView.cellForRow(at: indexPathForRow as IndexPath) as! TodoItemTableViewCell
-        deletedCell.todoItem?.isComplete = false
         //        deletedCell.textView.attributedText = nil
         tableView.deleteRows(at: [indexPathForRow as IndexPath], with: .left)
         tableView.endUpdates()
@@ -665,7 +663,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             editingCell.textView.textColor = Color.text
             editingCell.dateButton.alpha = 1
             editingCell.rightBorder.opacity = 1
-            //            editingCell.textView
             
         }
         
@@ -787,6 +784,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         offset = 0
         editingCell.dateButton.isEnabled = false
         
+        
         if items.contains(editingCell.todoItem!) {
             
             // WOW! The API is AMAZING! Thanks Apple!
@@ -867,6 +865,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             let newItem = TodoItem(context: context)
             newItem.flag = "0"
             let indexPath = IndexPath(row: 0, section: 0)
+//            if subPredicates.isEmpty == false{
+//                subPredicates = []
+//                getData()
+//                tableView.reloadData()
+//            }
             tableView.beginUpdates()
             items.insert(newItem, at: 0)
             tableView.insertRows(at: [indexPath], with: .top)

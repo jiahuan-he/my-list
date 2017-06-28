@@ -31,7 +31,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "282"
             endingLineNumber = "282"
-            landmarkName = "doneFiltering(todayChecked:tomorrowChecked:f0Checked:f1Checked:f2Checked:f3Checked:)"
+            landmarkName = "doneFiltering(todaySelected:tomorrowSelected:f0Selected:f1Selected:f2Selected:f3Selected:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Draft12/TodoTableViewController.swift"
-            timestampString = "520329683.270516"
+            timestampString = "520329826.615175"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "408"
-            endingLineNumber = "408"
+            startingLineNumber = "406"
+            endingLineNumber = "406"
             landmarkName = "getData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Draft12/TodoTableViewController.swift"
-            timestampString = "520329683.270516"
+            timestampString = "520332840.107082"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "790"
-            endingLineNumber = "790"
+            startingLineNumber = "789"
+            endingLineNumber = "789"
             landmarkName = "cellDidEndEditing(editingCell:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -73,13 +73,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Draft12/TodoTableViewController.swift"
-            timestampString = "520329302.781551"
+            filePath = "Draft12/FilterView.swift"
+            timestampString = "520330522.67597"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "344"
-            endingLineNumber = "344"
-            landmarkName = "handleLeftNavButton()"
+            startingLineNumber = "334"
+            endingLineNumber = "334"
+            landmarkName = "donePressed()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
