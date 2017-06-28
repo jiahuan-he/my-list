@@ -410,11 +410,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
             fetchRequest.sortDescriptors = [sortComplete, sortDate]
-//            
-//            if !subPredicates.isEmpty{
-//                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: subPredicates)
-//                fetchRequest.predicate = compoundPredicate
-//            }
+            
+            if !subPredicates.isEmpty{
+                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: subPredicates)
+                fetchRequest.predicate = compoundPredicate
+            }
             
             
             items = try context.fetch(fetchRequest)
@@ -452,6 +452,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.dateButton.setTitle(date, for: UIControlState.normal)
                 cell.dateButton.titleLabel?.sizeToFit()
                 cell.dateButton.sizeToFit()
+            }
+            else{
+                cell.dateButton.isHidden = true
+                cell.dateButton.setTitle("", for: .normal)
             }
         }
         
@@ -625,11 +629,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func itemDeleted(item: TodoItem) {
         let itemIndex = (items as NSArray).index(of: item)
+        let cellIndex = IndexPath(row: itemIndex, section: 0)
         if items.contains(item){
             items.remove(at: itemIndex)
         }
         item.dueDate = nil
         item.flag = nil
+        
+        let deletedCell = tableView.cellForRow(at: cellIndex) as! TodoItemTableViewCell
+        deletedCell.dateButton.setTitle("", for: .normal)
+//        deletedCell.dateButton.isHidden = true
         context.delete(item)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         tableView.beginUpdates()
