@@ -138,7 +138,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         //        self.backgroundColor = UIColor.lightGray
         //        textView.backgroundColor = UIColor.lightGray
         
-        dateButton.frame = CGRect(x: sizeConvert(size: 5.5), y: sizeConvert(size: 4), width: sizeConvert(size: 100), height: sizeConvert(size: 20))
+        dateButton.frame = CGRect(x: sizeConvert(size: 5.5), y: sizeConvert(size: 1.6), width: sizeConvert(size: 100), height: sizeConvert(size: 20))
         dateButton.contentHorizontalAlignment = .left
         dateButton.setTitle("Add Due Date", for: UIControlState.normal)
         dateButton.setTitleColor(Color.dateButton, for: UIControlState.normal)

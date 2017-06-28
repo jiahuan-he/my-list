@@ -21,7 +21,7 @@ class FilterView: UIView {
     var dateLabel = UILabel()
     var todayButton = UIButton()
     var tomorrowButton = UIButton()
-    var noDate = UIButton()
+    var noDateButton = UIButton()
     
     var flagView = UIView()
     var flagLabel = UILabel()
@@ -34,68 +34,108 @@ class FilterView: UIView {
     var removeButton = UIButton(type: .custom)
     var doneButton = UIButton(type: .custom)
     
-    var isTodayChecked = false {
+    var seperator1 = CALayer()
+    var seperator2 = CALayer()
+    var seperator3 = CALayer()
+    let seperatorWidth = sizeConvert(size: 1)
+    let decoBarWidth = sizeConvert(size: 2)
+    
+    var isTodaySelected = false {
         didSet{
-            if isTodayChecked{
+            if isTodaySelected{
+                clearFlagSelection()
+                todayButton.setTitleColor(Color.settingSelected, for: .normal)
             }
             else{
-                
+                todayButton.setTitleColor(Color.settingUnselected, for: .normal)
             }
         }
     }
     
-    var isTomorrowChecked = false {
+    var isTomorrowSelected = false {
         didSet{
-            if isTomorrowChecked{
-                
+            if isTomorrowSelected{
+                clearFlagSelection()
+                tomorrowButton.setTitleColor(Color.settingSelected, for: .normal)
             }
             else{
-                
+                tomorrowButton.setTitleColor(Color.settingUnselected, for: .normal)
             }
         }
     }
     
-    var isF0Checked = false {
+    var isNoDateSelected = false {
         didSet{
-            if isF0Checked{
-                
+            if isNoDateSelected{
+                clearFlagSelection()
+                noDateButton.setTitleColor(Color.settingSelected, for: .normal)
             }
             else{
-                
+                noDateButton.setTitleColor(Color.settingUnselected, for: .normal)
             }
         }
     }
     
-    var isF1Checked = false {
+    var isF0Selected = false {
         didSet{
-            if isF1Checked{
-                
+            if isF0Selected{
+                clearDateSelection()
+                f0Button.alpha = 1
             }
             else{
-                
+                f0Button.setTitleColor(Color.settingUnselected, for: .normal)
+                f0Button.alpha = 0.5
             }
         }
     }
     
-    var isF2Checked = false {
+    var isF1Selected = false {
         didSet{
-            if isF2Checked{
+            if isF1Selected{
+                clearDateSelection()
+                f1Button.alpha = 1
             }
             else{
-                
+                f1Button.alpha = 0.5
             }
         }
     }
     
-    var isF3Checked = false {
+    var isF2Selected = false {
         didSet{
-            if isF3Checked{
-                
+            if isF2Selected{
+                clearDateSelection()
+                f2Button.alpha = 1
             }
             else{
-                
+                f2Button.alpha = 0.5
             }
         }
+    }
+    
+    var isF3Selected = false {
+        didSet{
+            if isF3Selected{
+                clearDateSelection()
+                f3Button.alpha = 1
+            }
+            else{
+                f3Button.alpha = 0.5
+            }
+        }
+    }
+    
+    private func clearDateSelection(){
+        isTodaySelected = false
+        isTomorrowSelected = false
+        isNoDateSelected = false
+    }
+    
+    private func clearFlagSelection(){
+        isF0Selected = false
+        isF1Selected = false
+        isF2Selected = false
+        isF3Selected = false
     }
     
     override init(frame: CGRect) {
@@ -107,9 +147,24 @@ class FilterView: UIView {
         flagView.frame = CGRect(x: 0, y: 1*frame.height/numOfRows, width: frame.width, height: frame.height/numOfRows)
         confirmView.frame = CGRect(x: 0, y: 2*frame.height/numOfRows, width: frame.width, height: frame.height/numOfRows)
         
-        dateView.backgroundColor = UIColor.blue
-        flagView.backgroundColor = UIColor.brown
-        confirmView.backgroundColor = UIColor.blue
+        dateView.backgroundColor = Color.cellBackground
+        flagView.backgroundColor = Color.cellBackground
+        confirmView.backgroundColor = Color.cellBackground
+        
+        seperator1.backgroundColor = Color.separator.cgColor
+        seperator2.backgroundColor = Color.separator.cgColor
+        seperator3.backgroundColor = Color.separator.cgColor
+        
+        seperator1.frame = CGRect(x: 0, y: dateView.frame.height-seperatorWidth, width: ScreenSize.w, height: seperatorWidth)
+        seperator2.frame = CGRect(x: 0, y: flagView.frame.height-seperatorWidth, width: ScreenSize.w, height: seperatorWidth)
+        seperator3.frame = CGRect(x: 0, y: confirmView.frame.height-seperatorWidth, width: ScreenSize.w, height: seperatorWidth)
+        
+       
+        
+        dateView.layer.addSublayer(seperator1)
+        flagView.layer.addSublayer(seperator2)
+        confirmView.layer.addSublayer(seperator3)
+        
         
         addSubview(dateView)
         addSubview(flagView)
@@ -123,14 +178,14 @@ class FilterView: UIView {
     
     let labelX = CGFloat(0.02*ScreenSize.w)
     let firstPosX = CGFloat(0.25*ScreenSize.w)
-    let secondPosX = CGFloat(0.47*ScreenSize.w)
-    let thirdPosX = CGFloat(0.7*ScreenSize.w)
+    let secondPosX = CGFloat(0.46*ScreenSize.w)
+    let thirdPosX = CGFloat(0.68*ScreenSize.w)
     
     func initDateView(){
         dateLabel.text = "By Date"
         todayButton.setTitle("Today", for: .normal)
         tomorrowButton.setTitle("Tomorrow", for: .normal)
-        noDate.setTitle("No Date", for: .normal)
+        noDateButton.setTitle("No Date", for: .normal)
         
         dateLabel.frame = CGRect(x: labelX, y: 0, width: 0, height: 0)
         
@@ -142,31 +197,29 @@ class FilterView: UIView {
         todayButton.titleLabel?.font = Font.text
         tomorrowButton.titleLabel?.font = Font.text
         todayButton.titleLabel?.font = Font.text
-        noDate.titleLabel?.font = Font.text
-        
+        noDateButton.titleLabel?.font = Font.text
         
         dateLabel.sizeToFit()
         todayButton.sizeToFit()
         tomorrowButton.sizeToFit()
-        noDate.sizeToFit()
-        noDate.frame = CGRect(x: ScreenSize.w-labelX-noDate.frame.width, y: 0, width: noDate.frame.width, height: noDate.frame.height)
+        noDateButton.sizeToFit()
+        noDateButton.frame = CGRect(x: ScreenSize.w-labelX-noDateButton.frame.width, y: 0, width: noDateButton.frame.width, height: noDateButton.frame.height)
         
         dateLabel.center.y = dateView.frame.size.height/2
         todayButton.center.y = dateView.frame.size.height/2
         tomorrowButton.center.y = dateView.frame.size.height/2
-        noDate.center.y = dateView.frame.size.height/2
+        noDateButton.center.y = dateView.frame.size.height/2
         
         dateLabel.textColor = Color.settingLabel
         
-        todayButton.setTitleColor(Color.settingText, for: .normal)
-        tomorrowButton.setTitleColor(Color.settingText, for: .normal)
-        noDate.setTitleColor(Color.settingText, for: .normal)
-        
+        todayButton.setTitleColor(Color.settingUnselected, for: .normal)
+        tomorrowButton.setTitleColor(Color.settingUnselected, for: .normal)
+        noDateButton.setTitleColor(Color.settingUnselected, for: .normal)
         
         dateView.addSubview(dateLabel)
         dateView.addSubview(todayButton)
         dateView.addSubview(tomorrowButton)
-        dateView.addSubview(noDate)
+        dateView.addSubview(noDateButton)
     }
     
     let flagButtonDistance = ScreenSize.w/8
@@ -211,6 +264,15 @@ class FilterView: UIView {
         flagView.addSubview(f1Button)
         flagView.addSubview(f2Button)
         flagView.addSubview(f3Button)
+        
+        todayButton.addTarget(self, action: #selector(self.selectToday), for: .touchUpInside)
+        tomorrowButton.addTarget(self, action: #selector(self.selectTomorrow), for: .touchUpInside)
+        noDateButton.addTarget(self, action: #selector(self.selectNoDate), for: .touchUpInside)
+        f0Button.addTarget(self, action: #selector(self.selectF0), for: .touchUpInside)
+        f1Button.addTarget(self, action: #selector(self.selectF1), for: .touchUpInside)
+        f2Button.addTarget(self, action: #selector(self.selectF2), for: .touchUpInside)
+        f3Button.addTarget(self, action: #selector(self.selectF3), for: .touchUpInside)
+        
     }
     
     
@@ -237,28 +299,32 @@ class FilterView: UIView {
         confirmView.addSubview(doneButton)
     }
     
-    func checkToday(){
-        isTodayChecked = !isTodayChecked
+    func selectToday(){
+        isTodaySelected = !isTodaySelected
     }
     
-    func checkTomorrow(){
-        isTomorrowChecked = !isTomorrowChecked
+    func selectTomorrow(){
+        isTomorrowSelected = !isTomorrowSelected
     }
     
-    func checkF0(){
-        isF0Checked = !isF0Checked
+    func selectNoDate(){
+        isNoDateSelected = !isNoDateSelected
     }
     
-    func checkF1(){
-        isF1Checked = !isF1Checked
+    func selectF0(){
+        isF0Selected = !isF0Selected
     }
     
-    func checkF2(){
-        isF2Checked = !isF2Checked
+    func selectF1(){
+        isF1Selected = !isF1Selected
     }
     
-    func checkF3(){
-        isF3Checked = !isF3Checked
+    func selectF2(){
+        isF2Selected = !isF2Selected
+    }
+    
+    func selectF3(){
+        isF3Selected = !isF3Selected
     }
     
     func removePressed(){
@@ -266,7 +332,7 @@ class FilterView: UIView {
     }
     
     func donePressed(){
-        delegate!.doneFiltering(todayChecked: isTodayChecked, tomorrowChecked: isTodayChecked, f0Checked: isF0Checked, f1Checked: isF1Checked, f2Checked: isF2Checked, f3Checked: isF3Checked)
+//        delegate!.doneFiltering(todayChecked: isTodayChecked, tomorrowChecked: isTodayChecked, f0Checked: isF0Selected, f1Checked: isF1Selected, f2Checked: isF2Selected, f3Checked: isF3Selected)
     }
     
     

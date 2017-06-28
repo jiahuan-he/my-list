@@ -15,7 +15,7 @@ struct ScreenSize {
 }
 
 struct Font{
-    static let text = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 16))
+    static let text = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 15))
     static let dateButton = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
     static let button = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
     static let clue = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 15))
@@ -31,7 +31,8 @@ struct Color{
     static let navigationBarText = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
     static let separator = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
     static let settingLabel = Color.text
-    static let settingText = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 1)
+    static let settingUnselected = Color.text.withAlphaComponent(0.5)
+    static let settingSelected = Color.text
     static let dateButton = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let cue = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let crossLabel = Color.text
@@ -41,7 +42,7 @@ struct Color{
     static let f2 = UIColor.cyan
     static let f3 = UIColor.green
     static let remove = UIColor.red
-    static let done = UIColor.gray
+    static let done = Color.text
     static let filtering = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 }
 
@@ -90,7 +91,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
     }
     
-    var initContentOffset: CGFloat = 0
+    var initContentOffsetY: CGFloat = 0
+    
+    var initContentOffset: CGPoint = CGPoint.zero
     
     var barView = UIView()
     
@@ -123,8 +126,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: Color.navigationBarText, NSFontAttributeName: Font.navigationBarText!]
         
         datePicker.frame = CGRect(x:  0, y:  ScreenSize.h - datePicker.frame.height  - pickerOffset, width:  UIScreen.main.bounds.width, height: datePickerHeight)
-        datePicker.layer.borderWidth = 1
-        datePicker.layer.borderColor = UIColor.green.cgColor
+//        datePicker.layer.borderWidth = 1
+//        datePicker.layer.borderColor = UIColor.green.cgColor
         
         print("VIEW x", self.view.frame.origin.x)
         print("VIEW y", self.view.frame.origin.y)
@@ -133,24 +136,30 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         datePicker.datePickerMode = .dateAndTime
         
         barView.frame = CGRect(x: 0, y: datePicker.frame.origin.y - buttonHeight, width: UIScreen.main.bounds.width, height: buttonHeight)
-        barView.backgroundColor = UIColor.blue
+        barView.backgroundColor = Color.cellBackground
+        barView.layer.borderColor = Color.separator.cgColor
+        barView.layer.borderWidth = 1
         barView.isHidden = true
         tableView.addSubview(barView)
         
-        removeButton.sizeToFit()
+        
         removeButton.frame = CGRect(x: 0.015*ScreenSize.w, y: 0, width: buttonWidth, height: buttonHeight)
         removeButton.setTitle("REMOVE", for: UIControlState.normal)
         removeButton.setTitleColor(UIColor.red, for: UIControlState.normal)
         removeButton.titleLabel?.font = Font.button
+        removeButton.sizeToFit()
+        removeButton.center.y = barView.frame.height/2
         
         removeButton.addTarget(self, action: #selector(self.removeButtonPressed), for: UIControlEvents.touchUpInside)
         barView.addSubview(removeButton)
-        doneButton.sizeToFit()
+        
         doneButton.frame = CGRect(x: UIScreen.main.bounds.width-buttonWidth, y: 0, width: buttonWidth, height: buttonHeight)
         
         doneButton.setTitle("DONE", for: UIControlState.normal)
         doneButton.setTitleColor(UIColor.gray, for: UIControlState.normal)
         doneButton.titleLabel?.font = Font.button
+        doneButton.sizeToFit()
+        doneButton.center.y = removeButton.center.y
         
         barView.addSubview(doneButton)
         doneButton.addTarget(self, action: #selector(self.doneButtonPressed), for: UIControlEvents.touchUpInside)
@@ -332,14 +341,23 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func handleLeftNavButton(){
+        
+        
+        
         if isFiltering == false {
+            tableView.setContentOffset(initContentOffset, animated: false)
+
             isFiltering = true
             let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+            
+            
             UIView.animate(withDuration: 0.5, animations: {() in
                 for cell in vCells{
                     cell.alpha = Alpha.notEditingCell
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterView.frame.height)
+                    print(cell.textView.text)
                 }})
+            
         }
 //        else{
 //            isFiltering = false
@@ -381,7 +399,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        initContentOffset = -tableView.contentOffset.y
+        initContentOffsetY = -tableView.contentOffset.y
+        initContentOffset = tableView.contentOffset
+        print(initContentOffsetY)
     }
     
     var subPredicates : [NSPredicate] = []
@@ -678,7 +698,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         offset = tableView.contentOffset.y - editingCell.frame.origin.y
-        offset = initContentOffset + offset!
+        offset = initContentOffsetY + offset!
         
         // Important feature: scrolview content offset !!
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
@@ -770,16 +790,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if items.contains(editingCell.todoItem!) {
             
             // WOW! The API is AMAZING! Thanks Apple!
-//            tableView.beginUpdates()
-//            //            if !createdNewCell{
-//            let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-//            getData()
-//            let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-//            tableView.moveRow(at: fromPath, to: toPath)
-//            //            }
-//            tableView.endUpdates()
-            let index = NSIndexSet(index: 0)
-            tableView.reloadSections(index as IndexSet, with: .automatic)
+            tableView.beginUpdates()
+            //            if !createdNewCell{
+            let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+            getData()
+            let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+            tableView.moveRow(at: fromPath, to: toPath)
+            //            }
+            tableView.endUpdates()
+//            let index = NSIndexSet(index: 0)
+//            tableView.reloadSections(index as IndexSet, with: .automatic)
         }
         createdNewCell = false
         self.navigationItem.leftBarButtonItem?.isEnabled = true
@@ -803,7 +823,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         addClueLabel.textColor = Color.cue
         
         //        // this behavior starts when a user pulls down while at the top of the table
-        pullDownInProgress = (scrollView.contentOffset.y + initContentOffset) <= 0.0
+        pullDownInProgress = (scrollView.contentOffset.y + initContentOffsetY) <= 0.0
         clueView!.backgroundColor = UIColor.clear
         if pullDownInProgress {
             tableView.insertSubview(clueView!, at: 0)
@@ -820,7 +840,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             scrollView.contentOffset.y = maxOffsetY
         }
         
-        let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffset
+        let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffsetY
         if(scrollViewContentOffsetY <= -marginalHeight){
             addClueLabel.text = "Release"
         }
@@ -841,7 +861,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
-        let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffset
+        let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffsetY
         if pullDownInProgress && scrollViewContentOffsetY <= -marginalHeight{
             clueView?.isHidden = true
             let newItem = TodoItem(context: context)
