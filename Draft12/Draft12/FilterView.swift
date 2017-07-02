@@ -9,7 +9,7 @@
 import UIKit
 
 protocol FilterViewDelegate{
-    func doneFiltering(todaySelected: Bool, tomorrowSelected: Bool, f0Selected: Bool, f1Selected: Bool, f2Selected: Bool, f3Selected: Bool)
+    func doneFiltering(todaySelected: Bool, tomorrowSelected: Bool, noDateSelected: Bool, f0Selected: Bool, f1Selected: Bool, f2Selected: Bool, f3Selected: Bool)
     func removeFiltering()
 }
 
@@ -249,6 +249,11 @@ class FilterView: UIView {
         f2Button.backgroundColor = Color.f2
         f3Button.backgroundColor = Color.f3
         
+        f0Button.alpha = 0.5
+        f1Button.alpha = 0.5
+        f2Button.alpha = 0.5
+        f3Button.alpha = 0.5
+        
         
         f0Button.layer.masksToBounds = true
         f0Button.layer.cornerRadius = CGFloat(labelRadius)
@@ -332,15 +337,9 @@ class FilterView: UIView {
     }
     
     func donePressed(){
-        delegate!.doneFiltering(todaySelected: isTodaySelected, tomorrowSelected: isTomorrowSelected, f0Selected: isF0Selected, f1Selected: isF1Selected, f2Selected: isF2Selected, f3Selected: isF3Selected)
+        delegate!.doneFiltering(todaySelected: isTodaySelected, tomorrowSelected: isTomorrowSelected, noDateSelected: isNoDateSelected, f0Selected: isF0Selected, f1Selected: isF1Selected, f2Selected: isF2Selected, f3Selected: isF3Selected)
     }
-    
-    
-    
-    
-    
-    
-    
+
     
     
     required init?(coder aDecoder: NSCoder) {

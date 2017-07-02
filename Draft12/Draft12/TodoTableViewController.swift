@@ -194,81 +194,77 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         //        cellDidEndEditing(editingCell: self.editingCell!)
         
     }
+
+//    struct predicate {
+//        static let today = NSPredicate(format: "dueDate = %@", NSDate())
+//        static let f0 = NSPredicate(format: "flag = %@", "0")
+//        static let f1 = NSPredicate(format: "flag = %@", "1")
+//        static let f2 = NSPredicate(format: "flag = %@", "2")
+//        static let f3 = NSPredicate(format: "flag = %@", "3")
+//    }
     
-    var tomorrowPredicate: NSPredicate?
-    var f0Predicate: NSPredicate?
-    var f1Predicate: NSPredicate?
-    var f2Predicate: NSPredicate?
-    var f3Predicate: NSPredicate?
-    struct predicate {
-        static let today = NSPredicate(format: "dueDate = %@", NSDate())
-//        static let tomorrow = 
-        static let f0 = NSPredicate(format: "flag = %@", "0")
-        static let f1 = NSPredicate(format: "flag = %@", "1")
-        static let f2 = NSPredicate(format: "flag = %@", "2")
-        static let f3 = NSPredicate(format: "flag = %@", "3")
+    struct dateSelector {
+        static var today = false
+        static var tomorrow = false
+        static var noDate = false
     }
     
-    func doneFiltering(todaySelected: Bool, tomorrowSelected: Bool, f0Selected: Bool, f1Selected: Bool, f2Selected: Bool, f3Selected: Bool) {
+    struct flagSelector {
+        static var f0 = false
+        static var f1 = false
+        static var f2 = false
+        static var f3 = false
+    }
+    
+    func doneFiltering(todaySelected: Bool, tomorrowSelected: Bool, noDateSelected: Bool, f0Selected: Bool, f1Selected: Bool, f2Selected: Bool, f3Selected: Bool) {
+        
         isFiltering = false
         if todaySelected{
-            if !subPredicates.contains(predicate.today){
-                subPredicates.append(predicate.today)
-            }
+            dateSelector.today = true
         }
         else{
-            if let index = subPredicates.index(of: predicate.today){
-                subPredicates.remove(at: index)
-            }
+            dateSelector.today = false
         }
         
         if tomorrowSelected{
-//            let toa = Calendar.current.date(byAdding: .day, value: 1, to: NSDate() as Date)
-//            let newPredicate = NSPredicate(format: "dueDate", toa)
-//            subPredicates.append(newPredicate)
+            dateSelector.tomorrow = true
         }
+        else {
+            dateSelector.tomorrow = false
+        }
+        
+        if noDateSelected{
+            dateSelector.noDate = true
+        }
+        else {
+            dateSelector.noDate = false
+        }
+        
         if f0Selected{
-            if !subPredicates.contains(predicate.f0){
-                subPredicates.append(predicate.f0)
-            }
+            flagSelector.f0 = true
         }
         else{
-            if let index = subPredicates.index(of: predicate.f0){
-                subPredicates.remove(at: index)
-            }
+            flagSelector.f0 = false
         }
         
         
         if f1Selected{
-            if !subPredicates.contains(predicate.f1){
-                subPredicates.append(predicate.f1)
-            }
+           flagSelector.f1 = true
         }
         else{
-            if let index = subPredicates.index(of: predicate.f1){
-                subPredicates.remove(at: index)
-            }
+            flagSelector.f1 = false
         }
         if f2Selected{
-            if !subPredicates.contains(predicate.f2){
-            subPredicates.append(predicate.f2)
-            }
+            flagSelector.f2 = true
         }
         else{
-            if let index = subPredicates.index(of: predicate.f2){
-                subPredicates.remove(at: index)
-                
-            }
+            flagSelector.f2 = false
         }
         if f3Selected{
-            if !subPredicates.contains(predicate.f3){
-            subPredicates.append(predicate.f3)
-            }
+            flagSelector.f3 = true
         }
         else{
-            if let index = subPredicates.index(of: predicate.f3){
-                subPredicates.remove(at: index)
-            }
+            flagSelector.f3 = false
         }
         
         if todaySelected || tomorrowSelected || f0Selected || f1Selected || f2Selected || f3Selected{
@@ -405,7 +401,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         print(initContentOffsetY)
     }
     
-    var subPredicates : [NSPredicate] = []
+//    var subPredicates : [NSPredicate] = []
     func getData(){
         do {
             let sortDate = NSSortDescriptor(key: "dueDate", ascending: true)
@@ -413,14 +409,67 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
             fetchRequest.sortDescriptors = [sortComplete, sortDate]
-            
-            if !subPredicates.isEmpty{
-                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: subPredicates)
-                fetchRequest.predicate = compoundPredicate
-            }
-            
+//            
+//            if !subPredicates.isEmpty{
+//                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: subPredicates)
+//                fetchRequest.predicate = compoundPredicate
+//            }
+//            
             
             items = try context.fetch(fetchRequest)
+            
+            var filteredItems: [TodoItem] = []
+            if dateSelector.today || dateSelector.tomorrow || dateSelector.noDate{
+                for item in items{
+                    if dateSelector.noDate{
+                        if item.dueDate == nil{
+                            filteredItems.append(item)
+                        }
+                    }
+                    if item.dueDate == nil{
+                        continue
+                    }
+                    if dateSelector.today{
+                        if Calendar.current.isDateInToday(item.dueDate! as Date){
+                            filteredItems.append(item)
+                        }
+                    }
+                    if dateSelector.tomorrow{
+                        if Calendar.current.isDateInTomorrow(item.dueDate! as Date){
+                            filteredItems.append(item)
+                        }
+                    }
+                }
+            }
+            
+            if (flagSelector.f0 || flagSelector.f1 || flagSelector.f2 || flagSelector.f3) {
+                for item in items{
+                    if flagSelector.f0{
+                        if item.flag == "0"{
+                            filteredItems.append(item)
+                        }
+                    }
+                    if flagSelector.f1{
+                        if item.flag == "1"{
+                            filteredItems.append(item)
+                        }
+                    }
+                    if flagSelector.f2{
+                        if item.flag == "2"{
+                            filteredItems.append(item)
+                        }
+                    }
+                    if flagSelector.f3{
+                        if item.flag == "3"{
+                            filteredItems.append(item)
+                        }
+                    }
+                }
+            }
+            if !filteredItems.isEmpty{
+                items = filteredItems
+            }
+            
         }
         catch{
             print("Wrong")
