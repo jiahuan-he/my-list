@@ -418,6 +418,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             items = try context.fetch(fetchRequest)
             
+            
+            
             var filteredItems: [TodoItem] = []
             if dateSelector.today || dateSelector.tomorrow || dateSelector.noDate{
                 for item in items{
@@ -466,7 +468,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     }
                 }
             }
-            if !filteredItems.isEmpty{
+            if flagSelector.f0 || flagSelector.f1 || flagSelector.f2 || flagSelector.f3 || dateSelector.today || dateSelector.tomorrow || dateSelector.noDate{
                 items = filteredItems
             }
             
