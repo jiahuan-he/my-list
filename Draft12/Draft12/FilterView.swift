@@ -44,10 +44,10 @@ class FilterView: UIView {
         didSet{
             if isTodaySelected{
                 clearFlagSelection()
-                todayButton.setTitleColor(Color.settingSelected, for: .normal)
+                todayButton.alpha = 1
             }
             else{
-                todayButton.setTitleColor(Color.settingUnselected, for: .normal)
+                todayButton.alpha = 0.5
             }
         }
     }
@@ -56,10 +56,10 @@ class FilterView: UIView {
         didSet{
             if isTomorrowSelected{
                 clearFlagSelection()
-                tomorrowButton.setTitleColor(Color.settingSelected, for: .normal)
+                tomorrowButton.alpha = 1.0
             }
             else{
-                tomorrowButton.setTitleColor(Color.settingUnselected, for: .normal)
+                tomorrowButton.alpha = 0.5
             }
         }
     }
@@ -68,10 +68,10 @@ class FilterView: UIView {
         didSet{
             if isNoDateSelected{
                 clearFlagSelection()
-                noDateButton.setTitleColor(Color.settingSelected, for: .normal)
+                noDateButton.alpha = 1
             }
             else{
-                noDateButton.setTitleColor(Color.settingUnselected, for: .normal)
+                noDateButton.alpha = 0.5
             }
         }
     }
@@ -83,7 +83,6 @@ class FilterView: UIView {
                 f0Button.alpha = 1
             }
             else{
-                f0Button.setTitleColor(Color.settingUnselected, for: .normal)
                 f0Button.alpha = 0.5
             }
         }
@@ -174,7 +173,10 @@ class FilterView: UIView {
         initFlagView()
         initConfirmView()
         
+        
+        
     }
+    
     
     let labelX = CGFloat(0.02*ScreenSize.w)
     let firstPosX = CGFloat(0.25*ScreenSize.w)
@@ -212,9 +214,19 @@ class FilterView: UIView {
         
         dateLabel.textColor = Color.settingLabel
         
-        todayButton.setTitleColor(Color.settingUnselected, for: .normal)
-        tomorrowButton.setTitleColor(Color.settingUnselected, for: .normal)
-        noDateButton.setTitleColor(Color.settingUnselected, for: .normal)
+        let today = UserDefaults.standard.bool(forKey: "todaySelected")
+        let tomorrow = UserDefaults.standard.bool(forKey: "tomorrowSelected")
+        let noDate = UserDefaults.standard.bool(forKey: "noDateSelected")
+        
+        
+        
+        todayButton.setTitleColor(Color.settingSelected, for: .normal)
+        tomorrowButton.setTitleColor(Color.settingSelected, for: .normal)
+        noDateButton.setTitleColor(Color.settingSelected, for: .normal)
+        
+        today ? (isTodaySelected = true):(isTodaySelected = false)
+        tomorrow ? (isTomorrowSelected = true):(isTomorrowSelected = false)
+        noDate ? (isNoDateSelected = true):(isNoDateSelected = false)
         
         dateView.addSubview(dateLabel)
         dateView.addSubview(todayButton)
@@ -249,10 +261,19 @@ class FilterView: UIView {
         f2Button.backgroundColor = Color.f2
         f3Button.backgroundColor = Color.f3
         
-        f0Button.alpha = 0.5
-        f1Button.alpha = 0.5
-        f2Button.alpha = 0.5
-        f3Button.alpha = 0.5
+      
+        let f0Selected = UserDefaults.standard.bool(forKey: "f0Selected")
+        let f1Selected = UserDefaults.standard.bool(forKey: "f1Selected")
+        let f2Selected = UserDefaults.standard.bool(forKey: "f2Selected")
+        let f3Selected = UserDefaults.standard.bool(forKey: "f3Selected")
+        
+        
+        f0Selected ? (isF0Selected = true):(isF0Selected=false)
+        f1Selected ? (isF1Selected = true):(isF1Selected=false)
+        f2Selected ? (isF2Selected = true):(isF2Selected=false)
+        f3Selected ? (isF3Selected = true):(isF3Selected=false)
+        
+        
         
         
         f0Button.layer.masksToBounds = true

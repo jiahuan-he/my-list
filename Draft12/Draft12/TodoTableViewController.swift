@@ -31,7 +31,6 @@ struct Color{
     static let navigationBarText = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
     static let separator = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
     static let settingLabel = Color.text
-    static let settingUnselected = Color.text.withAlphaComponent(0.5)
     static let settingSelected = Color.text
     static let dateButton = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
     static let cue = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
@@ -218,6 +217,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func doneFiltering(todaySelected: Bool, tomorrowSelected: Bool, noDateSelected: Bool, f0Selected: Bool, f1Selected: Bool, f2Selected: Bool, f3Selected: Bool) {
         
+        
         isFiltering = false
         if todaySelected{
             dateSelector.today = true
@@ -267,15 +267,19 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             flagSelector.f3 = false
         }
         
-        if todaySelected || tomorrowSelected || f0Selected || f1Selected || f2Selected || f3Selected{
+        if todaySelected || tomorrowSelected || noDateSelected || f0Selected || f1Selected || f2Selected || f3Selected{
             leftNavButton.tintColor = Color.filtering
-            UserDefaults.standard.set(todaySelected, forKey: "todaySelected")
-            UserDefaults.standard.set(tomorrowSelected, forKey: "tomorrowSelected")
-            UserDefaults.standard.set(f0Selected, forKey: "f0Selected")
-            UserDefaults.standard.set(f1Selected, forKey: "f1Selected")
-            UserDefaults.standard.set(f2Selected, forKey: "f2Selected")
-            UserDefaults.standard.set(f3Selected, forKey: "f3Selected")
         }
+        
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(todaySelected, forKey: "todaySelected")
+        userDefaults.set(tomorrowSelected, forKey: "tomorrowSelected")
+        userDefaults.set(noDateSelected, forKey: "noDateSelected")
+        userDefaults.set(f0Selected, forKey: "f0Selected")
+        userDefaults.set(f1Selected, forKey: "f1Selected")
+        userDefaults.set(f2Selected, forKey: "f2Selected")
+        userDefaults.set(f3Selected, forKey: "f3Selected")
+        userDefaults.synchronize()        
         
         getData()
         let section = NSIndexSet(index: 0)
@@ -421,9 +425,19 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             
             var filteredItems: [TodoItem] = []
-            if dateSelector.today || dateSelector.tomorrow || dateSelector.noDate{
+            
+            let today = UserDefaults.standard.bool(forKey: "todaySelected")
+            let tomorrow = UserDefaults.standard.bool(forKey: "tomorrowSelected")
+            let noDate = UserDefaults.standard.bool(forKey: "noDateSelected")
+            let f0Selected = UserDefaults.standard.bool(forKey: "f0Selected")
+            let f1Selected = UserDefaults.standard.bool(forKey: "f1Selected")
+            let f2Selected = UserDefaults.standard.bool(forKey: "f2Selected")
+            let f3Selected = UserDefaults.standard.bool(forKey: "f3Selected")
+            
+            
+            if today || tomorrow || noDate{
                 for item in items{
-                    if dateSelector.noDate{
+                    if noDate{
                         if item.dueDate == nil{
                             filteredItems.append(item)
                         }
@@ -431,12 +445,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     if item.dueDate == nil{
                         continue
                     }
-                    if dateSelector.today{
+                    if today{
                         if Calendar.current.isDateInToday(item.dueDate! as Date){
                             filteredItems.append(item)
                         }
                     }
-                    if dateSelector.tomorrow{
+                    if tomorrow{
                         if Calendar.current.isDateInTomorrow(item.dueDate! as Date){
                             filteredItems.append(item)
                         }
@@ -444,33 +458,87 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 }
             }
             
-            if (flagSelector.f0 || flagSelector.f1 || flagSelector.f2 || flagSelector.f3) {
+            if (f0Selected||f1Selected||f2Selected||f3Selected) {
                 for item in items{
-                    if flagSelector.f0{
+                    if f0Selected{
                         if item.flag == "0"{
                             filteredItems.append(item)
                         }
                     }
-                    if flagSelector.f1{
+                    if f1Selected{
                         if item.flag == "1"{
                             filteredItems.append(item)
                         }
                     }
-                    if flagSelector.f2{
+                    if f2Selected{
                         if item.flag == "2"{
                             filteredItems.append(item)
                         }
                     }
-                    if flagSelector.f3{
+                    if f3Selected{
                         if item.flag == "3"{
                             filteredItems.append(item)
                         }
                     }
                 }
             }
-            if flagSelector.f0 || flagSelector.f1 || flagSelector.f2 || flagSelector.f3 || dateSelector.today || dateSelector.tomorrow || dateSelector.noDate{
+            if f0Selected||f1Selected||f2Selected||f3Selected||today||tomorrow||noDate{
                 items = filteredItems
             }
+            
+            
+            
+            
+//            if dateSelector.today || dateSelector.tomorrow || dateSelector.noDate{
+//                for item in items{
+//                    if dateSelector.noDate{
+//                        if item.dueDate == nil{
+//                            filteredItems.append(item)
+//                        }
+//                    }
+//                    if item.dueDate == nil{
+//                        continue
+//                    }
+//                    if dateSelector.today{
+//                        if Calendar.current.isDateInToday(item.dueDate! as Date){
+//                            filteredItems.append(item)
+//                        }
+//                    }
+//                    if dateSelector.tomorrow{
+//                        if Calendar.current.isDateInTomorrow(item.dueDate! as Date){
+//                            filteredItems.append(item)
+//                        }
+//                    }
+//                }
+//            }
+//            
+//            if (flagSelector.f0 || flagSelector.f1 || flagSelector.f2 || flagSelector.f3) {
+//                for item in items{
+//                    if flagSelector.f0{
+//                        if item.flag == "0"{
+//                            filteredItems.append(item)
+//                        }
+//                    }
+//                    if flagSelector.f1{
+//                        if item.flag == "1"{
+//                            filteredItems.append(item)
+//                        }
+//                    }
+//                    if flagSelector.f2{
+//                        if item.flag == "2"{
+//                            filteredItems.append(item)
+//                        }
+//                    }
+//                    if flagSelector.f3{
+//                        if item.flag == "3"{
+//                            filteredItems.append(item)
+//                        }
+//                    }
+//                }
+//            }
+//            if flagSelector.f0 || flagSelector.f1 || flagSelector.f2 || flagSelector.f3 || dateSelector.today || dateSelector.tomorrow || dateSelector.noDate{
+//                items = filteredItems
+//            }
             
         }
         catch{
