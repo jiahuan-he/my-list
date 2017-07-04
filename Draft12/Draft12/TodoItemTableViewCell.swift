@@ -364,7 +364,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         delegate!.cellDidEndEditing(editingCell: self)
     }
     
-    private func hideLabels(){
+    func hideLabels(){
         UIView.transition(with: self.bButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
             self.bButton!.isHidden = true
         }, completion: nil)

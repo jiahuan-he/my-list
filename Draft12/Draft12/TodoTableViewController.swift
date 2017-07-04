@@ -43,7 +43,7 @@ struct Color{
     static let f3 = UIColor.green
     static let remove = UIColor.red
     static let done = Color.text
-    static let filtering = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
+    static let filtering = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
 }
 
 struct FlagColor{
@@ -356,19 +356,22 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     }})
             }
             else{
-                filterIndicator.isHidden = true
-                filterIndicator.frame = CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/16)
-                let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
-//                UIView.animate(withDuration: 0.5, animations: {() in
-//                    for cell in vCells{
-//                        cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.filterIndicator.frame.height)
-//                    }})
+                filterIndicator.isHidden = true                            
             }
         }
     }
     
     func handleLeftNavButton(){
-        isFiltered = false
+        if isFiltered{
+            let vCells = tableView.visibleCells
+            UIView.animate(withDuration: 0.5, animations: {() in
+                for cell in vCells{
+                    cell.alpha = Alpha.notEditingCell
+                    cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.filterIndicator.frame.height)
+                }})
+            isFiltered = false
+        }
+        
         if isFiltering == false {
             tableView.setContentOffset(initContentOffset, animated: false)
 
@@ -718,6 +721,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if items.contains(item){
             items.remove(at: itemIndex)
         }
+        if isFiltered{
+            filterIndicator.addFilter(num: items.count)
+        }
         item.dueDate = nil
         item.flag = nil
         
@@ -813,9 +819,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         if(editingCell.todoItem!.dueDate == nil){
             editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
+        }
+        if isFiltered {
+            editingCell.dateButton.isHidden = true
+            editingCell.hideLabels()
+        }
+        else{
             editingCell.dateButton.isHidden = false
         }
-        
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
@@ -882,17 +893,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         offset = 0
         editingCell.dateButton.isEnabled = false
         
-        
         if items.contains(editingCell.todoItem!) {
             
-            // WOW! The API is AMAZING! Thanks Apple!
             tableView.beginUpdates()
-            //            if !createdNewCell{
             let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
             getData()
             let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
             tableView.moveRow(at: fromPath, to: toPath)
-            //            }
             tableView.endUpdates()
 //            let index = NSIndexSet(index: 0)
 //            tableView.reloadSections(index as IndexSet, with: .automatic)
@@ -908,7 +915,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
                 }})
         }
-        
     }
     
     // MARK: - UIScrollViewDelegate methods
@@ -972,11 +978,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             let newItem = TodoItem(context: context)
             newItem.flag = "0"
             let indexPath = IndexPath(row: 0, section: 0)
-//            if subPredicates.isEmpty == false{
-//                subPredicates = []
-//                getData()
-//                tableView.reloadData()
-//            }
+
             tableView.beginUpdates()
             items.insert(newItem, at: 0)
             tableView.insertRows(at: [indexPath], with: .top)
