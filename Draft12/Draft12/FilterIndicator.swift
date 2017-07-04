@@ -19,7 +19,7 @@ class FilterIndicator: UIView {
     let removeButton = UIButton()
     
     let labelX = CGFloat(0.02*ScreenSize.w)
-    let buttonX = CGFloat(0.5*ScreenSize.w)
+    let buttonX = CGFloat(0.65*ScreenSize.w)
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Color.filtering
