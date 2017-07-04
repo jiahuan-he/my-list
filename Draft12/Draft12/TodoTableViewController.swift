@@ -20,6 +20,7 @@ struct Font{
     static let button = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
     static let clue = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 15))
     static let navigationBarText = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 20))
+    static let filter = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
 }
 
 struct Color{
@@ -73,7 +74,7 @@ extension Date
     }
 }
 
-class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate, FilterViewDelegate{
+class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate, FilterViewDelegate, FilterIndicatorDelegate{
     var modifyingDate = false
     var resignAfterModifyingDate = false
     var createdNewCell = false
@@ -112,7 +113,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var offset: CGFloat?
     var tableTap: UITapGestureRecognizer?
-
+    let filterIndicator = FilterIndicator()
     
     override func viewDidLoad() {
         print("Screen height: ", ScreenSize.h)
@@ -185,7 +186,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         initNavButton()
         filterView.isHidden = true
         filterView.delegate = self
+        filterIndicator.isHidden = true
+        filterIndicator.delegate = self
         tableView.addSubview(filterView)
+        tableView.addSubview(filterIndicator)
+
     }
     
     func handleTableTap(_ sender: UITapGestureRecognizer){
@@ -216,7 +221,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func doneFiltering(todaySelected: Bool, tomorrowSelected: Bool, noDateSelected: Bool, f0Selected: Bool, f1Selected: Bool, f2Selected: Bool, f3Selected: Bool) {
-        
         
         isFiltering = false
         if todaySelected{
@@ -267,10 +271,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             flagSelector.f3 = false
         }
         
-        if todaySelected || tomorrowSelected || noDateSelected || f0Selected || f1Selected || f2Selected || f3Selected{
-            leftNavButton.tintColor = Color.filtering
-        }
-        
         let userDefaults = UserDefaults.standard
         userDefaults.set(todaySelected, forKey: "todaySelected")
         userDefaults.set(tomorrowSelected, forKey: "tomorrowSelected")
@@ -285,16 +285,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let section = NSIndexSet(index: 0)
         filterView.isHidden = true
         tableView.reloadSections(section as IndexSet, with: .automatic)
-//        UIView.transition(with: tableView,
-//                          duration: 0.35,
-//                          options: .transitionCrossDissolve,
-//                          animations: { self.tableView.reloadData() })
-        
+        if todaySelected || tomorrowSelected || noDateSelected || f0Selected || f1Selected || f2Selected || f3Selected{
+            leftNavButton.setTitleColor(Color.filtering, for: .normal)
+            isFiltered = true
+            
+        }
+        else{
+            isFiltered = false
+        }
     }
-    
-    func removeFiltering() {
-        
-    }
+      
     
     var rightNavButton = UIButton(type: .custom)
     var leftNavButton = UIButton(type: .custom)
@@ -343,14 +343,37 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    var isFiltered: Bool = false{
+        didSet{
+            if isFiltered{
+                filterIndicator.isHidden = false
+                filterIndicator.frame = CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/16)
+                filterIndicator.addFilter(num: items.count)
+                let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+                UIView.animate(withDuration: 0.5, animations: {() in
+                    for cell in vCells{
+                        cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
+                    }})
+            }
+            else{
+                filterIndicator.isHidden = true
+                filterIndicator.frame = CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/16)
+                let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+//                UIView.animate(withDuration: 0.5, animations: {() in
+//                    for cell in vCells{
+//                        cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.filterIndicator.frame.height)
+//                    }})
+            }
+        }
+    }
+    
     func handleLeftNavButton(){
-                        
+        isFiltered = false
         if isFiltering == false {
             tableView.setContentOffset(initContentOffset, animated: false)
 
             isFiltering = true
             let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
-            
             
             UIView.animate(withDuration: 0.5, animations: {() in
                 for cell in vCells{
@@ -358,18 +381,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterView.frame.height)
                     print(cell.textView.text)
                 }})
-            
         }
-//        else{
-//            isFiltering = false
-//            self.filterView.isHidden = true
-//            let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
-//            UIView.animate(withDuration: 0.5, animations: {() in
-//                for cell in vCells{
-//                    cell.alpha = 1
-//                    cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.filterView.frame.height)
-//                }})
-//        }
+    }
+    
+    
+    
+    func removeFilterIndicator() {
+        doneFiltering(todaySelected: false, tomorrowSelected: false, noDateSelected: false, f0Selected: false, f1Selected: false, f2Selected: false, f3Selected: false)
     }
     
     func assignOpacity(cell: TodoItemTableViewCell){

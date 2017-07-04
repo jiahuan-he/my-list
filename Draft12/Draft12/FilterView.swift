@@ -10,7 +10,6 @@ import UIKit
 
 protocol FilterViewDelegate{
     func doneFiltering(todaySelected: Bool, tomorrowSelected: Bool, noDateSelected: Bool, f0Selected: Bool, f1Selected: Bool, f2Selected: Bool, f3Selected: Bool)
-    func removeFiltering()
 }
 
 class FilterView: UIView {
@@ -354,7 +353,8 @@ class FilterView: UIView {
     }
     
     func removePressed(){
-        delegate!.removeFiltering()
+        clearDateSelection()
+        clearFlagSelection()
     }
     
     func donePressed(){
