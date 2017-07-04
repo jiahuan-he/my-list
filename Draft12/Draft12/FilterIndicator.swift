@@ -44,6 +44,7 @@ class FilterIndicator: UIView {
     
     func removeFilter(){
         delegate!.removeFilterIndicator()
+        
     }
     
     func addFilter(num: Int){

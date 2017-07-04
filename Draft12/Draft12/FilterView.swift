@@ -48,6 +48,9 @@ class FilterView: UIView {
             else{
                 todayButton.alpha = 0.5
             }
+            if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
+                setCircle(alpha: 0)
+            }
         }
     }
     
@@ -59,6 +62,9 @@ class FilterView: UIView {
             }
             else{
                 tomorrowButton.alpha = 0.5
+            }
+            if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
+                setCircle(alpha: 0)
             }
         }
     }
@@ -72,6 +78,9 @@ class FilterView: UIView {
             else{
                 noDateButton.alpha = 0.5
             }
+            if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
+                setCircle(alpha: 0)
+            }
         }
     }
     
@@ -83,6 +92,9 @@ class FilterView: UIView {
             }
             else{
                 f0Button.alpha = 0.5
+            }
+            if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
+                setCircle(alpha: 0)
             }
         }
     }
@@ -96,6 +108,9 @@ class FilterView: UIView {
             else{
                 f1Button.alpha = 0.5
             }
+            if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
+                setCircle(alpha: 0)
+            }
         }
     }
     
@@ -107,6 +122,9 @@ class FilterView: UIView {
             }
             else{
                 f2Button.alpha = 0.5
+            }
+            if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
+                setCircle(alpha: 0)
             }
         }
     }
@@ -120,22 +138,43 @@ class FilterView: UIView {
             else{
                 f3Button.alpha = 0.5
             }
+            if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
+                setCircle(alpha: 0)
+            }
         }
     }
     
-    private func clearDateSelection(){
+    func clearDateSelection(){
         isTodaySelected = false
         isTomorrowSelected = false
         isNoDateSelected = false
+        if isF0Selected || isF1Selected || isF2Selected || isF3Selected {
+            moveCircleTo(pos: 2)
+            setCircle(alpha: 0.9)
+        }
+        if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
+            setCircle(alpha: 0)
+        }
+    
     }
     
-    private func clearFlagSelection(){
+    func clearFlagSelection(){
         isF0Selected = false
         isF1Selected = false
         isF2Selected = false
         isF3Selected = false
+        if isTodaySelected || isTomorrowSelected || isNoDateSelected {
+            moveCircleTo(pos: 1)
+            setCircle(alpha: 0.9)
+        }
+        
+        if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
+            setCircle(alpha: 0)
+        }
     }
     
+    let circle = UIView()
+    let circleX = 0.015*ScreenSize.w
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -173,13 +212,53 @@ class FilterView: UIView {
         initConfirmView()
         
         
+        circle.frame = CGRect(x: circleX, y: 0, width: self.frame.height/14, height: self.frame.height/14)
+        circle.center.y = self.center.y/3
+        circle.alpha = 0
+        circle.backgroundColor = Color.cue
+        circle.clipsToBounds = true
+        circle.layer.cornerRadius = circle.frame.height/2
+        self.addSubview(circle)
+    }
+    
+    private func moveCircleTo(pos: Int){
+        if pos != 1 && pos != 2 {
+            fatalError()
+        }
+        if pos == 1{
+            UIView.animate(withDuration: 0.3, animations: {() in
+                self.circle.center.y = self.center.y/3
+                self.dateView.backgroundColor = Color.darkerCellBackground
+                self.flagView.backgroundColor = Color.cellBackground
+                print(self.center.y/3)
+            })
+        }
+        else if pos == 2{
+            
+            UIView.animate(withDuration: 0.3, animations: {() in
+                self.circle.center.y = self.center.y
+                self.dateView.backgroundColor = Color.cellBackground
+                self.flagView.backgroundColor = Color.darkerCellBackground
+                print(self.center.y/2)
+            })
+        }
         
     }
     
+    private func setCircle(alpha: Float){
+        UIView.animate(withDuration: 0.3, animations: {() in
+            self.circle.alpha = CGFloat(alpha)
+            if alpha == 0{
+                self.dateView.backgroundColor = Color.cellBackground
+                self.flagView.backgroundColor = Color.cellBackground
+            }
+        })
+    }
     
-    let labelX = CGFloat(0.02*ScreenSize.w)
-    let firstPosX = CGFloat(0.25*ScreenSize.w)
-    let secondPosX = CGFloat(0.46*ScreenSize.w)
+    
+    let labelX = CGFloat(0.06*ScreenSize.w)
+    let firstPosX = CGFloat(0.30*ScreenSize.w)
+    let secondPosX = CGFloat(0.47*ScreenSize.w)
     let thirdPosX = CGFloat(0.68*ScreenSize.w)
     
     func initDateView(){

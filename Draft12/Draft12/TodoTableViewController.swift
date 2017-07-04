@@ -27,6 +27,7 @@ struct Color{
     
     static let text = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
     static let cellBackground = UIColor(red: 50/255, green: 50/255, blue: 50/255, alpha: 1)
+    static let darkerCellBackground = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
     static let tableViewBackground = UIColor(red: 55/255, green: 60/255, blue: 58/255, alpha: 1)
     static let navigationBar = tableViewBackground
     static let navigationBarText = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
@@ -315,6 +316,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             if isFiltering == true{
                 self.filterView.isHidden = false
                 tableTap!.isEnabled = false
+                leftNavButton.isEnabled = false
+                rightNavButton.isEnabled = false
                 let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
                 for cell in vCells{
                     cell.isUserInteractionEnabled = false
@@ -324,6 +327,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             else{
                 self.filterView.isHidden = true
                 tableTap!.isEnabled = true
+                leftNavButton.isEnabled = true
+                rightNavButton.isEnabled = true
                 let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
                 for cell in vCells{
                     cell.isUserInteractionEnabled = true
@@ -381,6 +386,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func removeFilterIndicator() {
         doneFiltering(todaySelected: false, tomorrowSelected: false, noDateSelected: false, f0Selected: false, f1Selected: false, f2Selected: false, f3Selected: false)
+        filterView.clearDateSelection()
+        filterView.clearFlagSelection()
     }
     
     func assignOpacity(cell: TodoItemTableViewCell){
@@ -604,6 +611,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func doneButtonPressed(){
+        leftNavButton.isEnabled = true
+        rightNavButton.isEnabled = true
         modifyingDate = false
         hidePicker()
         editingCell!.todoItem!.dueDate = datePicker.date as NSDate
@@ -635,6 +644,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         editingCell!.isUserInteractionEnabled = true
         resignAfterModifyingDate = true
+        
+        
+        leftNavButton.isEnabled = true
+        rightNavButton.isEnabled = true
+        
         editingCell!.textView.becomeFirstResponder()
         
     }
@@ -642,6 +656,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     //TodoItemTableViewCell delegate
     
     func popupDatePicker(editingCell: TodoItemTableViewCell) {
+        
         tableView.isScrollEnabled = false
         self.navigationItem.leftBarButtonItem?.isEnabled = false
         
@@ -664,6 +679,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         self.editingCell = editingCell
         editingCell.textView.resignFirstResponder()
+        leftNavButton.isEnabled = false
+        rightNavButton.isEnabled = false
     }
     
     func cellHeightDidChange(editingCell: TodoItemTableViewCell, heightChange: CGFloat) {
@@ -794,7 +811,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
         
-        
+        leftNavButton.isEnabled = false
+        rightNavButton.isEnabled = false
         //        filterIndicator.isHidden = true
         UIView.animate(withDuration: 0.3, animations: {() in
             self.filterIndicator.frame = self.filterIndicator.frame.offsetBy(dx: 0, dy: -self.filterIndicator.frame.height)
@@ -839,6 +857,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
+        leftNavButton.isEnabled = true
+        rightNavButton.isEnabled = true
         if isFiltered{
             UIView.animate(withDuration: 0.3, animations: {() in
                 self.filterIndicator.frame = self.filterIndicator.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
