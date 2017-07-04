@@ -503,61 +503,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             if f0Selected||f1Selected||f2Selected||f3Selected||today||tomorrow||noDate{
                 items = filteredItems
             }
-            
-            
-            
-            
-//            if dateSelector.today || dateSelector.tomorrow || dateSelector.noDate{
-//                for item in items{
-//                    if dateSelector.noDate{
-//                        if item.dueDate == nil{
-//                            filteredItems.append(item)
-//                        }
-//                    }
-//                    if item.dueDate == nil{
-//                        continue
-//                    }
-//                    if dateSelector.today{
-//                        if Calendar.current.isDateInToday(item.dueDate! as Date){
-//                            filteredItems.append(item)
-//                        }
-//                    }
-//                    if dateSelector.tomorrow{
-//                        if Calendar.current.isDateInTomorrow(item.dueDate! as Date){
-//                            filteredItems.append(item)
-//                        }
-//                    }
-//                }
-//            }
-//            
-//            if (flagSelector.f0 || flagSelector.f1 || flagSelector.f2 || flagSelector.f3) {
-//                for item in items{
-//                    if flagSelector.f0{
-//                        if item.flag == "0"{
-//                            filteredItems.append(item)
-//                        }
-//                    }
-//                    if flagSelector.f1{
-//                        if item.flag == "1"{
-//                            filteredItems.append(item)
-//                        }
-//                    }
-//                    if flagSelector.f2{
-//                        if item.flag == "2"{
-//                            filteredItems.append(item)
-//                        }
-//                    }
-//                    if flagSelector.f3{
-//                        if item.flag == "3"{
-//                            filteredItems.append(item)
-//                        }
-//                    }
-//                }
-//            }
-//            if flagSelector.f0 || flagSelector.f1 || flagSelector.f2 || flagSelector.f3 || dateSelector.today || dateSelector.tomorrow || dateSelector.noDate{
-//                items = filteredItems
-//            }
-            
         }
         catch{
             print("Wrong")
@@ -833,6 +778,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
+        
+        
+//        filterIndicator.isHidden = true
+        UIView.animate(withDuration: 0.3, animations: {() in
+            self.filterIndicator.frame = self.filterIndicator.frame.offsetBy(dx: 0, dy: -self.filterIndicator.frame.height)
+            })
         self.editingCell = editingCell
         assignOpacity(cell: editingCell)
         tableView.isScrollEnabled = false
@@ -868,6 +819,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
+        if isFiltered{
+            UIView.animate(withDuration: 0.3, animations: {() in
+                self.filterIndicator.frame = self.filterIndicator.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
+            })
+        }
         
         if(modifyingDate == true){
             return
@@ -913,16 +869,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
             })
         }
-        
-        UIView.animate(withDuration: 0.5, animations: {() in
-            
-            
-        }, completion: {(finished: Bool) in
-            
             for cell: TodoItemTableViewCell in visibleCells {
                 cell.textView.isEditable = true
             }
-        })
         
         if editingCell.todoItem?.name == "" {
             itemDeleted(item: editingCell.todoItem!)
@@ -951,6 +900,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         createdNewCell = false
         self.navigationItem.leftBarButtonItem?.isEnabled = true
         tableView.isScrollEnabled = true
+        if isFiltered{
+//            filterIndicator.isHidden = false
+            let vCells = tableView.visibleCells
+            UIView.animate(withDuration: 0.3, animations: {() in
+                for cell in vCells{
+                    cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
+                }})
+        }
+        
     }
     
     // MARK: - UIScrollViewDelegate methods
