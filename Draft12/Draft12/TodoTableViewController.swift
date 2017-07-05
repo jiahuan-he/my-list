@@ -135,6 +135,20 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    func checkFirstLaunch(){
+        if(UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
+        {
+            // app already launched
+        }
+        else
+        {
+            // This is the first launch ever
+            UserDefaults.standard.set(0, forKey: "num")
+            UserDefaults.standard.set(true, forKey: "HasLaunchedOnce")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
     override func viewDidLoad() {
         print("Screen height: ", ScreenSize.h)
         print("Screen width: ", ScreenSize.w)
@@ -438,11 +452,36 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         getData()
         tableView.reloadData()
     
-        UNUserNotificationCenter.current().requestAuthorization(options:[.badge]) { (granted, error) in
+        UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in
             // Enable or disable features based on authorization.
         }
         UIApplication.shared.registerForRemoteNotifications()
         resetBadgeNum()
+    }
+    
+    func scheduleNotification(item: TodoItem){
+        let today = Date()
+        if item.dueDate == nil || item.dueDate!.compare(today) == .orderedAscending ||  item.isComplete{
+            return
+        }
+        
+        let content = UNMutableNotificationContent()
+        content.title = "Your task is due!"
+        content.body = item.name!
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: item.dueDate!.timeIntervalSince(today), repeats: false)
+        let request = UNNotificationRequest(identifier: String(item.id), content: content, trigger: trigger)
+        let center = UNUserNotificationCenter.current()
+        center.add(request) { (error : Error?) in
+            if let theError = error {
+                print(theError.localizedDescription)
+            }
+        }
+    }
+    
+    func removeNotification(item: TodoItem){
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: [String(item.id)])
     }
     
     func resetBadgeNum(){
@@ -694,7 +733,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         editingCell!.isUserInteractionEnabled = true
         resignAfterModifyingDate = true
         
-        
         leftNavButton.isEnabled = true
         rightNavButton.isEnabled = true
         
@@ -707,7 +745,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         editingCell!.textView.becomeFirstResponder()
-        
+        removeNotification(item: editingCell!.todoItem!)
+        scheduleNotification(item: editingCell!.todoItem!)
     }
     
     //TodoItemTableViewCell delegate
@@ -787,6 +826,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func itemDeleted(item: TodoItem) {
+        removeNotification(item: item)
         let itemIndex = (items as NSArray).index(of: item)
         let cellIndex = IndexPath(row: itemIndex, section: 0)
         if items.contains(item){
@@ -820,6 +860,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func itemComplete(editingCell: TodoItemTableViewCell){
+        
+        removeNotification(item: editingCell.todoItem!)
         
         editingCell.todoItem!.isComplete = !editingCell.todoItem!.isComplete
         let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: editingCell.textView.text)
@@ -1056,7 +1098,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let maxOffsetY = sizeConvert(size: -110)
         
-        print("scroll: ",scrollView.contentOffset.y)
+//        print("scroll: ",scrollView.contentOffset.y)
         if scrollView.contentOffset.y < maxOffsetY{
             scrollView.contentOffset.y = maxOffsetY
         }
@@ -1093,6 +1135,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if pullDownInProgress && scrollViewContentOffsetY <= -marginalHeight{
             clueView?.isHidden = true
             let newItem = TodoItem(context: context)
+            
+            
+            let userDefault = UserDefaults.standard
+            let id = userDefault.integer(forKey: "num")
+            newItem.id = Int64(id)
+            userDefault.set(id+1, forKey: "num")            
             newItem.flag = "0"
             let indexPath = IndexPath(row: 0, section: 0)
             tableView.beginUpdates()

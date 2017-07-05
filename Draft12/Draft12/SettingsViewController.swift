@@ -1,3 +1,5 @@
+
+
 //
 //  SettingsViewController.swift
 //  Draft12
@@ -11,7 +13,8 @@ import UIKit
 class SettingsViewController: UIViewController {
     
     
-    var badgeCount: SettingItem?
+    var badgeCountView: SettingItem?
+    var soundEffectView: SettingItem?
     
     var originalHeight: CGFloat?
     let lineSpace = CGFloat(0.08 * ScreenSize.h)
@@ -23,12 +26,11 @@ class SettingsViewController: UIViewController {
         initLeftNavButton()
         self.view.backgroundColor = Color.cellBackground
         
-        badgeCount = SettingItem(frame: CGRect(x: 0, y: originalHeight!, width: ScreenSize.w, height: lineSpace), title: "Badge Count")
+        badgeCountView = SettingItem(frame: CGRect(x: 0, y: originalHeight!, width: ScreenSize.w, height: lineSpace), title: "Badge Count")
+        soundEffectView = SettingItem(frame: (badgeCountView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Sound Effect")
         
-        
-        
-        
-        view.addSubview(badgeCount!)
+        view.addSubview(soundEffectView!)
+        view.addSubview(badgeCountView!)
     }
     
     private func initLeftNavButton(){
@@ -49,8 +51,6 @@ class SettingsViewController: UIViewController {
     private func initSettingItemTF(frame: CGRect, labelText: String){
         
     }
-    
-    
     
     
     func handleLeftNavButton(){
