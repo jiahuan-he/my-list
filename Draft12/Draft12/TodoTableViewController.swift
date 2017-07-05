@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import UserNotifications
+import AudioToolbox
 
 struct ScreenSize {
     static let w = UIScreen.main.bounds.width
@@ -117,10 +119,26 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var tableTap: UITapGestureRecognizer?
     let filterIndicator = FilterIndicator()
     
+    var newItemSound: SystemSoundID = 0
+    var dingsSound: SystemSoundID = 1
+    var tapSound: SystemSoundID = 2
+    func initSounds(){
+        // Load "mysoundname.wav"
+        if let soundURL = Bundle.main.url(forResource: "sound/newItem", withExtension: "wav") {
+            AudioServicesCreateSystemSoundID(soundURL as CFURL, &newItemSound)
+        }
+        if let soundURL = Bundle.main.url(forResource: "sound/ding", withExtension: "wav") {
+            AudioServicesCreateSystemSoundID(soundURL as CFURL, &dingsSound)
+        }
+        if let soundURL = Bundle.main.url(forResource: "sound/tap", withExtension: "wav") {
+            AudioServicesCreateSystemSoundID(soundURL as CFURL, &tapSound)
+        }
+    }
+    
     override func viewDidLoad() {
         print("Screen height: ", ScreenSize.h)
         print("Screen width: ", ScreenSize.w)
-        
+        initSounds()
         UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
         super.viewDidLoad()
         
@@ -221,7 +239,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         else{
             dateSelector.today = false
         }
-        
+                
         if tomorrowSelected{
             dateSelector.tomorrow = true
         }
@@ -307,7 +325,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func handleRightNavButton(){
-        
+        let settingsC = SettingsViewController()
+        self.navigationController?.pushViewController(settingsC, animated: true)
+        AudioServicesPlayAlertSound(tapSound)
     }
     
     
@@ -358,6 +378,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func handleLeftNavButton(){
+        AudioServicesPlayAlertSound(tapSound)
         if isFiltered{
             let vCells = tableView.visibleCells
             UIView.animate(withDuration: 0.5, animations: {() in
@@ -416,6 +437,22 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         getData()
         tableView.reloadData()
+    
+        UNUserNotificationCenter.current().requestAuthorization(options:[.badge]) { (granted, error) in
+            // Enable or disable features based on authorization.
+        }
+        UIApplication.shared.registerForRemoteNotifications()
+        resetBadgeNum()
+    }
+    
+    func resetBadgeNum(){
+        var badgeNum = 0
+        for item in items{
+            if item.isComplete == false {
+                badgeNum += 1
+            }
+        }
+        UIApplication.shared.applicationIconBadgeNumber = badgeNum
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -607,6 +644,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     // buttons helper function
     func removeButtonPressed(){
+        AudioServicesPlayAlertSound(tapSound)
         modifyingDate = false
         hidePicker()
         editingCell!.todoItem!.dueDate = nil
@@ -621,6 +659,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func doneButtonPressed(){
+        AudioServicesPlayAlertSound(tapSound)
         leftNavButton.isEnabled = true
         rightNavButton.isEnabled = true
         modifyingDate = false
@@ -776,6 +815,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 })
             }
         }
+        resetBadgeNum()
+        AudioServicesPlayAlertSound(dingsSound)
     }
     
     func itemComplete(editingCell: TodoItemTableViewCell){
@@ -826,11 +867,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 })
             }
         }
-        
+        resetBadgeNum()
+        AudioServicesPlayAlertSound(dingsSound)
     }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-        
+        AudioServicesPlayAlertSound(newItemSound)
         leftNavButton.isEnabled = false
         rightNavButton.isEnabled = false
         //        filterIndicator.isHidden = true
@@ -964,6 +1006,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
                 }})
         }
+        resetBadgeNum()
     }
     
     // MARK: - UIScrollViewDelegate methods
@@ -1052,7 +1095,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             let newItem = TodoItem(context: context)
             newItem.flag = "0"
             let indexPath = IndexPath(row: 0, section: 0)
-            
             tableView.beginUpdates()
             items.insert(newItem, at: 0)
             tableView.insertRows(at: [indexPath], with: .top)

@@ -10,6 +10,9 @@
 		3A1D279C1F00EC090074788F /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1D279B1F00EC090074788F /* FilterView.swift */; };
 		3A750CA91EF49FA6000DAFE9 /* img in Resources */ = {isa = PBXBuildFile; fileRef = 3A750CA81EF49FA6000DAFE9 /* img */; };
 		3AC9CEEC1F0AD3B600DCEC41 /* FilterIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC9CEEB1F0AD3B600DCEC41 /* FilterIndicator.swift */; };
+		3AC9CEF11F0C9B7C00DCEC41 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC9CEEF1F0C9B7C00DCEC41 /* SettingsViewController.swift */; };
+		3AC9CEF41F0C9BEE00DCEC41 /* SettingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC9CEF31F0C9BEE00DCEC41 /* SettingItem.swift */; };
+		3AC9CEF61F0CAC7B00DCEC41 /* sound in Resources */ = {isa = PBXBuildFile; fileRef = 3AC9CEF51F0CAC7B00DCEC41 /* sound */; };
 		3AD7808E1EB078BB007FDE5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */; };
 		3AD780931EB078BB007FDE5E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AD780911EB078BB007FDE5E /* Main.storyboard */; };
 		3AD780961EB078BB007FDE5E /* Draft12.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3AD780941EB078BB007FDE5E /* Draft12.xcdatamodeld */; };
@@ -25,6 +28,9 @@
 		3A1D279B1F00EC090074788F /* FilterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		3A750CA81EF49FA6000DAFE9 /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; path = img; sourceTree = "<group>"; };
 		3AC9CEEB1F0AD3B600DCEC41 /* FilterIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterIndicator.swift; sourceTree = "<group>"; };
+		3AC9CEEF1F0C9B7C00DCEC41 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		3AC9CEF31F0C9BEE00DCEC41 /* SettingItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingItem.swift; sourceTree = "<group>"; };
+		3AC9CEF51F0CAC7B00DCEC41 /* sound */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sound; sourceTree = "<group>"; };
 		3AD7808A1EB078BA007FDE5E /* Draft12.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Draft12.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3AD780921EB078BB007FDE5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -68,6 +74,7 @@
 		3AD7808C1EB078BA007FDE5E /* Draft12 */ = {
 			isa = PBXGroup;
 			children = (
+				3AC9CEF51F0CAC7B00DCEC41 /* sound */,
 				3A750CA81EF49FA6000DAFE9 /* img */,
 				3AD780A81EB07A7D007FDE5E /* toolbarView.swift */,
 				3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */,
@@ -76,6 +83,8 @@
 				3AD780991EB078BB007FDE5E /* LaunchScreen.storyboard */,
 				3AD7809C1EB078BB007FDE5E /* Info.plist */,
 				3AD780941EB078BB007FDE5E /* Draft12.xcdatamodeld */,
+				3AC9CEEF1F0C9B7C00DCEC41 /* SettingsViewController.swift */,
+				3AC9CEF31F0C9BEE00DCEC41 /* SettingItem.swift */,
 				3AD780A21EB0792A007FDE5E /* TodoTableViewController.swift */,
 				3AD780A41EB07971007FDE5E /* TodoItemTableViewCell.swift */,
 				3A1D279B1F00EC090074788F /* FilterView.swift */,
@@ -145,6 +154,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AC9CEF61F0CAC7B00DCEC41 /* sound in Resources */,
 				3A750CA91EF49FA6000DAFE9 /* img in Resources */,
 				3AD7809B1EB078BB007FDE5E /* LaunchScreen.storyboard in Resources */,
 				3AD780981EB078BB007FDE5E /* Assets.xcassets in Resources */,
@@ -165,8 +175,10 @@
 				3AD780A61EB07971007FDE5E /* TodoItemTableViewCell.swift in Sources */,
 				3AD780961EB078BB007FDE5E /* Draft12.xcdatamodeld in Sources */,
 				3AD780A31EB0792A007FDE5E /* TodoTableViewController.swift in Sources */,
+				3AC9CEF41F0C9BEE00DCEC41 /* SettingItem.swift in Sources */,
 				3A1D279C1F00EC090074788F /* FilterView.swift in Sources */,
 				3AD7808E1EB078BB007FDE5E /* AppDelegate.swift in Sources */,
+				3AC9CEF11F0C9B7C00DCEC41 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
