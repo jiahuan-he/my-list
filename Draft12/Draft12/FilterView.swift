@@ -242,7 +242,6 @@ class FilterView: UIView {
                 print(self.center.y/2)
             })
         }
-        
     }
     
     private func setCircle(alpha: Float){

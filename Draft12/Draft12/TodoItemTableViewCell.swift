@@ -116,27 +116,6 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         separator.backgroundColor = Color.separator.cgColor
         layer.addSublayer(rightBorder)
         layer.addSublayer(separator)
-        //        textView.layer.addSublayer(separator)
-        
-        
-        // BUG HERE: todoItem is not initialized here! WHY
-        //        if let todoFlag = todoItem?.flag{
-        //                switch todoFlag {
-        //                case String(labelTag.Red.rawValue) :
-        //                    rightBorder.backgroundColor = UIColor.red.cgColor
-        //                case String(labelTag.Orange.rawValue):
-        //                    rightBorder.backgroundColor = UIColor.orange.cgColor
-        //                case String(labelTag.Cyan.rawValue):
-        //                    rightBorder.backgroundColor = UIColor.cyan.cgColor
-        //                case String(labelTag.Green.rawValue):
-        //                    rightBorder.backgroundColor = UIColor.green.cgColor
-        //                default:
-        //                    print("Right border not displayed !!!!")
-        //                    break
-        //            }
-        //        }
-        //        self.backgroundColor = UIColor.lightGray
-        //        textView.backgroundColor = UIColor.lightGray
         
         dateButton.frame = CGRect(x: sizeConvert(size: 5.5), y: sizeConvert(size: 1.6), width: sizeConvert(size: 100), height: sizeConvert(size: 20))
         dateButton.contentHorizontalAlignment = .left
@@ -205,10 +184,23 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(recognizer:)))
         panRecognizer.delegate = self
         addGestureRecognizer(panRecognizer)
-        
+//        initOverdueLabel()
+                
+    
     }
     
-   
+    let overdueLabel = UILabel()
+    let overdueX = 0.8 * ScreenSize.w
+    func initOverdueLabel(){
+        overdueLabel.text = "OVERDUE"
+        overdueLabel.font = Font.dateButton
+        overdueLabel.textColor = Color.cue
+        overdueLabel.isHidden = true
+        overdueLabel.frame = CGRect(x: overdueX, y: sizeConvert(size: 8.5), width: 0, height: 0)
+        overdueLabel.sizeToFit()
+        overdueLabel.center.x = overdueX
+        addSubview(overdueLabel)
+    }
     
     func popDatepicker(){
         delegate!.popupDatePicker(editingCell: self)

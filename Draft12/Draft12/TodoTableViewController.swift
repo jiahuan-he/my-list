@@ -45,6 +45,7 @@ struct Color{
     static let remove = UIColor.red
     static let done = Color.text
     static let filtering = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
+    static let overdue = UIColor.red
 }
 
 struct FlagColor{
@@ -544,6 +545,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.dateButton.setTitle(date, for: UIControlState.normal)
                 cell.dateButton.titleLabel?.sizeToFit()
                 cell.dateButton.sizeToFit()
+                
+                let today = Date()
+                if cell.todoItem!.dueDate!.compare(today) == .orderedAscending && !cell.todoItem!.isComplete  {
+                    cell.dateButton.setTitleColor(Color.overdue, for: .normal)
+                }
+                else{
+                    cell.dateButton.setTitleColor(Color.dateButton, for: .normal)
+                }
+                
             }
             else{
                 cell.dateButton.isHidden = true
@@ -648,6 +658,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         leftNavButton.isEnabled = true
         rightNavButton.isEnabled = true
+        
+        let today = Date()
+        if editingCell!.todoItem!.dueDate!.compare(today) == .orderedAscending && !editingCell!.todoItem!.isComplete {
+            editingCell!.dateButton.setTitleColor(Color.overdue, for: .normal)
+        }
+        else{
+            editingCell!.dateButton.setTitleColor(Color.dateButton, for: .normal)
+        }
         
         editingCell!.textView.becomeFirstResponder()
         
@@ -761,6 +779,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func itemComplete(editingCell: TodoItemTableViewCell){
+        
         editingCell.todoItem!.isComplete = !editingCell.todoItem!.isComplete
         let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: editingCell.textView.text)
         attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
@@ -770,6 +789,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             editingCell.textView.textColor = Color.complete
             editingCell.dateButton.alpha = Alpha.complete
             editingCell.rightBorder.opacity = Float(Alpha.complete)
+            editingCell.dateButton.setTitleColor(Color.dateButton, for: .normal)
             //            editingCell.textView.backgroundColor = Color.complete
         }
         else{
@@ -783,7 +803,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             editingCell.textView.textColor = Color.text
             editingCell.dateButton.alpha = 1
             editingCell.rightBorder.opacity = 1
-            
+            editingCell.dateButton.setTitleColor(Color.overdue, for: .normal)
         }
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
