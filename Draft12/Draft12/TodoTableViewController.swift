@@ -68,6 +68,22 @@ struct DateFormat {
     static let timeOnly = "HH:mm"
 }
 
+struct filterKey {
+    static let today = "todaySelected"
+    static let tomorrow =  "tomorrowSelected"
+    static let noDate =  "noDateSelected"
+    static let f0 = "f0Selected"
+    static let f1 = "f1Selected"
+    static let f2 = "f2Selected"
+    static let f3 = "f3Selected"
+}
+
+struct settingKey {
+    static let badge = "badgeCount"
+    static let sound = "soundEffect"
+    static let reminder = "dueReminder"
+}
+
 extension Date
 {
     func toString( dateFormat format  : String ) -> String
@@ -78,7 +94,7 @@ extension Date
     }
 }
 
-class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate, FilterViewDelegate, FilterIndicatorDelegate{
+class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate, FilterViewDelegate, FilterIndicatorDelegate, SettingItemDelegate{
     var modifyingDate = false
     var resignAfterModifyingDate = false
     var createdNewCell = false
@@ -143,13 +159,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         else
         {
             // This is the first launch ever
+            UserDefaults.standard.set(true, forKey: settingKey.badge)
+            UserDefaults.standard.set(true, forKey: settingKey.sound)
+            UserDefaults.standard.set(true, forKey: settingKey.reminder)
+            
             UserDefaults.standard.set(0, forKey: "num")
             UserDefaults.standard.set(true, forKey: "HasLaunchedOnce")
+            
             UserDefaults.standard.synchronize()
+            
+            print("has Launched once", UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
         }
     }
     
     override func viewDidLoad() {
+        checkFirstLaunch()
         print("Screen height: ", ScreenSize.h)
         print("Screen width: ", ScreenSize.w)
         initSounds()
@@ -228,7 +252,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func handleTableTap(_ sender: UITapGestureRecognizer){
-        editingCell!.textView.resignFirstResponder()
+        editingCell?.textView.resignFirstResponder()
     }
     
     struct dateSelector {
@@ -296,13 +320,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         let userDefaults = UserDefaults.standard
-        userDefaults.set(todaySelected, forKey: "todaySelected")
-        userDefaults.set(tomorrowSelected, forKey: "tomorrowSelected")
-        userDefaults.set(noDateSelected, forKey: "noDateSelected")
-        userDefaults.set(f0Selected, forKey: "f0Selected")
-        userDefaults.set(f1Selected, forKey: "f1Selected")
-        userDefaults.set(f2Selected, forKey: "f2Selected")
-        userDefaults.set(f3Selected, forKey: "f3Selected")
+        userDefaults.set(todaySelected, forKey: filterKey.today)
+        userDefaults.set(tomorrowSelected, forKey: filterKey.tomorrow)
+        userDefaults.set(noDateSelected, forKey: filterKey.noDate)
+        userDefaults.set(f0Selected, forKey: filterKey.f0)
+        userDefaults.set(f1Selected, forKey: filterKey.f1)
+        userDefaults.set(f2Selected, forKey: filterKey.f2)
+        userDefaults.set(f3Selected, forKey: filterKey.f3)
         userDefaults.synchronize()
         
         getData()
@@ -455,22 +479,26 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in
             // Enable or disable features based on authorization.
         }
-        UIApplication.shared.registerForRemoteNotifications()
-        resetBadgeNum()
+//        UIApplication.shared.registerForRemoteNotifications()
+        resetBadgeCount()
     }
-    
-    func scheduleNotification(item: TodoItem){
-        let today = Date()
-        if item.dueDate == nil || item.dueDate!.compare(today) == .orderedAscending ||  item.isComplete{
+    func cancelScheduledNotifications(){
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+    }
+    func scheduleNotification(item: TodoItem?){
+        if item == nil || !UserDefaults.standard.bool(forKey: settingKey.reminder){
             return
         }
-        
+        let today = Date()
+        if item!.dueDate == nil || item!.dueDate!.compare(today) == .orderedAscending ||  item!.isComplete{
+            return
+        }
         let content = UNMutableNotificationContent()
         content.title = "Your task is due!"
-        content.body = item.name!
+        content.body = item!.name!
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: item.dueDate!.timeIntervalSince(today), repeats: false)
-        let request = UNNotificationRequest(identifier: String(item.id), content: content, trigger: trigger)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: item!.dueDate!.timeIntervalSince(today), repeats: false)
+        let request = UNNotificationRequest(identifier: String(item!.id), content: content, trigger: trigger)
         let center = UNUserNotificationCenter.current()
         center.add(request) { (error : Error?) in
             if let theError = error {
@@ -478,13 +506,28 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
     }
-    
-    func removeNotification(item: TodoItem){
-        let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: [String(item.id)])
+    func resetScheduedNotifications(){
+        if UserDefaults.standard.bool(forKey: settingKey.reminder){
+            for item in items{
+                scheduleNotification(item: item)
+            }
+        }
     }
     
-    func resetBadgeNum(){
+    func removeNotification(item: TodoItem?){
+        if item == nil{
+            return
+        }
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: [String(item!.id)])
+    }
+    
+    func resetBadgeCount(){
+        if !UserDefaults.standard.bool(forKey: settingKey.badge){
+            UIApplication.shared.applicationIconBadgeNumber = 0
+            return
+        }
+      
         var badgeNum = 0
         for item in items{
             if item.isComplete == false {
@@ -498,13 +541,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         initContentOffsetY = -tableView.contentOffset.y
         initContentOffset = tableView.contentOffset
         print(initContentOffsetY)
-        let today = UserDefaults.standard.bool(forKey: "todaySelected")
-        let tomorrow = UserDefaults.standard.bool(forKey: "tomorrowSelected")
-        let noDate = UserDefaults.standard.bool(forKey: "noDateSelected")
-        let f0Selected = UserDefaults.standard.bool(forKey: "f0Selected")
-        let f1Selected = UserDefaults.standard.bool(forKey: "f1Selected")
-        let f2Selected = UserDefaults.standard.bool(forKey: "f2Selected")
-        let f3Selected = UserDefaults.standard.bool(forKey: "f3Selected")
+        let today = UserDefaults.standard.bool(forKey: filterKey.today)
+        let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
+        let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
+        let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
+        let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
+        let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
+        let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
         doneFiltering(todaySelected: today, tomorrowSelected: tomorrow, noDateSelected: noDate, f0Selected: f0Selected, f1Selected: f1Selected, f2Selected: f2Selected, f3Selected: f3Selected)
     }
     
@@ -528,13 +571,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             var filteredItems: [TodoItem] = []
             
-            let today = UserDefaults.standard.bool(forKey: "todaySelected")
-            let tomorrow = UserDefaults.standard.bool(forKey: "tomorrowSelected")
-            let noDate = UserDefaults.standard.bool(forKey: "noDateSelected")
-            let f0Selected = UserDefaults.standard.bool(forKey: "f0Selected")
-            let f1Selected = UserDefaults.standard.bool(forKey: "f1Selected")
-            let f2Selected = UserDefaults.standard.bool(forKey: "f2Selected")
-            let f3Selected = UserDefaults.standard.bool(forKey: "f3Selected")
+            let today = UserDefaults.standard.bool(forKey: filterKey.today)
+            let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
+            let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
+            let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
+            let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
+            let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
+            let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
             
             
             if today || tomorrow || noDate{
@@ -665,6 +708,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             //            editingCell.textView
             
         }
+        
         return cell
     }
     
@@ -745,8 +789,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         editingCell!.textView.becomeFirstResponder()
-        removeNotification(item: editingCell!.todoItem!)
-        scheduleNotification(item: editingCell!.todoItem!)
+        removeNotification(item: editingCell!.todoItem)
+        scheduleNotification(item: editingCell!.todoItem)
     }
     
     //TodoItemTableViewCell delegate
@@ -855,15 +899,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 })
             }
         }
-        resetBadgeNum()
+        resetBadgeCount()
         AudioServicesPlayAlertSound(dingsSound)
     }
     
     func itemComplete(editingCell: TodoItemTableViewCell){
         
-        removeNotification(item: editingCell.todoItem!)
-        
         editingCell.todoItem!.isComplete = !editingCell.todoItem!.isComplete
+        removeNotification(item: editingCell.todoItem!)
+        scheduleNotification(item: editingCell.todoItem!)
+        
         let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: editingCell.textView.text)
         attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
         if (editingCell.todoItem?.isComplete)! {
@@ -909,7 +954,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 })
             }
         }
-        resetBadgeNum()
+        resetBadgeCount()
         AudioServicesPlayAlertSound(dingsSound)
     }
     
@@ -1048,7 +1093,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
                 }})
         }
-        resetBadgeNum()
+        resetBadgeCount()
     }
     
     // MARK: - UIScrollViewDelegate methods

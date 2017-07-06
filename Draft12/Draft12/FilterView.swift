@@ -291,9 +291,9 @@ class FilterView: UIView {
         
         dateLabel.textColor = Color.settingLabel
         
-        let today = UserDefaults.standard.bool(forKey: "todaySelected")
-        let tomorrow = UserDefaults.standard.bool(forKey: "tomorrowSelected")
-        let noDate = UserDefaults.standard.bool(forKey: "noDateSelected")
+        let today = UserDefaults.standard.bool(forKey: filterKey.today)
+        let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
+        let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
         
         
         
@@ -339,10 +339,10 @@ class FilterView: UIView {
         f3Button.backgroundColor = Color.f3
         
       
-        let f0Selected = UserDefaults.standard.bool(forKey: "f0Selected")
-        let f1Selected = UserDefaults.standard.bool(forKey: "f1Selected")
-        let f2Selected = UserDefaults.standard.bool(forKey: "f2Selected")
-        let f3Selected = UserDefaults.standard.bool(forKey: "f3Selected")
+        let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
+        let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
+        let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
+        let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
         
         
         f0Selected ? (isF0Selected = true):(isF0Selected=false)
