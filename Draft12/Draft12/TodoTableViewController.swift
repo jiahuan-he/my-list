@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import UserNotifications
 import AudioToolbox
+import AVFoundation
 
 struct ScreenSize {
     static let w = UIScreen.main.bounds.width
@@ -135,19 +136,29 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var tableTap: UITapGestureRecognizer?
     let filterIndicator = FilterIndicator()
     
-    var newItemSound: SystemSoundID = 0
-    var dingsSound: SystemSoundID = 1
-    var tapSound: SystemSoundID = 2
+//    var newItemSound: SystemSoundID = 0
+//    var dingSound: SystemSoundID = 1
+//    var tapSound: SystemSoundID = 2
+    
+    var newItemSound =  URL(fileURLWithPath: Bundle.main.path(forResource: "sound/newItem", ofType: "wav")!)
+    var dingSound =  URL(fileURLWithPath: Bundle.main.path(forResource: "sound/ding", ofType: "wav")!)
+    var tapSound =  URL(fileURLWithPath: Bundle.main.path(forResource: "sound/tap", ofType: "wav")!)
+    var newItemPlayer: AVAudioPlayer?
+    var dingPlayer: AVAudioPlayer?
+    var tapPlayer: AVAudioPlayer?
+    
     func initSounds(){
         // Load "mysoundname.wav"
-        if let soundURL = Bundle.main.url(forResource: "sound/newItem", withExtension: "wav") {
-            AudioServicesCreateSystemSoundID(soundURL as CFURL, &newItemSound)
+        do {
+            newItemPlayer = try AVAudioPlayer(contentsOf: newItemSound)
+            dingPlayer = try AVAudioPlayer(contentsOf: dingSound)
+            tapPlayer = try AVAudioPlayer(contentsOf: tapSound)
+            newItemPlayer!.prepareToPlay()
+            dingPlayer!.prepareToPlay()
+            newItemPlayer?.prepareToPlay()
         }
-        if let soundURL = Bundle.main.url(forResource: "sound/ding", withExtension: "wav") {
-            AudioServicesCreateSystemSoundID(soundURL as CFURL, &dingsSound)
-        }
-        if let soundURL = Bundle.main.url(forResource: "sound/tap", withExtension: "wav") {
-            AudioServicesCreateSystemSoundID(soundURL as CFURL, &tapSound)
+        catch{
+            print("SOUND ERROR")
         }
     }
     
@@ -365,7 +376,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func handleRightNavButton(){
         let settingsC = SettingsViewController()
         self.navigationController?.pushViewController(settingsC, animated: true)
-        AudioServicesPlayAlertSound(tapSound)
+        if tapPlayer!.isPlaying{
+            tapPlayer!.stop()
+            tapPlayer!.currentTime = 0
+        }
+        tapPlayer!.play()
+//        AudioServicesPlaySystemSound(tapSound)
     }
     
     
@@ -416,7 +432,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func handleLeftNavButton(){
-        AudioServicesPlayAlertSound(tapSound)
+//        AudioServicesPlaySystemSound(tapSound)
+        if tapPlayer!.isPlaying{
+            tapPlayer!.stop()
+            tapPlayer!.currentTime = 0
+        }
+        tapPlayer!.play()
         if isFiltered{
             let vCells = tableView.visibleCells
             UIView.animate(withDuration: 0.5, animations: {() in
@@ -506,7 +527,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
     }
-    func resetScheduedNotifications(){
+    func resetScheduledNotifications(){
         if UserDefaults.standard.bool(forKey: settingKey.reminder){
             for item in items{
                 scheduleNotification(item: item)
@@ -727,7 +748,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     // buttons helper function
     func removeButtonPressed(){
-        AudioServicesPlayAlertSound(tapSound)
+//        AudioServicesPlaySystemSound(tapSound)
+        if tapPlayer!.isPlaying{
+            tapPlayer!.stop()
+            tapPlayer!.currentTime = 0
+        }
+        tapPlayer!.play()
         modifyingDate = false
         hidePicker()
         editingCell!.todoItem!.dueDate = nil
@@ -742,7 +768,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func doneButtonPressed(){
-        AudioServicesPlayAlertSound(tapSound)
+//        AudioServicesPlaySystemSound(tapSound)
+        if tapPlayer!.isPlaying{
+            tapPlayer!.stop()
+            tapPlayer!.currentTime = 0
+        }
+        tapPlayer!.play()
         leftNavButton.isEnabled = true
         rightNavButton.isEnabled = true
         modifyingDate = false
@@ -900,7 +931,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
         resetBadgeCount()
-        AudioServicesPlayAlertSound(dingsSound)
+//        AudioServicesPlayAlertSound(dingSound)
+        if dingPlayer!.isPlaying{
+            dingPlayer!.stop()
+            dingPlayer!.currentTime = 0
+        }
+        dingPlayer!.play()
     }
     
     func itemComplete(editingCell: TodoItemTableViewCell){
@@ -955,11 +991,22 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
         resetBadgeCount()
-        AudioServicesPlayAlertSound(dingsSound)
+//        AudioServicesPlayAlertSound(dingSound)
+        
+        if dingPlayer!.isPlaying{
+            dingPlayer!.stop()
+            dingPlayer!.currentTime = 0
+        }
+        dingPlayer!.play()
     }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-        AudioServicesPlayAlertSound(newItemSound)
+//        AudioServicesPlayAlertSound(newItemSound)
+        if newItemPlayer!.isPlaying{
+            newItemPlayer!.stop()
+            newItemPlayer!.currentTime = 0
+        }
+        newItemPlayer!.play()
         leftNavButton.isEnabled = false
         rightNavButton.isEnabled = false
         //        filterIndicator.isHidden = true

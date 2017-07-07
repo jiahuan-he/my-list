@@ -12,7 +12,7 @@ import UIKit
 protocol SettingItemDelegate {
     func resetBadgeCount()
     func cancelScheduledNotifications()
-    func resetScheduedNotifications()
+    func resetScheduledNotifications()
 }
 
 class SettingItem: UIView {
@@ -35,7 +35,7 @@ class SettingItem: UIView {
                     delegate!.resetBadgeCount()
                 }
                 else if(key == settingKey.reminder){
-                    delegate!.resetScheduedNotifications()
+                    delegate!.resetScheduledNotifications()
                 }
                 else if(key == settingKey.sound){
                     
