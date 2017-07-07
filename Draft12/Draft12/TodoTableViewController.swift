@@ -136,9 +136,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var tableTap: UITapGestureRecognizer?
     let filterIndicator = FilterIndicator()
     
-//    var newItemSound: SystemSoundID = 0
-//    var dingSound: SystemSoundID = 1
-//    var tapSound: SystemSoundID = 2
+    //    var newItemSound: SystemSoundID = 0
+    //    var dingSound: SystemSoundID = 1
+    //    var tapSound: SystemSoundID = 2
     
     var newItemSound =  URL(fileURLWithPath: Bundle.main.path(forResource: "sound/newItem", ofType: "wav")!)
     var dingSound =  URL(fileURLWithPath: Bundle.main.path(forResource: "sound/ding", ofType: "wav")!)
@@ -146,6 +146,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var newItemPlayer: AVAudioPlayer?
     var dingPlayer: AVAudioPlayer?
     var tapPlayer: AVAudioPlayer?
+    
+    
     
     func initSounds(){
         // Load "mysoundname.wav"
@@ -155,12 +157,47 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             tapPlayer = try AVAudioPlayer(contentsOf: tapSound)
             newItemPlayer!.prepareToPlay()
             dingPlayer!.prepareToPlay()
-            newItemPlayer?.prepareToPlay()
+            tapPlayer!.prepareToPlay()
         }
         catch{
             print("SOUND ERROR")
         }
     }
+    
+    func playTapSound(){
+        if UserDefaults.standard.bool(forKey: settingKey.sound){
+            if UserDefaults.standard.bool(forKey: settingKey.sound){
+                if tapPlayer!.isPlaying{
+                    tapPlayer!.stop()
+                    tapPlayer!.currentTime = 0
+                }
+                tapPlayer!.play()
+            }
+        }
+    }
+    
+    func playNewItemSound(){
+        if UserDefaults.standard.bool(forKey: settingKey.sound){
+            if newItemPlayer!.isPlaying{
+                newItemPlayer!.stop()
+                newItemPlayer!.currentTime = 0
+            }
+            newItemPlayer!.play()
+        }
+    }
+    
+    
+    func playDingSound(){
+        if UserDefaults.standard.bool(forKey: settingKey.sound){
+            if dingPlayer!.isPlaying{
+                dingPlayer!.stop()
+                dingPlayer!.currentTime = 0
+            }
+            dingPlayer!.play()
+        }
+    }
+    
+    
     
     func checkFirstLaunch(){
         if(UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
@@ -288,7 +325,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         else{
             dateSelector.today = false
         }
-                
+        
         if tomorrowSelected{
             dateSelector.tomorrow = true
         }
@@ -376,12 +413,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func handleRightNavButton(){
         let settingsC = SettingsViewController()
         self.navigationController?.pushViewController(settingsC, animated: true)
-        if tapPlayer!.isPlaying{
-            tapPlayer!.stop()
-            tapPlayer!.currentTime = 0
-        }
-        tapPlayer!.play()
-//        AudioServicesPlaySystemSound(tapSound)
+        playTapSound()
+        //        AudioServicesPlaySystemSound(tapSound)
     }
     
     
@@ -432,12 +465,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func handleLeftNavButton(){
-//        AudioServicesPlaySystemSound(tapSound)
-        if tapPlayer!.isPlaying{
-            tapPlayer!.stop()
-            tapPlayer!.currentTime = 0
-        }
-        tapPlayer!.play()
+        //        AudioServicesPlaySystemSound(tapSound)
+        playTapSound()
         if isFiltered{
             let vCells = tableView.visibleCells
             UIView.animate(withDuration: 0.5, animations: {() in
@@ -496,11 +525,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         getData()
         tableView.reloadData()
-    
+        
         UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in
             // Enable or disable features based on authorization.
         }
-//        UIApplication.shared.registerForRemoteNotifications()
+        //        UIApplication.shared.registerForRemoteNotifications()
         resetBadgeCount()
     }
     func cancelScheduledNotifications(){
@@ -548,7 +577,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             UIApplication.shared.applicationIconBadgeNumber = 0
             return
         }
-      
+        
         var badgeNum = 0
         for item in items{
             if item.isComplete == false {
@@ -748,12 +777,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     // buttons helper function
     func removeButtonPressed(){
-//        AudioServicesPlaySystemSound(tapSound)
-        if tapPlayer!.isPlaying{
-            tapPlayer!.stop()
-            tapPlayer!.currentTime = 0
-        }
-        tapPlayer!.play()
         modifyingDate = false
         hidePicker()
         editingCell!.todoItem!.dueDate = nil
@@ -768,12 +791,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func doneButtonPressed(){
-//        AudioServicesPlaySystemSound(tapSound)
-        if tapPlayer!.isPlaying{
-            tapPlayer!.stop()
-            tapPlayer!.currentTime = 0
-        }
-        tapPlayer!.play()
         leftNavButton.isEnabled = true
         rightNavButton.isEnabled = true
         modifyingDate = false
@@ -931,12 +948,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
         resetBadgeCount()
-//        AudioServicesPlayAlertSound(dingSound)
-        if dingPlayer!.isPlaying{
-            dingPlayer!.stop()
-            dingPlayer!.currentTime = 0
-        }
-        dingPlayer!.play()
+        //        AudioServicesPlayAlertSound(dingSound)
+        playDingSound()
     }
     
     func itemComplete(editingCell: TodoItemTableViewCell){
@@ -991,22 +1004,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
         resetBadgeCount()
-//        AudioServicesPlayAlertSound(dingSound)
+        //        AudioServicesPlayAlertSound(dingSound)
         
-        if dingPlayer!.isPlaying{
-            dingPlayer!.stop()
-            dingPlayer!.currentTime = 0
-        }
-        dingPlayer!.play()
+        playDingSound()
     }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-//        AudioServicesPlayAlertSound(newItemSound)
-        if newItemPlayer!.isPlaying{
-            newItemPlayer!.stop()
-            newItemPlayer!.currentTime = 0
-        }
-        newItemPlayer!.play()
+        //        AudioServicesPlayAlertSound(newItemSound)
+        playNewItemSound()
         leftNavButton.isEnabled = false
         rightNavButton.isEnabled = false
         //        filterIndicator.isHidden = true
@@ -1176,7 +1181,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             filterIndicator.resultLabel.sizeToFit()
             return
         }
-
+        
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -1190,7 +1195,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let maxOffsetY = sizeConvert(size: -110)
         
-//        print("scroll: ",scrollView.contentOffset.y)
+        //        print("scroll: ",scrollView.contentOffset.y)
         if scrollView.contentOffset.y < maxOffsetY{
             scrollView.contentOffset.y = maxOffsetY
         }
@@ -1217,10 +1222,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-      
+        
         if isFiltered{
-//            filterIndicator.resultLabel.text = "REMOVE FILTER TO ADD"
-//            filterIndicator.resultLabel.sizeToFit()
+            //            filterIndicator.resultLabel.text = "REMOVE FILTER TO ADD"
+            //            filterIndicator.resultLabel.sizeToFit()
             return
         }
         let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffsetY
@@ -1232,7 +1237,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             let userDefault = UserDefaults.standard
             let id = userDefault.integer(forKey: "num")
             newItem.id = Int64(id)
-            userDefault.set(id+1, forKey: "num")            
+            userDefault.set(id+1, forKey: "num")
             newItem.flag = "0"
             let indexPath = IndexPath(row: 0, section: 0)
             tableView.beginUpdates()

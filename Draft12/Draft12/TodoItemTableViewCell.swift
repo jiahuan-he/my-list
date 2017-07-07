@@ -111,7 +111,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
         textView.textContainerInset = UIEdgeInsetsMake(sizeConvert(size: 26), sizeConvert(size: 2), sizeConvert(size: 15), sizeConvert(size: 10))
-    
+        
         rightBorder.cornerRadius = sizeConvert(size: 3.0)
         separator.backgroundColor = Color.separator.cgColor
         layer.addSublayer(rightBorder)
@@ -184,9 +184,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(recognizer:)))
         panRecognizer.delegate = self
         addGestureRecognizer(panRecognizer)
-//        initOverdueLabel()
-                
-    
+        //        initOverdueLabel()
+        
+        
     }
     
     let overdueLabel = UILabel()
@@ -253,7 +253,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
             }
             deleteOnDragRelease = (frame.origin.x <= -maxTransation)
             completeOnDragRelease = (frame.origin.x >= maxTransation)
-
+            
             
         }
         
@@ -296,7 +296,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if beingEditing {
-           return false
+            return false
         }
         if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
             let translation = panGestureRecognizer.translation(in: superview!)
@@ -323,7 +323,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         rightBorder.frame = CGRect(x: screenSize.width-borderWidth-borderInsetX, y: borderInsetY, width: borderWidth, height: frame.height - 2*borderInsetY)
         crossLabel.frame = CGRect(x: crossInsetProp*UIScreen.main.bounds.width-cueLabelWidth, y: frame.height/2-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
         separator.frame = CGRect(x: 0, y: frame.height-separatorWidth, width: UIScreen.main.bounds.width, height: separatorWidth)
-                checkLabel.frame = CGRect(x: checkInsetProp*UIScreen.main.bounds.width, y: frame.height/2-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
+        checkLabel.frame = CGRect(x: checkInsetProp*UIScreen.main.bounds.width, y: frame.height/2-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
     }
     
     // prevent appending new line.

@@ -10,6 +10,7 @@
 
 import UIKit
 import UserNotifications
+import AVFoundation
 
 class SettingsViewController: UIViewController {
     
@@ -21,8 +22,35 @@ class SettingsViewController: UIViewController {
     let lineSpace = CGFloat(0.08 * ScreenSize.h)
     var authorized = false
     
+    var tapSound =  URL(fileURLWithPath: Bundle.main.path(forResource: "sound/tap", ofType: "wav")!)
+    var tapPlayer: AVAudioPlayer?
+    
+    
+    
+    func initSounds(){
+        do {
+            tapPlayer = try AVAudioPlayer(contentsOf: tapSound)
+            tapPlayer?.prepareToPlay()
+        }
+        catch{
+            print("SOUND ERROR")
+        }
+    }
+    
+    func playTapSound(){
+        if UserDefaults.standard.bool(forKey: settingKey.sound){
+            if tapPlayer!.isPlaying{
+                tapPlayer!.stop()
+                tapPlayer!.currentTime = 0
+            }
+            tapPlayer!.play()
+        }
+    }
+    
+    
+    
     override func viewDidLoad() {
-        
+        initSounds()
         originalHeight = (self.navigationController?.navigationBar.frame.height)! + (self.navigationController?.navigationBar.frame.origin.y)!
         super.viewDidLoad()
         self.title = "Settings"
@@ -59,6 +87,9 @@ class SettingsViewController: UIViewController {
         if UserDefaults.standard.bool(forKey: settingKey.sound) {
             soundEffectView?.buttonChecked = true            
         }
+        else{
+            soundEffectView?.buttonChecked = false
+        }
         
         badgeCountView!.button.addTarget(self, action: #selector(handleBadgeButton), for: .touchUpInside)
         soundEffectView!.button.addTarget(self, action: #selector(handleSoundButton), for: .touchUpInside)
@@ -81,7 +112,7 @@ class SettingsViewController: UIViewController {
     }
     
     func handleSoundButton(){
-        //        checkAuthorization(forKey: "soundEffect")
+        soundEffectView!.buttonChecked = !soundEffectView!.buttonChecked
     }
     
     func getAlertAuthorizationResult(){
@@ -171,14 +202,10 @@ class SettingsViewController: UIViewController {
         let leftItem = UIBarButtonItem(customView: leftNavButton)
         self.navigationItem.setLeftBarButton(leftItem, animated: false)
     }
-    
-    
-    private func initSettingItemTF(frame: CGRect, labelText: String){
-        
-    }
-    
+
     
     func handleLeftNavButton(){
+        playTapSound()
         _ = navigationController?.popViewController(animated: true)
     }
     
