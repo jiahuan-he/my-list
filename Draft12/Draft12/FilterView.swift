@@ -433,6 +433,7 @@ class FilterView: UIView {
     func removePressed(){
         clearDateSelection()
         clearFlagSelection()
+        donePressed()
     }
     
     func donePressed(){

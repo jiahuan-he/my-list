@@ -130,7 +130,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBOutlet weak var tableView: UITableView!
     
-    var items: [TodoItem] = []
+    var items: [TodoItem] = []{
+        didSet{
+            if items.count == 0 && !isFiltered{
+                backgroundTextView.isHidden = false
+            }
+            else if items.count > 0 || isFiltered{
+                backgroundTextView.isHidden = true
+            }
+        }
+    }
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var offset: CGFloat?
     var tableTap: UITapGestureRecognizer?
@@ -147,6 +156,39 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var dingPlayer: AVAudioPlayer?
     var tapPlayer: AVAudioPlayer?
     
+    var backgroundDate = UILabel()
+    var backgroundCue = UILabel()
+    var backgroundTextView = UIView()
+    
+    func initBackgroundText(){
+        
+        backgroundDate.font = Font.text
+        backgroundDate.textColor = Color.text
+        let today = Date().toString(dateFormat: "EEEE, MMM d, yyyy")
+        backgroundDate.text = today
+        backgroundDate.sizeToFit()
+        
+        backgroundCue.font = Font.text
+        backgroundCue.textColor = Color.text
+        backgroundCue.text = "pull down to add"
+        backgroundCue.sizeToFit()
+        
+        backgroundTextView = UIView()
+        backgroundTextView.frame = CGRect(x: 0, y: 0, width: ScreenSize.w, height: backgroundDate.frame.height * 3)
+        backgroundTextView.center = tableView.center
+        
+        backgroundDate.center.x = backgroundTextView.center.x
+        backgroundDate.center.y = backgroundTextView.frame.height/4
+        
+        backgroundCue.center.x = backgroundTextView.center.x
+        backgroundCue.center.y = backgroundTextView.frame.height * 5/6
+        
+        backgroundTextView.addSubview(backgroundDate)
+        backgroundTextView.addSubview(backgroundCue)
+        tableView.addSubview(backgroundTextView)
+        
+        backgroundTextView.isHidden = true
+    }
     
     
     func initSounds(){
@@ -254,7 +296,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         removeButton.frame = CGRect(x: 0.015*ScreenSize.w, y: 0, width: buttonWidth, height: buttonHeight)
         removeButton.setTitle("REMOVE", for: UIControlState.normal)
-        removeButton.setTitleColor(UIColor.red, for: UIControlState.normal)
+        removeButton.setTitleColor(Color.remove, for: UIControlState.normal)
         removeButton.titleLabel?.font = Font.button
         removeButton.sizeToFit()
         removeButton.center.y = barView.frame.height/2
@@ -265,7 +307,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         doneButton.frame = CGRect(x: UIScreen.main.bounds.width-buttonWidth, y: 0, width: buttonWidth, height: buttonHeight)
         
         doneButton.setTitle("DONE", for: UIControlState.normal)
-        doneButton.setTitleColor(UIColor.gray, for: UIControlState.normal)
+        doneButton.setTitleColor(Color.done, for: UIControlState.normal)
         doneButton.titleLabel?.font = Font.button
         doneButton.sizeToFit()
         doneButton.center.y = removeButton.center.y
@@ -297,6 +339,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.addSubview(filterView)
         tableView.addSubview(filterIndicator)
         
+        initBackgroundText()
     }
     
     func handleTableTap(_ sender: UITapGestureRecognizer){
@@ -449,6 +492,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var isFiltered: Bool = false{
         didSet{
             if isFiltered{
+                backgroundTextView.isHidden = true
                 filterIndicator.isHidden = false
                 filterIndicator.frame = CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/16)
                 filterIndicator.addFilter(num: items.count)
@@ -460,6 +504,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             else{
                 filterIndicator.isHidden = true
+                
             }
         }
     }
@@ -498,6 +543,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         doneFiltering(todaySelected: false, tomorrowSelected: false, noDateSelected: false, f0Selected: false, f1Selected: false, f2Selected: false, f3Selected: false)
         filterView.clearDateSelection()
         filterView.clearFlagSelection()
+        if items.count == 0 {
+            backgroundTextView.isHidden = false
+        }
+        else{
+            backgroundTextView.isHidden = true
+        }
     }
     
     func assignOpacity(cell: TodoItemTableViewCell){
@@ -784,6 +835,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         UIView.animate(withDuration: 0, animations: {() in
             self.editingCell!.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
+            self.editingCell!.dateButton.setTitleColor(Color.dateButton, for: .normal)
         })
         editingCell!.isUserInteractionEnabled = true
         resignAfterModifyingDate = true
@@ -1047,6 +1099,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         if(editingCell.todoItem!.dueDate == nil){
             editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
+            editingCell.dateButton.setTitleColor(Color.dateButton, for: .normal)
         }
         if isFiltered {
             editingCell.dateButton.isHidden = true
@@ -1250,6 +1303,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
         }
     }
+    
+    
     
     
 }
