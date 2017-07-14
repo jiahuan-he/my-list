@@ -596,6 +596,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.bButton?.alpha = 0.5
         cell.cButton?.alpha = 0.5
         cell.dButton?.alpha = 0.5
+        if cell.todoItem!.flag == nil{
+            return
+        }
         switch Int(cell.todoItem!.flag!)! {
         case 0:
             cell.aButton!.alpha = 1

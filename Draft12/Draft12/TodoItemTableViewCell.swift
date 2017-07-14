@@ -83,6 +83,11 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     let crossImage = UIImage(named: "img/cross2.png")
     let checkImage = UIImage(named: "img/check2.png")
     
+    let topInset = sizeConvert(size: 24)
+    let leftInset = sizeConvert(size: 2)
+    let bottomInset = sizeConvert(size: 15)
+    let rightInset = sizeConvert(size: 10)
+    
     override func awakeFromNib() {
         
         textView.keyboardAppearance = UIKeyboardAppearance.dark
@@ -110,7 +115,8 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         backgroundColor = Color.cellBackground
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
-        textView.textContainerInset = UIEdgeInsetsMake(sizeConvert(size: 26), sizeConvert(size: 2), sizeConvert(size: 15), sizeConvert(size: 10))
+        textView.textContainerInset = UIEdgeInsetsMake(topInset, leftInset, bottomInset, rightInset)
+        
         
         rightBorder.cornerRadius = sizeConvert(size: 3.0)
         separator.backgroundColor = Color.separator.cgColor
@@ -127,7 +133,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         textView.addSubview(dateButton)
         
-        let labelRadius = 5.0
+        let labelRadius = sizeConvert(size: 5.0)
         let labelWidth = sizeConvert(size: 18)
         let labelPosY = sizeConvert(size: 6)
         let labelPosX = sizeConvert(size: 195)
@@ -354,6 +360,14 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         self.hideLabels()
         todoItem!.name = textView.text!
         delegate!.cellDidEndEditing(editingCell: self)
+//        let controller = delegate   as! TodoTableViewController
+//        if !controller.modifyingDate{
+//            if todoItem?.dueDate == nil{
+//                textView.textContainerInset = UIEdgeInsetsMake(bottomInset, leftInset, bottomInset, rightInset)
+//                
+//            }
+//        }
+//        
     }
     
     func hideLabels(){
