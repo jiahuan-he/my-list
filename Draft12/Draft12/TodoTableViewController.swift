@@ -112,7 +112,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
     }
     
-    var initContentOffsetY: CGFloat = 0
+
     
     var initContentOffset: CGPoint = CGPoint.zero
     
@@ -340,7 +340,44 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.addSubview(filterIndicator)
         
         initBackgroundText()
+        
+        initContentOffset.y = -(self.navigationController?.navigationBar.frame.height)! - (self.navigationController?.navigationBar.frame.origin.y)!
+        initContentOffset.x = 0
+//        tableView.setContentOffset(initContentOffset, animated: false)
+        print("INIT OFFSET" ,initContentOffset.y)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        getData()
+        tableView.reloadData()
+        
+        UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in
+            // Enable or disable features based on authorization.
+        }
+        //        UIApplication.shared.registerForRemoteNotifications()
+        resetBadgeCount()
+        tableView.setContentOffset(initContentOffset, animated: false)
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+//        tableView.setContentOffset(initContentOffset, animated: false)
+        
+        let today = UserDefaults.standard.bool(forKey: filterKey.today)
+        let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
+        let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
+        let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
+        let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
+        let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
+        let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
+        doneFiltering(todaySelected: today, tomorrowSelected: tomorrow, noDateSelected: noDate, f0Selected: f0Selected, f1Selected: f1Selected, f2Selected: f2Selected, f3Selected: f3Selected)
+        tableView.setContentOffset(initContentOffset, animated: false)
+        
+    }
+
     
     func handleTableTap(_ sender: UITapGestureRecognizer){
         editingCell?.textView.resignFirstResponder()
@@ -465,6 +502,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var isFiltering: Bool = false{
         didSet{
             if isFiltering == true{
+          
                 self.filterView.isHidden = false
                 tableTap!.isEnabled = false
                 leftNavButton.isEnabled = false
@@ -474,6 +512,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     cell.isUserInteractionEnabled = false
                     cell.textView.isUserInteractionEnabled = false
                 }
+                tableView.setContentOffset(initContentOffset, animated: false)
             }
             else{
                 self.filterView.isHidden = true
@@ -524,7 +563,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         if isFiltering == false {
             tableView.setContentOffset(initContentOffset, animated: false)
-            
+            print("is setting init offset ", initContentOffset.y)
             isFiltering = true
             let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
             
@@ -571,18 +610,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        (UIApplication.shared.delegate as! AppDelegate).saveContext()
-        getData()
-        tableView.reloadData()
-        
-        UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in
-            // Enable or disable features based on authorization.
-        }
-        //        UIApplication.shared.registerForRemoteNotifications()
-        resetBadgeCount()
-    }
+    
     func cancelScheduledNotifications(){
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }
@@ -638,19 +666,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         UIApplication.shared.applicationIconBadgeNumber = badgeNum
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        initContentOffsetY = -tableView.contentOffset.y
-        initContentOffset = tableView.contentOffset
-        print(initContentOffsetY)
-        let today = UserDefaults.standard.bool(forKey: filterKey.today)
-        let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
-        let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
-        let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
-        let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
-        let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
-        let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
-        doneFiltering(todaySelected: today, tomorrowSelected: tomorrow, noDateSelected: noDate, f0Selected: f0Selected, f1Selected: f1Selected, f2Selected: f2Selected, f3Selected: f3Selected)
-    }
     
     func getData(){
         do {
@@ -897,6 +912,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func popupDatePicker(editingCell: TodoItemTableViewCell) {
         
+        
         tableView.isScrollEnabled = false
         self.navigationItem.leftBarButtonItem?.isEnabled = false
         
@@ -1081,7 +1097,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         offset = tableView.contentOffset.y - editingCell.frame.origin.y
-        offset = initContentOffsetY + offset!
+        offset = -initContentOffset.y + offset!
         
         // Important feature: scrolview content offset !!
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
@@ -1209,7 +1225,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     // indicates the state of this behavior
     var pullDownInProgress = false
     var clueView: UIView?
-    let marginalHeight = sizeConvert(size: 26)
+    let marginalHeight = ScreenSize.h/15
     var addClueLabel = UILabel()
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -1218,7 +1234,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         addClueLabel.textColor = Color.cue
         
         //        // this behavior starts when a user pulls down while at the top of the table
-        pullDownInProgress = (scrollView.contentOffset.y + initContentOffsetY) <= 0.0
+        pullDownInProgress = (scrollView.contentOffset.y + -initContentOffset.y) <= 0.0
         clueView!.backgroundColor = UIColor.clear
         if pullDownInProgress {
             if !isFiltered{
@@ -1241,11 +1257,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         if isFiltered{
+            addClueLabel.isHidden = true
             filterIndicator.resultLabel.text = "REMOVE FILTER TO ADD"
             filterIndicator.resultLabel.sizeToFit()
             return
         }
         
+        addClueLabel.isHidden = false
         let maxOffsetY = sizeConvert(size: -110)
         
         //        print("scroll: ",scrollView.contentOffset.y)
@@ -1253,17 +1271,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             scrollView.contentOffset.y = maxOffsetY
         }
         
-        let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffsetY
+        let scrollViewContentOffsetY = scrollView.contentOffset.y + -initContentOffset.y
         if(scrollViewContentOffsetY <= -marginalHeight){
-            addClueLabel.text = "Release"
+            addClueLabel.text = "release to add"
         }
         else{
-            addClueLabel.text = "Test"
+            addClueLabel.text = "pull to add"
         }
         if pullDownInProgress && scrollViewContentOffsetY <= 0.0 {
             // maintain the location of the placeholder
             print(scrollViewContentOffsetY)
-            addClueLabel.frame = CGRect(x: tableView.frame.size.width/2-30, y: -scrollViewContentOffsetY-sizeConvert(size: 30), width: sizeConvert(size: 100), height: sizeConvert(size: 30))
+            addClueLabel.frame = CGRect(x: 0, y: -scrollViewContentOffsetY-sizeConvert(size: 30), width: 0, height: 0)
+            
+            addClueLabel.sizeToFit()
+            addClueLabel.center.x = tableView.center.x
+            
             clueView!.frame = CGRect(x: 0, y: scrollViewContentOffsetY,
                                      width: tableView.frame.size.width, height: -scrollViewContentOffsetY)
             //            addClueLabel!.alpha = min(1.0, -scrollViewContentOffsetY/marginalHeight)
@@ -1281,7 +1303,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             //            filterIndicator.resultLabel.sizeToFit()
             return
         }
-        let scrollViewContentOffsetY = scrollView.contentOffset.y + initContentOffsetY
+        let scrollViewContentOffsetY = scrollView.contentOffset.y - initContentOffset.y
         if pullDownInProgress && scrollViewContentOffsetY <= -marginalHeight{
             clueView?.isHidden = true
             let newItem = TodoItem(context: context)
