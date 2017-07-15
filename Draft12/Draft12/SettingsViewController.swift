@@ -11,12 +11,17 @@
 import UIKit
 import UserNotifications
 import AVFoundation
+import MessageUI
 
-class SettingsViewController: UIViewController {
+
+
+class SettingsViewController: UIViewController, MFMailComposeViewControllerDelegate {
     
     var badgeCountView: SettingItem?
     var soundEffectView: SettingItem?
     var reminderView: SettingItem?
+    
+    var feedbackView: SettingItem?
     
     var originalHeight: CGFloat?
     let lineSpace = CGFloat(0.08 * ScreenSize.h)
@@ -60,6 +65,14 @@ class SettingsViewController: UIViewController {
         badgeCountView = SettingItem(frame: CGRect(x: 0, y: originalHeight!, width: ScreenSize.w, height: lineSpace), title: "Badge Count", key: settingKey.badge)
         soundEffectView = SettingItem(frame: (badgeCountView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Sound Effect", key: settingKey.sound)
         reminderView = SettingItem(frame: (soundEffectView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Due Reminder", key: settingKey.reminder)
+        
+        feedbackView = SettingItem(frame: (reminderView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Send Feedback", key: settingKey.sound)
+        feedbackView?.button.isHidden = true
+//        feedbackView?.label.center.x = self.view.center.x
+        let feedbackRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.sendEmailButtonTapped(sender:)))
+        feedbackView?.addGestureRecognizer(feedbackRecognizer)
+
+        
 
         if let navController = self.navigationController, navController.viewControllers.count >= 2 {
             let viewController = navController.viewControllers[navController.viewControllers.count - 2]
@@ -99,6 +112,7 @@ class SettingsViewController: UIViewController {
         view.addSubview(soundEffectView!)
         view.addSubview(badgeCountView!)
         view.addSubview(reminderView!)
+        view.addSubview(feedbackView!)
         
         
     }
@@ -209,6 +223,56 @@ class SettingsViewController: UIViewController {
         _ = navigationController?.popViewController(animated: true)
     }
     
+    
+    
+    func sendEmailButtonTapped(sender: AnyObject) {
+        print("email")
+        let mailComposeViewController = configuredMailComposeViewController()
+        if MFMailComposeViewController.canSendMail() {
+            self.present(mailComposeViewController, animated: true, completion: nil)
+        } else {
+//            self.showSendMailErrorAlert()
+        }
+    }
+    
+    func configuredMailComposeViewController() -> MFMailComposeViewController {
+        let mailComposerVC = MFMailComposeViewController()
+        mailComposerVC.mailComposeDelegate = self // Extremely important to set the --mailComposeDelegate-- property, NOT the --delegate-- property
+        
+        mailComposerVC.setToRecipients(["jiahuanhe.dev@gmail.com"])
+        mailComposerVC.setSubject("App Advice")
+        mailComposerVC.setMessageBody("Hello Jiahuan, ", isHTML: false)
+        
+        return mailComposerVC
+    }
+    
+//    
+//    func showSendMailErrorAlert() {
+//        let sendMailErrorAlert = UIAlertView(title: "Could Not Send Email", message: "Your device could not send e-mail.  Please check e-mail configuration and try again.", delegate: self, cancelButtonTitle: "OK")
+//        let
+//        sendMailErrorAlert.show()
+//    }
+    
+    // MARK: MFMailComposeViewControllerDelegate
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -216,6 +280,9 @@ class SettingsViewController: UIViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
     }
+    
+    
+    
     
     
 }

@@ -126,7 +126,7 @@
 				TargetAttributes = {
 					3AD780891EB078BA007FDE5E = {
 						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = XE7FLNR7QS;
+						DevelopmentTeam = LEULW7GL8R;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -303,12 +303,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = XE7FLNR7QS;
+				DEVELOPMENT_TEAM = LEULW7GL8R;
 				INFOPLIST_FILE = Draft12/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "jiahuan-he.Draft12";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jiahuanhe.draft1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -316,12 +317,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = XE7FLNR7QS;
+				DEVELOPMENT_TEAM = LEULW7GL8R;
 				INFOPLIST_FILE = Draft12/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "jiahuan-he.Draft12";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jiahuanhe.draft1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
