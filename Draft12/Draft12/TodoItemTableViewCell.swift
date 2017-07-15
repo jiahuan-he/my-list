@@ -1,8 +1,8 @@
 //
 //  TodoItemTableViewCell.swift
-//  Draft11
+//  MyList
 //
-//  Created by LMAO on 27/02/2017.
+//  Created by Jiahuan He on 27/02/2017.
 //  Copyright © 2017 Jiahuan He. All rights reserved.
 //
 protocol TodoItemTableViewCellDelegate{

@@ -2,9 +2,9 @@
 
 //
 //  SettingsViewController.swift
-//  Draft12
+//  MyList
 //
-//  Created by LMAO on 04/07/2017.
+//  Created by Jiahuan He on 04/07/2017.
 //  Copyright © 2017 Jiahuan He. All rights reserved.
 //
 

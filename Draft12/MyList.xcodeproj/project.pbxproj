@@ -31,7 +31,7 @@
 		3AC9CEEF1F0C9B7C00DCEC41 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		3AC9CEF31F0C9BEE00DCEC41 /* SettingItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingItem.swift; sourceTree = "<group>"; };
 		3AC9CEF51F0CAC7B00DCEC41 /* sound */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sound; sourceTree = "<group>"; };
-		3AD7808A1EB078BA007FDE5E /* Draft12.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Draft12.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AD7808A1EB078BA007FDE5E /* MyList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3AD780921EB078BB007FDE5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3AD780951EB078BB007FDE5E /* Draft12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Draft12.xcdatamodel; sourceTree = "<group>"; };
@@ -66,7 +66,7 @@
 		3AD7808B1EB078BA007FDE5E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3AD7808A1EB078BA007FDE5E /* Draft12.app */,
+				3AD7808A1EB078BA007FDE5E /* MyList.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,9 +97,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3AD780891EB078BA007FDE5E /* Draft12 */ = {
+		3AD780891EB078BA007FDE5E /* MyList */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3AD7809F1EB078BB007FDE5E /* Build configuration list for PBXNativeTarget "Draft12" */;
+			buildConfigurationList = 3AD7809F1EB078BB007FDE5E /* Build configuration list for PBXNativeTarget "MyList" */;
 			buildPhases = (
 				3AD780861EB078BA007FDE5E /* Sources */,
 				3AD780871EB078BA007FDE5E /* Frameworks */,
@@ -109,9 +109,9 @@
 			);
 			dependencies = (
 			);
-			name = Draft12;
+			name = MyList;
 			productName = Draft12;
-			productReference = 3AD7808A1EB078BA007FDE5E /* Draft12.app */;
+			productReference = 3AD7808A1EB078BA007FDE5E /* MyList.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -126,12 +126,12 @@
 				TargetAttributes = {
 					3AD780891EB078BA007FDE5E = {
 						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = LEULW7GL8R;
+						DevelopmentTeam = U28JKGUCNQ;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = 3AD780851EB078BA007FDE5E /* Build configuration list for PBXProject "Draft12" */;
+			buildConfigurationList = 3AD780851EB078BA007FDE5E /* Build configuration list for PBXProject "MyList" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -144,7 +144,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3AD780891EB078BA007FDE5E /* Draft12 */,
+				3AD780891EB078BA007FDE5E /* MyList */,
 			);
 		};
 /* End PBXProject section */
@@ -303,10 +303,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = LEULW7GL8R;
+				DEVELOPMENT_TEAM = U28JKGUCNQ;
 				INFOPLIST_FILE = Draft12/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jiahuanhe.draft1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jiahuan-he.mylist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -317,10 +317,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = LEULW7GL8R;
+				DEVELOPMENT_TEAM = U28JKGUCNQ;
 				INFOPLIST_FILE = Draft12/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jiahuanhe.draft1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jiahuan-he.mylist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -330,7 +330,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3AD780851EB078BA007FDE5E /* Build configuration list for PBXProject "Draft12" */ = {
+		3AD780851EB078BA007FDE5E /* Build configuration list for PBXProject "MyList" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3AD7809D1EB078BB007FDE5E /* Debug */,
@@ -339,7 +339,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3AD7809F1EB078BB007FDE5E /* Build configuration list for PBXNativeTarget "Draft12" */ = {
+		3AD7809F1EB078BB007FDE5E /* Build configuration list for PBXNativeTarget "MyList" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3AD780A01EB078BB007FDE5E /* Debug */,

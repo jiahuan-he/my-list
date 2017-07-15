@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3AD780891EB078BA007FDE5E"
-               BuildableName = "Draft12.app"
-               BlueprintName = "Draft12"
-               ReferencedContainer = "container:Draft12.xcodeproj">
+               BuildableName = "MyList.app"
+               BlueprintName = "MyList"
+               ReferencedContainer = "container:MyList.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3AD780891EB078BA007FDE5E"
-            BuildableName = "Draft12.app"
-            BlueprintName = "Draft12"
-            ReferencedContainer = "container:Draft12.xcodeproj">
+            BuildableName = "MyList.app"
+            BlueprintName = "MyList"
+            ReferencedContainer = "container:MyList.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3AD780891EB078BA007FDE5E"
-            BuildableName = "Draft12.app"
-            BlueprintName = "Draft12"
-            ReferencedContainer = "container:Draft12.xcodeproj">
+            BuildableName = "MyList.app"
+            BlueprintName = "MyList"
+            ReferencedContainer = "container:MyList.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3AD780891EB078BA007FDE5E"
-            BuildableName = "Draft12.app"
-            BlueprintName = "Draft12"
-            ReferencedContainer = "container:Draft12.xcodeproj">
+            BuildableName = "MyList.app"
+            BlueprintName = "MyList"
+            ReferencedContainer = "container:MyList.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
