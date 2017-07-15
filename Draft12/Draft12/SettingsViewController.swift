@@ -240,8 +240,8 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         mailComposerVC.mailComposeDelegate = self // Extremely important to set the --mailComposeDelegate-- property, NOT the --delegate-- property
         
         mailComposerVC.setToRecipients(["jiahuanhe.dev@gmail.com"])
-        mailComposerVC.setSubject("App Advice")
-        mailComposerVC.setMessageBody("Hello Jiahuan, ", isHTML: false)
+        mailComposerVC.setSubject("Feedback")
+        mailComposerVC.setMessageBody("Hello, ", isHTML: false)
         
         return mailComposerVC
     }

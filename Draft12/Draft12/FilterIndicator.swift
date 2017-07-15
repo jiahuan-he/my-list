@@ -34,6 +34,7 @@ class FilterIndicator: UIView {
         removeButton.titleLabel!.font = Font.filter
         removeButton.titleLabel!.sizeToFit()
         removeButton.sizeToFit()
+        
         removeButton.center.y = self.frame.height/2
         
         removeButton.addTarget(self, action: #selector(self.removeFilter), for: .touchUpInside)

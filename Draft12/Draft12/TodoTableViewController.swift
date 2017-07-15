@@ -240,14 +240,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-    
+    var firstLaunch = false
     func checkFirstLaunch(){
         if(UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
         {
             // app already launched
+            firstLaunch = false
         }
         else
         {
+            firstLaunch = true
             // This is the first launch ever
             UserDefaults.standard.set(true, forKey: settingKey.badge)
             UserDefaults.standard.set(true, forKey: settingKey.sound)
@@ -263,6 +265,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     override func viewDidLoad() {
+
         checkFirstLaunch()
         print("Screen height: ", ScreenSize.h)
         print("Screen width: ", ScreenSize.w)
@@ -275,8 +278,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         datePicker.frame = CGRect(x:  0, y:  ScreenSize.h - datePickerHeight, width:  UIScreen.main.bounds.width, height: datePickerHeight)
         
-        datePicker.layer.borderWidth = 1
-        datePicker.layer.borderColor = UIColor.green.cgColor
+//        datePicker.layer.borderWidth = 1
+//        datePicker.layer.borderColor = UIColor.green.cgColor
         
         print("VIEW x", self.view.frame.origin.x)
         print("VIEW y", self.view.frame.origin.y)
@@ -366,14 +369,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         super.viewDidAppear(animated)
 //        tableView.setContentOffset(initContentOffset, animated: false)
         
-        let today = UserDefaults.standard.bool(forKey: filterKey.today)
-        let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
-        let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
-        let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
-        let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
-        let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
-        let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
-        doneFiltering(todaySelected: today, tomorrowSelected: tomorrow, noDateSelected: noDate, f0Selected: f0Selected, f1Selected: f1Selected, f2Selected: f2Selected, f3Selected: f3Selected)
+//        let today = UserDefaults.standard.bool(forKey: filterKey.today)
+//        let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
+//        let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
+//        let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
+//        let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
+//        let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
+//        let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
+//        doneFiltering(todaySelected: today, tomorrowSelected: tomorrow, noDateSelected: noDate, f0Selected: f0Selected, f1Selected: f1Selected, f2Selected: f2Selected, f3Selected: f3Selected)
         tableView.setContentOffset(initContentOffset, animated: false)
         
     }
@@ -669,25 +672,59 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         UIApplication.shared.applicationIconBadgeNumber = badgeNum
     }
     
+    func onBoarding(){
+        for i in 0...6{
+            let newItem = TodoItem(context: context)
+            let userDefault = UserDefaults.standard
+            let id = userDefault.integer(forKey: "num")
+            newItem.id = Int64(id)
+            userDefault.set(id+1, forKey: "num")
+            items.append(newItem)
+            newItem.flag = String(i%4)
+            
+        }
+        
+        let today = Date() as NSDate
+        items[0].name = "Pull down to add new task."
+        items[0].createDate = today
+        
+        items[1].name = "Slide right to complete a task."
+        items[2].name = "Slide left to delete a task."
+        items[3].name = "Tap the filter at the left corner to filter tasks."
+        
+        items[4].name = "Overdue tasks' date is displayed as red."
+        items[4].dueDate = Date() as NSDate
+        
+        items[5].name = "Date and flag can't be modified when filtering."
+        items[5].dueDate = Calendar.current.date(byAdding: .day, value: 1, to: Date())! as NSDate
+        
+        items[6].name = "Enjoy ʘ‿ʘ"
+        
+        items[1].createDate = items[0].createDate!.addingTimeInterval(-1)
+        items[2].createDate = items[1].createDate!.addingTimeInterval(-1)
+        items[3].createDate = items[2].createDate!.addingTimeInterval(-1)
+        items[4].createDate = items[3].createDate!.addingTimeInterval(-1)
+        items[5].createDate = items[4].createDate!.addingTimeInterval(-1)
+        items[6].createDate = items[5].createDate!.addingTimeInterval(-1)
+        
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+    }
     
     func getData(){
         do {
+            if firstLaunch{
+                onBoarding()
+                firstLaunch = false
+                return
+            }
+            let createDate = NSSortDescriptor(key: "createDate", ascending: false)
             let sortDate = NSSortDescriptor(key: "dueDate", ascending: true)
             let sortComplete = NSSortDescriptor(key: "isComplete", ascending: true)
             
             let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
-            fetchRequest.sortDescriptors = [sortComplete, sortDate]
-            //
-            //            if !subPredicates.isEmpty{
-            //                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: subPredicates)
-            //                fetchRequest.predicate = compoundPredicate
-            //            }
-            //
-            
+            fetchRequest.sortDescriptors = [sortComplete, sortDate, createDate]
             items = try context.fetch(fetchRequest)
-            
-            
-            
+         
             var filteredItems: [TodoItem] = []
             
             let today = UserDefaults.standard.bool(forKey: filterKey.today)
@@ -754,6 +791,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             print("Wrong")
         }
     }
+    
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
@@ -854,6 +893,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         UIView.animate(withDuration: 0, animations: {() in
             self.editingCell!.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
             self.editingCell!.dateButton.setTitleColor(Color.dateButton, for: .normal)
+            self.editingCell!.dateButton.titleLabel?.sizeToFit()
+            self.editingCell!.dateButton.sizeToFit()
         })
         editingCell!.isUserInteractionEnabled = true
         resignAfterModifyingDate = true
@@ -1119,6 +1160,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if(editingCell.todoItem!.dueDate == nil){
             editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
             editingCell.dateButton.setTitleColor(Color.dateButton, for: .normal)
+            editingCell.dateButton.titleLabel?.sizeToFit()
+            editingCell.dateButton.sizeToFit()
         }
         if isFiltered {
             editingCell.dateButton.isHidden = true
@@ -1295,8 +1338,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         } else {
             pullDownInProgress = false
         }
-        
-        
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
@@ -1309,11 +1350,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let scrollViewContentOffsetY = scrollView.contentOffset.y - initContentOffset.y
         if pullDownInProgress && scrollViewContentOffsetY <= -marginalHeight{
             clueView?.isHidden = true
+            
             let newItem = TodoItem(context: context)
-            
-            
             let userDefault = UserDefaults.standard
             let id = userDefault.integer(forKey: "num")
+            newItem.createDate = Date() as NSDate
             newItem.id = Int64(id)
             userDefault.set(id+1, forKey: "num")
             newItem.flag = "0"

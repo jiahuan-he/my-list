@@ -73,7 +73,7 @@ class SettingItem: UIView {
         renderedUncheckedImage = uncheckedImage!.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         button.setImage(renderedCheckedImage, for: .normal)
         button.tintColor = Color.crossLabel
-        button.frame = CGRect(x: buttonX, y: 0, width: label.frame.height, height: label.frame.height)
+        button.frame = CGRect(x: buttonX, y: 0, width: label.frame.height*1.2, height: label.frame.height*1.2)
         button.center.y = self.frame.height/2
         
         let seperator = CALayer()

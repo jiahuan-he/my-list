@@ -83,9 +83,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     let crossImage = UIImage(named: "img/cross2.png")
     let checkImage = UIImage(named: "img/check2.png")
     
-    let topInset = sizeConvert(size: 24)
+    let topInset = sizeConvert(size: 21)
     let leftInset = sizeConvert(size: 2)
-    let bottomInset = sizeConvert(size: 15)
+    let bottomInset = sizeConvert(size: 12)
     let rightInset = sizeConvert(size: 10)
     
     override func awakeFromNib() {
@@ -115,7 +115,13 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         backgroundColor = Color.cellBackground
         
         //        textView.textContainerInset = UIEdgeInsetsMake(10, 0, 10, 50)
-        textView.textContainerInset = UIEdgeInsetsMake(topInset, leftInset, bottomInset, rightInset)
+//        if todoItem?.dueDate == nil{
+//            textView.textContainerInset = UIEdgeInsetsMake(bottomInset, leftInset, bottomInset, rightInset)
+//        }
+//        else{
+            textView.textContainerInset = UIEdgeInsetsMake(topInset, leftInset, bottomInset, rightInset)
+//        }
+        
         
         
         rightBorder.cornerRadius = sizeConvert(size: 3.0)
@@ -123,7 +129,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         layer.addSublayer(rightBorder)
         layer.addSublayer(separator)
         
-        dateButton.frame = CGRect(x: sizeConvert(size: 5.5), y: sizeConvert(size: 1.6), width: sizeConvert(size: 100), height: sizeConvert(size: 20))
+        dateButton.frame = CGRect(x: sizeConvert(size: 5.5), y: sizeConvert(size: -2), width: sizeConvert(size: 100), height: sizeConvert(size: 20))
         dateButton.contentHorizontalAlignment = .left
         dateButton.setTitle("Add Due Date", for: UIControlState.normal)
         dateButton.setTitleColor(Color.dateButton, for: UIControlState.normal)
@@ -135,9 +141,9 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         
         let labelRadius = sizeConvert(size: 5.0)
         let labelWidth = sizeConvert(size: 18)
-        let labelPosY = sizeConvert(size: 6)
-        let labelPosX = sizeConvert(size: 195)
-        let distance = sizeConvert(size: 28)
+        let labelPosY = sizeConvert(size: 2.5)
+        let labelPosX = sizeConvert(size: 180)
+        let distance = sizeConvert(size: 30)
         
         aButton = UIButton(frame: CGRect(x: labelPosX, y: labelPosY, width: labelWidth, height: labelWidth))
         aButton!.backgroundColor = Color.f0
@@ -330,6 +336,12 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         crossLabel.frame = CGRect(x: crossInsetProp*UIScreen.main.bounds.width-cueLabelWidth, y: frame.height/2-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
         separator.frame = CGRect(x: 0, y: frame.height-separatorWidth, width: UIScreen.main.bounds.width, height: separatorWidth)
         checkLabel.frame = CGRect(x: checkInsetProp*UIScreen.main.bounds.width, y: frame.height/2-cueLabelWidth/2, width: cueLabelWidth, height: cueLabelWidth)
+//        if todoItem?.dueDate == nil{
+//            textView.textContainerInset = UIEdgeInsetsMake(bottomInset, leftInset, bottomInset, rightInset)
+//        }
+//        else{
+            textView.textContainerInset = UIEdgeInsetsMake(topInset, leftInset, bottomInset, rightInset)
+//        }
     }
     
     // prevent appending new line.
@@ -360,14 +372,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         self.hideLabels()
         todoItem!.name = textView.text!
         delegate!.cellDidEndEditing(editingCell: self)
-//        let controller = delegate   as! TodoTableViewController
-//        if !controller.modifyingDate{
-//            if todoItem?.dueDate == nil{
-//                textView.textContainerInset = UIEdgeInsetsMake(bottomInset, leftInset, bottomInset, rightInset)
-//                
-//            }
-//        }
-//        
+
     }
     
     func hideLabels(){
