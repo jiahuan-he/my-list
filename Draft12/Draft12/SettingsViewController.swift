@@ -68,19 +68,19 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         
         feedbackView = SettingItem(frame: (reminderView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Send Feedback", key: settingKey.sound)
         feedbackView?.button.isHidden = true
-//        feedbackView?.label.center.x = self.view.center.x
+        //        feedbackView?.label.center.x = self.view.center.x
         let feedbackRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.sendEmailButtonTapped(sender:)))
         feedbackView?.addGestureRecognizer(feedbackRecognizer)
-
         
-
+        
+        
         if let navController = self.navigationController, navController.viewControllers.count >= 2 {
             let viewController = navController.viewControllers[navController.viewControllers.count - 2]
             badgeCountView!.delegate = viewController as? TodoTableViewController
             soundEffectView!.delegate = viewController as? TodoTableViewController
             reminderView!.delegate = viewController as? TodoTableViewController
         }
-
+        
         getBadgeAuthorizationResult()
         if UserDefaults.standard.bool(forKey: settingKey.badge) && authorized{
             badgeCountView?.buttonChecked = true
@@ -98,7 +98,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         }
         
         if UserDefaults.standard.bool(forKey: settingKey.sound) {
-            soundEffectView?.buttonChecked = true            
+            soundEffectView?.buttonChecked = true
         }
         else{
             soundEffectView?.buttonChecked = false
@@ -120,7 +120,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
     func handleBadgeButton(){
         checkAuthorization(forKey: settingKey.badge)
     }
-  
+    
     func handleReminderButton(){
         checkAuthorization(forKey: settingKey.reminder)
     }
@@ -131,7 +131,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
     
     func getAlertAuthorizationResult(){
         if let settings = UIApplication.shared.currentUserNotificationSettings {
-            if settings.types.contains([.alert]) {
+            if settings.types.contains([.alert, .sound]) {
                 authorized = true
             } else {
                 authorized = false
@@ -151,7 +151,6 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
     
     
     func checkAuthorization(forKey key: String){
-        
         
         var currentView: SettingItem
         switch key {
@@ -182,7 +181,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
             }
         }
     }
-
+    
     
     func alert(){
         let alert = UIAlertController(title: "MyList", message: "Please turn on notification", preferredStyle: UIAlertControllerStyle.alert)
@@ -216,7 +215,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         let leftItem = UIBarButtonItem(customView: leftNavButton)
         self.navigationItem.setLeftBarButton(leftItem, animated: false)
     }
-
+    
     
     func handleLeftNavButton(){
         playTapSound()
@@ -231,7 +230,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         if MFMailComposeViewController.canSendMail() {
             self.present(mailComposeViewController, animated: true, completion: nil)
         } else {
-//            self.showSendMailErrorAlert()
+            //            self.showSendMailErrorAlert()
         }
     }
     
@@ -246,12 +245,12 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         return mailComposerVC
     }
     
-//    
-//    func showSendMailErrorAlert() {
-//        let sendMailErrorAlert = UIAlertView(title: "Could Not Send Email", message: "Your device could not send e-mail.  Please check e-mail configuration and try again.", delegate: self, cancelButtonTitle: "OK")
-//        let
-//        sendMailErrorAlert.show()
-//    }
+    //
+    //    func showSendMailErrorAlert() {
+    //        let sendMailErrorAlert = UIAlertView(title: "Could Not Send Email", message: "Your device could not send e-mail.  Please check e-mail configuration and try again.", delegate: self, cancelButtonTitle: "OK")
+    //        let
+    //        sendMailErrorAlert.show()
+    //    }
     
     // MARK: MFMailComposeViewControllerDelegate
     
@@ -261,18 +260,6 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -280,9 +267,5 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
     }
-    
-    
-    
-    
     
 }

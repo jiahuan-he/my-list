@@ -112,7 +112,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
     }
     
-
+    
     
     var initContentOffset: CGPoint = CGPoint.zero
     
@@ -265,7 +265,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     override func viewDidLoad() {
-
+        
         checkFirstLaunch()
         print("Screen height: ", ScreenSize.h)
         print("Screen width: ", ScreenSize.w)
@@ -278,8 +278,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         datePicker.frame = CGRect(x:  0, y:  ScreenSize.h - datePickerHeight, width:  UIScreen.main.bounds.width, height: datePickerHeight)
         
-//        datePicker.layer.borderWidth = 1
-//        datePicker.layer.borderColor = UIColor.green.cgColor
+        //        datePicker.layer.borderWidth = 1
+        //        datePicker.layer.borderColor = UIColor.green.cgColor
         
         print("VIEW x", self.view.frame.origin.x)
         print("VIEW y", self.view.frame.origin.y)
@@ -346,7 +346,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         initContentOffset.y = -(self.navigationController?.navigationBar.frame.height)! - (self.navigationController?.navigationBar.frame.origin.y)!
         initContentOffset.x = 0
-//        tableView.setContentOffset(initContentOffset, animated: false)
+        //        tableView.setContentOffset(initContentOffset, animated: false)
         print("INIT OFFSET" ,initContentOffset.y)
     }
     
@@ -367,20 +367,20 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        tableView.setContentOffset(initContentOffset, animated: false)
+        //        tableView.setContentOffset(initContentOffset, animated: false)
         
-//        let today = UserDefaults.standard.bool(forKey: filterKey.today)
-//        let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
-//        let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
-//        let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
-//        let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
-//        let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
-//        let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
-//        doneFiltering(todaySelected: today, tomorrowSelected: tomorrow, noDateSelected: noDate, f0Selected: f0Selected, f1Selected: f1Selected, f2Selected: f2Selected, f3Selected: f3Selected)
+        //        let today = UserDefaults.standard.bool(forKey: filterKey.today)
+        //        let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
+        //        let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
+        //        let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
+        //        let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
+        //        let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
+        //        let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
+        //        doneFiltering(todaySelected: today, tomorrowSelected: tomorrow, noDateSelected: noDate, f0Selected: f0Selected, f1Selected: f1Selected, f2Selected: f2Selected, f3Selected: f3Selected)
         tableView.setContentOffset(initContentOffset, animated: false)
         
     }
-
+    
     
     func handleTableTap(_ sender: UITapGestureRecognizer){
         editingCell?.textView.resignFirstResponder()
@@ -505,7 +505,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var isFiltering: Bool = false{
         didSet{
             if isFiltering == true{
-          
+                
                 self.filterView.isHidden = false
                 tableTap!.isEnabled = false
                 leftNavButton.isEnabled = false
@@ -617,8 +617,22 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
+    func getNotificationNum(){
+        UNUserNotificationCenter.current().getPendingNotificationRequests(completionHandler: { requests in
+            print ("-------------------")
+            var i=0
+            for request in requests {
+                print(request)
+                i += 1
+            }
+            print ("NUM OF NOTIFICATIONS: ", i)
+            print ("-------------------")
+        })
+    }
+    
     func cancelScheduledNotifications(){
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        getNotificationNum()
     }
     func scheduleNotification(item: TodoItem?){
         if item == nil || !UserDefaults.standard.bool(forKey: settingKey.reminder){
@@ -631,15 +645,22 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let content = UNMutableNotificationContent()
         content.title = "Your task is due!"
         content.body = item!.name!
+        content.sound = UNNotificationSound.default()
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: item!.dueDate!.timeIntervalSince(today), repeats: false)
+        //        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: item!.dueDate!.timeIntervalSince(today), repeats: false)
+        let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: item!.dueDate! as Date)
+        print(dateComponents)
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: String(item!.id), content: content, trigger: trigger)
         let center = UNUserNotificationCenter.current()
+        
         center.add(request) { (error : Error?) in
             if let theError = error {
                 print(theError.localizedDescription)
             }
         }
+        getNotificationNum()
     }
     func resetScheduledNotifications(){
         if UserDefaults.standard.bool(forKey: settingKey.reminder){
@@ -655,6 +676,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: [String(item!.id)])
+        getNotificationNum()
     }
     
     func resetBadgeCount(){
@@ -724,7 +746,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             let fetchRequest:NSFetchRequest = TodoItem.fetchRequest()
             fetchRequest.sortDescriptors = [sortComplete, sortDate, createDate]
             items = try context.fetch(fetchRequest)
-         
+            
             var filteredItems: [TodoItem] = []
             
             let today = UserDefaults.standard.bool(forKey: filterKey.today)
@@ -1079,13 +1101,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             editingCell.dateButton.alpha = Alpha.complete
             editingCell.rightBorder.opacity = Float(Alpha.complete)
             editingCell.dateButton.setTitleColor(Color.dateButton, for: .normal)
-            //            editingCell.textView.backgroundColor = Color.complete
         }
         else{
-            //            editingCell.textView.backgroundColor = Color.cellBackground
-            //            editingCell.textView.attributedText = attributeString
+            
             attributeString.removeAttribute(NSStrikethroughColorAttributeName, range: NSMakeRange(0, attributeString.length))
-            //            editingCell.textView.attributedText = attributeString
             editingCell.textView.typingAttributes = [:]
             editingCell.textView.text = editingCell.todoItem?.name
             editingCell.textView.font = Font.text
@@ -1116,13 +1135,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
         resetBadgeCount()
-        //        AudioServicesPlayAlertSound(dingSound)
-        
         playDingSound()
     }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-        //        AudioServicesPlayAlertSound(newItemSound)
         playNewItemSound()
         leftNavButton.isEnabled = false
         rightNavButton.isEnabled = false

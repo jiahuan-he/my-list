@@ -36,7 +36,7 @@ class SettingItem: UIView {
                 }
                 else if(key == settingKey.reminder){
                     delegate!.resetScheduledNotifications()
-                }                                                
+                }
             }
             else{
                 UserDefaults.standard.set(false, forKey: key)
