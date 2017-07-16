@@ -11,6 +11,8 @@ import CoreData
 import UserNotifications
 import AudioToolbox
 import AVFoundation
+import StoreKit
+
 
 struct ScreenSize {
     static let w = UIScreen.main.bounds.width
@@ -246,6 +248,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         {
             // app already launched
             firstLaunch = false
+
         }
         else
         {
@@ -257,11 +260,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             UserDefaults.standard.set(0, forKey: "num")
             UserDefaults.standard.set(true, forKey: "HasLaunchedOnce")
-            
-            UserDefaults.standard.synchronize()
+            UserDefaults.standard.set(0, forKey: "numOfEditings")
             
             print("has Launched once", UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
         }
+        UserDefaults.standard.synchronize()
+    }
+    
+    func incrementNumOfEditings(){
+        var num = UserDefaults.standard.integer(forKey: "numOfEditings")
+        num += 1
+        UserDefaults.standard.set(num, forKey: "numOfEditings")
+        if num > 16 && num%10 == 0{
+            SKStoreReviewController.requestReview()
+        }
+        
     }
     
     override func viewDidLoad() {
@@ -351,6 +364,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
+        
         super.viewWillAppear(animated)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         getData()
@@ -1052,6 +1067,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func itemDeleted(item: TodoItem) {
+        incrementNumOfEditings()
         removeNotification(item: item)
         let itemIndex = (items as NSArray).index(of: item)
         let cellIndex = IndexPath(row: itemIndex, section: 0)
@@ -1087,7 +1103,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func itemComplete(editingCell: TodoItemTableViewCell){
-        
+        incrementNumOfEditings()
         editingCell.todoItem!.isComplete = !editingCell.todoItem!.isComplete
         removeNotification(item: editingCell.todoItem!)
         scheduleNotification(item: editingCell.todoItem!)
@@ -1189,6 +1205,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
+        incrementNumOfEditings()
         leftNavButton.isEnabled = true
         rightNavButton.isEnabled = true
         if isFiltered{
