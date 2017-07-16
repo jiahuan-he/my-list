@@ -38,7 +38,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
             tapPlayer?.prepareToPlay()
         }
         catch{
-            print("SOUND ERROR")
+//          print("SOUND ERROR")
         }
     }
     
@@ -192,7 +192,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
             
             if UIApplication.shared.canOpenURL(settingsUrl) {
                 UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
-                    print("Settings opened: \(success)") // Prints true
+//                    print("Settings opened: \(success)") // Prints true
                 })
             }
         }
@@ -225,7 +225,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
     
     
     func sendEmailButtonTapped(sender: AnyObject) {
-        print("email")
+        // print("email")
         let mailComposeViewController = configuredMailComposeViewController()
         if MFMailComposeViewController.canSendMail() {
             self.present(mailComposeViewController, animated: true, completion: nil)

@@ -31,9 +31,9 @@ struct Font{
 struct Color{
     
     static let text = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
-    static let cellBackground = UIColor(red: 50/255, green: 50/255, blue: 50/255, alpha: 1)
-    static let darkerCellBackground = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
-    static let tableViewBackground = UIColor(red: 55/255, green: 60/255, blue: 58/255, alpha: 1)
+    static let cellBackground = UIColor(red: 35/255, green: 35/255, blue: 35/255, alpha: 1)
+    static let darkerCellBackground = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1)
+    static let tableViewBackground = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
     static let navigationBar = tableViewBackground
     static let navigationBarText = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
     static let separator = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
@@ -204,7 +204,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             tapPlayer!.prepareToPlay()
         }
         catch{
-            print("SOUND ERROR")
+            // print("SOUND ERROR")
         }
     }
     
@@ -262,7 +262,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             UserDefaults.standard.set(true, forKey: "HasLaunchedOnce")
             UserDefaults.standard.set(0, forKey: "numOfEditings")
             
-            print("has Launched once", UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
+            // print("has Launched once", UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
         }
         UserDefaults.standard.synchronize()
     }
@@ -280,8 +280,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         
         checkFirstLaunch()
-        print("Screen height: ", ScreenSize.h)
-        print("Screen width: ", ScreenSize.w)
+        // print("Screen height: ", ScreenSize.h)
+        // print("Screen width: ", ScreenSize.w)
         initSounds()
         UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
         super.viewDidLoad()
@@ -294,8 +294,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         //        datePicker.layer.borderWidth = 1
         //        datePicker.layer.borderColor = UIColor.green.cgColor
         
-        print("VIEW x", self.view.frame.origin.x)
-        print("VIEW y", self.view.frame.origin.y)
+        // print("VIEW x", self.view.frame.origin.x)
+        // print("VIEW y", self.view.frame.origin.y)
         //        self.view.addSubview(datePicker)
         UIApplication.shared.keyWindow?.addSubview(datePicker)
         
@@ -360,7 +360,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         initContentOffset.y = -(self.navigationController?.navigationBar.frame.height)! - (self.navigationController?.navigationBar.frame.origin.y)!
         initContentOffset.x = 0
         //        tableView.setContentOffset(initContentOffset, animated: false)
-        print("INIT OFFSET" ,initContentOffset.y)
+        // print("INIT OFFSET" ,initContentOffset.y)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -581,7 +581,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         if isFiltering == false {
             tableView.setContentOffset(initContentOffset, animated: false)
-            print("is setting init offset ", initContentOffset.y)
+            // print("is setting init offset ", initContentOffset.y)
             isFiltering = true
             let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
             
@@ -589,7 +589,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 for cell in vCells{
                     cell.alpha = Alpha.notEditingCell
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterView.frame.height)
-                    print(cell.textView.text)
+                    // print(cell.textView.text)
                 }})
         }
     }
@@ -634,14 +634,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func getNotificationNum(){
         UNUserNotificationCenter.current().getPendingNotificationRequests(completionHandler: { requests in
-            print ("-------------------")
+            // print ("-------------------")
             var i=0
-            for request in requests {
-                print(request)
+            for _ in requests {
+                // print(request)
                 i += 1
             }
-            print ("NUM OF NOTIFICATIONS: ", i)
-            print ("-------------------")
+            // print ("NUM OF NOTIFICATIONS: ", i)
+            // print ("-------------------")
         })
     }
     
@@ -664,15 +664,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         //        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: item!.dueDate!.timeIntervalSince(today), repeats: false)
         let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: item!.dueDate! as Date)
-        print(dateComponents)
+        // print(dateComponents)
         
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: String(item!.id), content: content, trigger: trigger)
         let center = UNUserNotificationCenter.current()
         
         center.add(request) { (error : Error?) in
-            if let theError = error {
-                print(theError.localizedDescription)
+            if error != nil {
+                // print(theError.localizedDescription)
             }
         }
         getNotificationNum()
@@ -825,7 +825,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
         catch{
-            print("Wrong")
+            // print("Wrong")
         }
     }
     
@@ -1252,7 +1252,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-        print("offset " , self.offset!)
+        // print("offset " , self.offset!)
         for cell: TodoItemTableViewCell in visibleCells {
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
@@ -1359,7 +1359,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         if pullDownInProgress && scrollViewContentOffsetY <= 0.0 {
             // maintain the location of the placeholder
-            print(scrollViewContentOffsetY)
+            // print(scrollViewContentOffsetY)
             addClueLabel.frame = CGRect(x: 0, y: -scrollViewContentOffsetY-sizeConvert(size: 30), width: 0, height: 0)
             
             addClueLabel.sizeToFit()

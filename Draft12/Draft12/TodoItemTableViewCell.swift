@@ -227,7 +227,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         }
         
         delegate!.cellFlagDidChange(editingCell: self)
-        print(sender.tag)
+        // print(sender.tag)
     }
     
     
@@ -359,7 +359,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         beingEditing = true
-        print("current flag: ", todoItem?.flag ?? "nil")
+        // print("current flag: ", todoItem?.flag ?? "nil")
         UIView.animate(withDuration: 0.5, animations: {() in
             self.unhideLabels()
         })

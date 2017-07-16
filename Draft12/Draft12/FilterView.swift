@@ -230,7 +230,7 @@ class FilterView: UIView {
                 self.circle.center.y = self.center.y/3
                 self.dateView.backgroundColor = Color.darkerCellBackground
                 self.flagView.backgroundColor = Color.cellBackground
-                print(self.center.y/3)
+                // print(self.center.y/3)
             })
         }
         else if pos == 2{
@@ -239,7 +239,7 @@ class FilterView: UIView {
                 self.circle.center.y = self.center.y
                 self.dateView.backgroundColor = Color.cellBackground
                 self.flagView.backgroundColor = Color.darkerCellBackground
-                print(self.center.y/2)
+                // print(self.center.y/2)
             })
         }
     }
