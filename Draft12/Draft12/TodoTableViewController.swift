@@ -549,6 +549,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var isFiltered: Bool = false{
         didSet{
             if isFiltered{
+                rightNavButton.isEnabled = false
                 backgroundTextView.isHidden = true
                 filterIndicator.isHidden = false
                 filterIndicator.frame = CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/16)
@@ -560,6 +561,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                     }})
             }
             else{
+                rightNavButton.isEnabled = true
                 filterIndicator.isHidden = true
                 
             }
@@ -1127,7 +1129,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             editingCell.textView.textColor = Color.text
             editingCell.dateButton.alpha = 1
             editingCell.rightBorder.opacity = 1
-            editingCell.dateButton.setTitleColor(Color.overdue, for: .normal)
+            let today = Date()
+            
+            
+            if editingCell.todoItem!.dueDate != nil && editingCell.todoItem!.dueDate!.compare(today) == .orderedDescending{
+                editingCell.dateButton.setTitleColor(Color.dateButton, for: .normal)
+            }
+            else{
+                editingCell.dateButton.setTitleColor(Color.overdue, for: .normal)
+            }
+            
         }
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
