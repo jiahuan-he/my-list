@@ -218,10 +218,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         initSounds()
         
         
-        let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
-        if  theme == "dark"{
-            UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
+        if let theme = UserDefaults.standard.string(forKey: settingKey.theme){
+            if  theme == "dark"{
+                UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
+            }
+            else if theme == "light"{
+                UIApplication.shared.statusBarStyle = UIStatusBarStyle.default
+            }
         }
+        
+        
         super.viewDidLoad()
         
         navigationController?.navigationBar.barTintColor = Color.navigationBar
@@ -787,7 +793,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.contentView.backgroundColor = Color.cellBackground
         cell.textView.backgroundColor = Color.cellBackground
         cell.backgroundColor = Color.cellBackground
-
+        if let theme = UserDefaults.standard.string(forKey: settingKey.theme){
+            if theme == "light"{
+                cell.textView.keyboardAppearance = UIKeyboardAppearance.light
+            }
+            else{
+                cell.textView.keyboardAppearance = UIKeyboardAppearance.dark
+            }
+        }
+        
         
         
         cell.delegate = self
@@ -955,9 +969,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         modifyingDate = true
         datePicker.backgroundColor = Color.cellBackground
-        datePicker.setValue(Color.text, forKey: "textColor")
         
-        datePicker.setValue(false, forKey: "highlightsToday")
+        
+        datePicker.setValue(true, forKey: "highlightsToday")
+        datePicker.setValue(Color.text, forKey: "textColor")
+//        datePicker.performSelector(inBackground: Selector(("setHighlightsToday:")), with:Color.text)
         if editingCell.todoItem?.dueDate == nil{
             datePicker.setDate(NSDate() as Date, animated: false)
         }
@@ -1381,7 +1397,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         leftNavButton.tintColor = Color.text
         rightNavButton.tintColor = Color.text
         datePicker.backgroundColor = Color.cellBackground
+        datePicker.setValue(true, forKey: "highlightsToday")
         datePicker.setValue(Color.text, forKey: "textColor")
+        filterIndicator.refresh()
+        filterView.refresh()
     }
     
     

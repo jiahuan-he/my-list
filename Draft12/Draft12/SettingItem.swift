@@ -79,16 +79,17 @@ class SettingItem: UIView {
                 darkButton!.setImage(renderedCheckedImage, for: .normal)
                 lightButton!.setImage(renderedUncheckedImage, for: .normal)
                 UserDefaults.standard.set("dark", forKey: settingKey.theme)
-                
+                UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
                 
             }
             else{
                 darkButton!.setImage(renderedUncheckedImage, for: .normal)
                 lightButton!.setImage(renderedCheckedImage, for: .normal)
                 UserDefaults.standard.set("light", forKey: settingKey.theme)
+                UIApplication.shared.statusBarStyle = UIStatusBarStyle.default
+
             }
-            UserDefaults.standard.synchronize()
-            print(UserDefaults.standard.string(forKey: settingKey.theme)!)
+            UserDefaults.standard.synchronize()            
             for delegate in themeDelegates {
                 delegate.updateTheme()
             }

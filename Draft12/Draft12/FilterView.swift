@@ -46,7 +46,7 @@ class FilterView: UIView {
                 todayButton.alpha = 1
             }
             else{
-                todayButton.alpha = 0.5
+                todayButton.alpha = Alpha.notSelectedFlag
             }
             if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
                 setCircle(alpha: 0)
@@ -61,7 +61,7 @@ class FilterView: UIView {
                 tomorrowButton.alpha = 1.0
             }
             else{
-                tomorrowButton.alpha = 0.5
+                tomorrowButton.alpha = Alpha.notSelectedFlag
             }
             if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
                 setCircle(alpha: 0)
@@ -76,7 +76,7 @@ class FilterView: UIView {
                 noDateButton.alpha = 1
             }
             else{
-                noDateButton.alpha = 0.5
+                noDateButton.alpha = Alpha.notSelectedFlag
             }
             if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
                 setCircle(alpha: 0)
@@ -91,7 +91,7 @@ class FilterView: UIView {
                 f0Button.alpha = 1
             }
             else{
-                f0Button.alpha = 0.5
+                f0Button.alpha = Alpha.notSelectedFlag
             }
             if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
                 setCircle(alpha: 0)
@@ -106,7 +106,7 @@ class FilterView: UIView {
                 f1Button.alpha = 1
             }
             else{
-                f1Button.alpha = 0.5
+                f1Button.alpha = Alpha.notSelectedFlag
             }
             if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
                 setCircle(alpha: 0)
@@ -121,7 +121,7 @@ class FilterView: UIView {
                 f2Button.alpha = 1
             }
             else{
-                f2Button.alpha = 0.5
+                f2Button.alpha = Alpha.notSelectedFlag
             }
             if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
                 setCircle(alpha: 0)
@@ -136,7 +136,7 @@ class FilterView: UIView {
                 f3Button.alpha = 1
             }
             else{
-                f3Button.alpha = 0.5
+                f3Button.alpha = Alpha.notSelectedFlag
             }
             if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
                 setCircle(alpha: 0)
@@ -150,7 +150,7 @@ class FilterView: UIView {
         isNoDateSelected = false
         if isF0Selected || isF1Selected || isF2Selected || isF3Selected {
             moveCircleTo(pos: 2)
-            setCircle(alpha: 0.9)
+            setCircle(alpha: 1)
         }
         if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
             setCircle(alpha: 0)
@@ -165,7 +165,7 @@ class FilterView: UIView {
         isF3Selected = false
         if isTodaySelected || isTomorrowSelected || isNoDateSelected {
             moveCircleTo(pos: 1)
-            setCircle(alpha: 0.9)
+            setCircle(alpha: 1)
         }
         
         if !(isF0Selected || isF1Selected || isF2Selected || isF3Selected || isNoDateSelected || isTomorrowSelected || isTodaySelected){
@@ -215,9 +215,9 @@ class FilterView: UIView {
         circle.frame = CGRect(x: circleX, y: 0, width: self.frame.height/14, height: self.frame.height/14)
         circle.center.y = self.center.y/3
         circle.alpha = 0
-        circle.backgroundColor = Color.cue
+        circle.backgroundColor = Color.filterCircle
         circle.clipsToBounds = true
-        circle.layer.cornerRadius = circle.frame.height/2
+        circle.layer.cornerRadius = circle.frame.height/1.5
         self.addSubview(circle)
     }
     
@@ -312,7 +312,7 @@ class FilterView: UIView {
     }
     
     let flagButtonDistance = ScreenSize.w/8
-    let labelRadius = 5.0
+    let labelRadius = 6.0
     func initFlagView(){
         
         flagLabel.frame = CGRect(x: labelX, y: 0, width: 0, height: 0)
@@ -322,7 +322,7 @@ class FilterView: UIView {
         flagLabel.sizeToFit()
         flagLabel.center.y = flagView.frame.height/2
         
-        let flagLabelHeight = flagLabel.frame.height
+        let flagLabelHeight = flagLabel.frame.height * 1.2
         f0Button.frame = CGRect(x: firstPosX, y: 0, width: flagLabelHeight, height: flagLabelHeight)
         f1Button.frame = CGRect(x: firstPosX + 1*flagButtonDistance, y: 0, width: flagLabelHeight, height: flagLabelHeight)
         f2Button.frame = CGRect(x: firstPosX + 2*flagButtonDistance, y: 0, width: flagLabelHeight, height: flagLabelHeight)
@@ -440,7 +440,24 @@ class FilterView: UIView {
         delegate!.doneFiltering(todaySelected: isTodaySelected, tomorrowSelected: isTomorrowSelected, noDateSelected: isNoDateSelected, f0Selected: isF0Selected, f1Selected: isF1Selected, f2Selected: isF2Selected, f3Selected: isF3Selected)
     }
 
-    
+    func refresh(){
+        backgroundColor = Color.cellBackground
+        
+        dateView.backgroundColor = Color.cellBackground
+        flagView.backgroundColor = Color.cellBackground
+        confirmView.backgroundColor = Color.cellBackground
+        seperator1.backgroundColor = Color.separator.cgColor
+        seperator2.backgroundColor = Color.separator.cgColor
+        seperator3.backgroundColor = Color.separator.cgColor
+        dateLabel.textColor = Color.settingLabel
+        todayButton.setTitleColor(Color.settingSelected, for: .normal)
+        tomorrowButton.setTitleColor(Color.settingSelected, for: .normal)
+        noDateButton.setTitleColor(Color.settingSelected, for: .normal)        
+        flagLabel.textColor = Color.settingLabel
+        removeButton.setTitleColor(Color.remove, for: .normal)
+        doneButton.setTitleColor(Color.text, for: .normal)
+
+    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
