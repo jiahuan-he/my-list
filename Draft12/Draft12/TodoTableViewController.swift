@@ -171,6 +171,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     var firstLaunch = false
+    let todayLabel = UILabel()
     func checkFirstLaunch(){
         if(UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
         {
@@ -251,6 +252,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         barView.layer.borderColor = Color.separator.cgColor
         barView.layer.borderWidth = 1
         barView.isHidden = true
+        
+        
+        todayLabel.text = "Today is \(Date().toString(dateFormat: "MMM d, yyyy"))"
+        todayLabel.font = Font.button
+        todayLabel.textColor = Color.text
+        todayLabel.sizeToFit()
+        todayLabel.center.x = barView.frame.width/2
+        todayLabel.center.y = barView.frame.height/2
+        barView.addSubview(todayLabel)
+        
         UIApplication.shared.keyWindow?.addSubview(barView)
         
         
@@ -688,7 +699,8 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         items[5].dueDate = Calendar.current.date(byAdding: .day, value: 1, to: Date())! as NSDate
         
         items[6].name = "Enjoy ʘ‿ʘ"
-        
+        items[6].dueDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())! as NSDate
+
         items[1].createDate = items[0].createDate!.addingTimeInterval(-1)
         items[2].createDate = items[1].createDate!.addingTimeInterval(-1)
         items[3].createDate = items[2].createDate!.addingTimeInterval(-1)
@@ -971,9 +983,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         datePicker.backgroundColor = Color.cellBackground
         
         
-        datePicker.setValue(true, forKey: "highlightsToday")
+        datePicker.setValue(false, forKey: "highlightsToday")
         datePicker.setValue(Color.text, forKey: "textColor")
-//        datePicker.performSelector(inBackground: Selector(("setHighlightsToday:")), with:Color.text)
+
         if editingCell.todoItem?.dueDate == nil{
             datePicker.setDate(NSDate() as Date, animated: false)
         }
@@ -1396,9 +1408,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.backgroundColor = Color.tableViewBackground
         leftNavButton.tintColor = Color.text
         rightNavButton.tintColor = Color.text
-        datePicker.backgroundColor = Color.cellBackground
-        datePicker.setValue(true, forKey: "highlightsToday")
+        todayLabel.textColor = Color.text
+        datePicker.backgroundColor = Color.cellBackground        
         datePicker.setValue(Color.text, forKey: "textColor")
+        datePicker.setValue(false, forKey: "highlightsToday")
         filterIndicator.refresh()
         filterView.refresh()
     }
