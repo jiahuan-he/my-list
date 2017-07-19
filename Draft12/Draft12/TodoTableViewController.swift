@@ -25,7 +25,7 @@ extension Date
     }
 }
 
-class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate, FilterViewDelegate, FilterIndicatorDelegate, SettingItemDelegate{
+class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate, FilterViewDelegate, FilterIndicatorDelegate, SettingItemDelegate, ThemeDelegate{
     var modifyingDate = false
     var resignAfterModifyingDate = false
     var createdNewCell = false
@@ -189,7 +189,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             UserDefaults.standard.set(0, forKey: "num")
             UserDefaults.standard.set(true, forKey: "HasLaunchedOnce")
             UserDefaults.standard.set(0, forKey: "numOfEditings")
-            UserDefaults.standard.set(settingKey.light, forKey: "theme")
+            UserDefaults.standard.set("light", forKey: settingKey.theme)
             
             // print("has Launched once", UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
         }
@@ -216,7 +216,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         // print("Screen height: ", ScreenSize.h)
         // print("Screen width: ", ScreenSize.w)
         initSounds()
-        UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
+        
+        
+        let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+        if  theme == "dark"{
+            UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
+        }
         super.viewDidLoad()
         
         navigationController?.navigationBar.barTintColor = Color.navigationBar
@@ -775,6 +780,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
         //        cell.textView.attributedText = nil
+        
+        cell.overdueLabel.textColor = Color.cue
+        cell.crossLabel.tintColor = Color.crossLabel
+        cell.checkLabel.tintColor = Color.crossLabel
+        cell.contentView.backgroundColor = Color.cellBackground
+        cell.textView.backgroundColor = Color.cellBackground
+        cell.backgroundColor = Color.cellBackground
+
+        
+        
         cell.delegate = self
         cell.todoItem = items[indexPath.row]
         
@@ -1353,7 +1368,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    
+    func updateTheme() {
+        backgroundDate.textColor = Color.text
+        backgroundCue.textColor = Color.text
+        navigationController?.navigationBar.barTintColor = Color.navigationBar
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: Color.navigationBarText, NSFontAttributeName: Font.navigationBarText!]
+        barView.backgroundColor = Color.cellBackground
+        barView.layer.borderColor = Color.separator.cgColor
+        removeButton.setTitleColor(Color.remove, for: UIControlState.normal)
+        doneButton.setTitleColor(Color.done, for: UIControlState.normal)
+        tableView.backgroundColor = Color.tableViewBackground
+        leftNavButton.tintColor = Color.text
+        rightNavButton.tintColor = Color.text
+        datePicker.backgroundColor = Color.cellBackground
+        datePicker.setValue(Color.text, forKey: "textColor")
+    }
     
     
 }

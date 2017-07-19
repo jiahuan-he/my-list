@@ -13,7 +13,7 @@ import UserNotifications
 import AVFoundation
 import MessageUI
 
-class SettingsViewController: UIViewController, MFMailComposeViewControllerDelegate {
+class SettingsViewController: UIViewController, MFMailComposeViewControllerDelegate, ThemeDelegate {
     
     var badgeCountView: SettingItem?
     var soundEffectView: SettingItem?
@@ -21,7 +21,8 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
     
     var feedbackView: SettingItem?
     var rateView: SettingItem?
-    
+    var themeView: SettingItem?
+    var settingViews: [SettingItem] = []
     var originalHeight: CGFloat?
     let lineSpace = CGFloat(0.08 * ScreenSize.h)
     var authorized = false
@@ -29,12 +30,19 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
     var tapSound =  URL(fileURLWithPath: Bundle.main.path(forResource: "sound/tap", ofType: "wav")!)
     var tapPlayer: AVAudioPlayer?
     
-    
+    func updateTheme() {
+        self.view.backgroundColor = Color.cellBackground
+        leftNavButton.setTitleColor(Color.done, for: .normal)
+        for view in settingViews{
+            view.refresh()
+        }
+    }
     
     func initSounds(){
         do {
             tapPlayer = try AVAudioPlayer(contentsOf: tapSound)
             tapPlayer?.prepareToPlay()
+            
         }
         catch{
 //          print("SOUND ERROR")
@@ -64,8 +72,10 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         badgeCountView = SettingItem(frame: CGRect(x: 0, y: originalHeight!, width: ScreenSize.w, height: lineSpace), title: "Badge Count", key: settingKey.badge)
         soundEffectView = SettingItem(frame: (badgeCountView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Sound Effect", key: settingKey.sound)
         reminderView = SettingItem(frame: (soundEffectView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Due Reminder", key: settingKey.reminder)
+        themeView = SettingItem(frame: (reminderView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Theme", key: settingKey.theme)
         
-        feedbackView = SettingItem(frame: (reminderView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Send Feedback", key: settingKey.sound)
+        
+        feedbackView = SettingItem(frame: (themeView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Send Feedback", key: "")
         feedbackView?.button.isHidden = true
         let feedbackRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.sendEmailButtonTapped(sender:)))
         feedbackView?.addGestureRecognizer(feedbackRecognizer)
@@ -82,6 +92,8 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
             badgeCountView!.delegate = viewController as? TodoTableViewController
             soundEffectView!.delegate = viewController as? TodoTableViewController
             reminderView!.delegate = viewController as? TodoTableViewController
+            themeView!.themeDelegates.append(viewController as! ThemeDelegate)
+            themeView!.themeDelegates.append(self)
         }
         
         getBadgeAuthorizationResult()
@@ -116,9 +128,16 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         view.addSubview(badgeCountView!)
         view.addSubview(reminderView!)
         view.addSubview(feedbackView!)
+        view.addSubview(themeView!)
         view.addSubview(rateView!)
         
         
+        settingViews.append(soundEffectView!)
+        settingViews.append(badgeCountView!)
+        settingViews.append(reminderView!)
+        settingViews.append(feedbackView!)
+        settingViews.append(themeView!)
+        settingViews.append(rateView!)
     }
     
     func handleBadgeButton(){
@@ -206,9 +225,9 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         self.present(alert, animated: true, completion: nil)
     }
     
+    let leftNavButton = UIButton(type: .custom)
     private func initLeftNavButton(){
         self.navigationItem.leftBarButtonItem?.title = "DONE"
-        let leftNavButton = UIButton(type: .custom)
         leftNavButton.setTitle("DONE", for: .normal)
         leftNavButton.setTitleColor(Color.done, for: .normal)
         leftNavButton.titleLabel?.font = Font.text

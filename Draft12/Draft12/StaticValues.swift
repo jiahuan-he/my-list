@@ -47,25 +47,7 @@ struct Font{
 //    static let filtering = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
 //    static let overdue = UIColor.red
 //}
-struct settings{
-    static var theme: String{
-        get{
-            if UserDefaults.standard.string(forKey: settingKey.light) == "light"{
-                return "light"
-            }
-            else if UserDefaults.standard.string(forKey: settingKey.light) == "dark"{
-                return "dark"
-            }
-            else{
-                return "light"
-            }
-        }
-        set{
-            UserDefaults.standard.set(theme, forKey: "theme")
-            UserDefaults.standard.synchronize()
-        }
-    }
-}
+
 
 
 
@@ -73,7 +55,32 @@ struct Color{
     
     static var text: UIColor{
         get{
-            if settings.theme == "dark"{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
+                return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
+            }
+            else{
+                return UIColor.black
+            }
+        }
+    }
+    
+    static var done: UIColor{
+        get{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
+                return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
+            }
+            else{
+                return UIColor.black
+            }
+        }
+    }
+    
+    static var navigationBarText: UIColor{
+        get{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
                 return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
             }
             else{
@@ -84,7 +91,8 @@ struct Color{
     
     static var cellBackground: UIColor{
         get{
-            if settings.theme == "dark"{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
                 return UIColor(red: 35/255, green: 35/255, blue: 35/255, alpha: 1)
             }
             else{
@@ -95,7 +103,8 @@ struct Color{
     
     static var darkerCellBackground: UIColor{
         get{
-            if settings.theme == "dark"{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
                 return UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1)
             }
             else{
@@ -106,7 +115,8 @@ struct Color{
     
     static var tableViewBackground: UIColor{
         get{
-            if settings.theme == "dark"{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
                 return UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
             }
             else{
@@ -117,7 +127,8 @@ struct Color{
     
     static var separator: UIColor{
         get{
-            if settings.theme == "dark"{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
                 return UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
             }
             else{
@@ -127,7 +138,8 @@ struct Color{
     }
     static var dateButton: UIColor{
         get{
-            if settings.theme == "dark"{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
                 return #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
             }
             else{
@@ -136,14 +148,67 @@ struct Color{
         }
     }
     
-    static let navigationBar = tableViewBackground
-    static let navigationBarText = text
+    static var navigationBar: UIColor{
+        get{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
+                return UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
+            }
+            else{
+                return UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1)
+            }
+        }
+    }
     
-    static let settingLabel = Color.text
-    static let settingSelected = Color.text
+    static var settingLabel: UIColor{
+        get{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
+                return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
+            }
+            else{
+                return UIColor.black
+            }
+        }
+    }
     
-    static let cue = Color.dateButton
-    static let crossLabel = Color.text
+    static var crossLabel: UIColor{
+        get{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
+                return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
+            }
+            else{
+                return UIColor.black
+            }
+        }
+    }
+    
+    static var settingSelected: UIColor{
+        get{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
+                return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
+            }
+            else{
+                return UIColor.black
+            }
+        }
+    }
+    
+    static var cue: UIColor{
+        get{
+            let theme = UserDefaults.standard.string(forKey: settingKey.theme)!
+            if theme == "dark"{
+                return #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
+            }
+            else{
+                return Color.text.withAlphaComponent(0.6)
+            }
+        }
+    }
+    
+    
     static let filterIndicator = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
     static let complete = #colorLiteral(red: 0.02237439216, green: 0.6006702094, blue: 0.1028243576, alpha: 1)
     static let f0 = UIColor.red
@@ -151,7 +216,6 @@ struct Color{
     static let f2 = UIColor.cyan
     static let f3 = UIColor.green
     static let remove = UIColor.red
-    static let done = Color.text
     static let overdue = UIColor.red
 }
 
@@ -189,6 +253,7 @@ struct settingKey {
     static let badge = "badgeCount"
     static let sound = "soundEffect"
     static let reminder = "dueReminder"
-    static let dark = "dark"
-    static let light = "light"
+    static let theme = "theme"
+//    static let dark = "dark"
+//    static let light = "light"
 }
