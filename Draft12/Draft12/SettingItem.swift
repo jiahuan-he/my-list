@@ -58,7 +58,6 @@ class SettingItem: UIView {
     init(frame: CGRect, title: String, key: String) {
         self.key = key
         super.init(frame: frame)
-        
         label.text = title
         label.font = Font.text
         label.textColor = Color.text

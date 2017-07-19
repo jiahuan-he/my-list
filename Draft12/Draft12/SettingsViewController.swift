@@ -13,8 +13,6 @@ import UserNotifications
 import AVFoundation
 import MessageUI
 
-
-
 class SettingsViewController: UIViewController, MFMailComposeViewControllerDelegate {
     
     var badgeCountView: SettingItem?

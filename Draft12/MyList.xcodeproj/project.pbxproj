@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3A1D279C1F00EC090074788F /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1D279B1F00EC090074788F /* FilterView.swift */; };
 		3A750CA91EF49FA6000DAFE9 /* img in Resources */ = {isa = PBXBuildFile; fileRef = 3A750CA81EF49FA6000DAFE9 /* img */; };
+		3AAF1BD51F1EEF99002D19F7 /* StaticValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAF1BD41F1EEF99002D19F7 /* StaticValues.swift */; };
 		3AC9CEEC1F0AD3B600DCEC41 /* FilterIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC9CEEB1F0AD3B600DCEC41 /* FilterIndicator.swift */; };
 		3AC9CEF11F0C9B7C00DCEC41 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC9CEEF1F0C9B7C00DCEC41 /* SettingsViewController.swift */; };
 		3AC9CEF41F0C9BEE00DCEC41 /* SettingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC9CEF31F0C9BEE00DCEC41 /* SettingItem.swift */; };
@@ -27,6 +28,7 @@
 /* Begin PBXFileReference section */
 		3A1D279B1F00EC090074788F /* FilterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		3A750CA81EF49FA6000DAFE9 /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; path = img; sourceTree = "<group>"; };
+		3AAF1BD41F1EEF99002D19F7 /* StaticValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticValues.swift; sourceTree = "<group>"; };
 		3AC9CEEB1F0AD3B600DCEC41 /* FilterIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterIndicator.swift; sourceTree = "<group>"; };
 		3AC9CEEF1F0C9B7C00DCEC41 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		3AC9CEF31F0C9BEE00DCEC41 /* SettingItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingItem.swift; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 				3A1D279B1F00EC090074788F /* FilterView.swift */,
 				3AC9CEEB1F0AD3B600DCEC41 /* FilterIndicator.swift */,
 				3AD780A51EB07971007FDE5E /* TodoItemTableViewCell.xib */,
+				3AAF1BD41F1EEF99002D19F7 /* StaticValues.swift */,
 			);
 			path = Draft12;
 			sourceTree = "<group>";
@@ -179,6 +182,7 @@
 				3A1D279C1F00EC090074788F /* FilterView.swift in Sources */,
 				3AD7808E1EB078BB007FDE5E /* AppDelegate.swift in Sources */,
 				3AC9CEF11F0C9B7C00DCEC41 /* SettingsViewController.swift in Sources */,
+				3AAF1BD51F1EEF99002D19F7 /* StaticValues.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

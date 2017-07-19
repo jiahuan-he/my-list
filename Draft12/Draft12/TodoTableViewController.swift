@@ -14,78 +14,6 @@ import AVFoundation
 import StoreKit
 
 
-struct ScreenSize {
-    static let w = UIScreen.main.bounds.width
-    static let h = UIScreen.main.bounds.height
-}
-
-struct Font{
-    static let text = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 15))
-    static let dateButton = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
-    static let button = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
-    static let clue = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 15))
-    static let navigationBarText = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 20))
-    static let filter = UIFont(name: "ArialRoundedMTBold", size: sizeConvert(size: 13))
-}
-
-struct Color{
-    
-    static let text = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
-    static let cellBackground = UIColor(red: 35/255, green: 35/255, blue: 35/255, alpha: 1)
-    static let darkerCellBackground = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1)
-    static let tableViewBackground = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
-    static let navigationBar = tableViewBackground
-    static let navigationBarText = UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
-    static let separator = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
-    static let settingLabel = Color.text
-    static let settingSelected = Color.text
-    static let dateButton = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
-    static let cue = #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
-    static let crossLabel = Color.text
-    static let complete = #colorLiteral(red: 0.02237439216, green: 0.6006702094, blue: 0.1028243576, alpha: 1)
-    static let f0 = UIColor.red
-    static let f1 = UIColor.orange
-    static let f2 = UIColor.cyan
-    static let f3 = UIColor.green
-    static let remove = UIColor.red
-    static let done = Color.text
-    static let filtering = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
-    static let overdue = UIColor.red
-}
-
-struct FlagColor{
-    static let n1 = Color.cellBackground
-    static let c0 = UIColor.red
-    static let c1 = UIColor.orange
-    static let c2 = UIColor.cyan
-    static let c3 = UIColor.green
-}
-
-struct Alpha {
-    static let notEditingCell = CGFloat(0.3)
-    static let complete = CGFloat(0.5)
-}
-
-struct DateFormat {
-    static let normal = "yyyy-MM-dd, E HH:mm "
-    static let timeOnly = "HH:mm"
-}
-
-struct filterKey {
-    static let today = "todaySelected"
-    static let tomorrow =  "tomorrowSelected"
-    static let noDate =  "noDateSelected"
-    static let f0 = "f0Selected"
-    static let f1 = "f1Selected"
-    static let f2 = "f2Selected"
-    static let f3 = "f3Selected"
-}
-
-struct settingKey {
-    static let badge = "badgeCount"
-    static let sound = "soundEffect"
-    static let reminder = "dueReminder"
-}
 
 extension Date
 {
@@ -261,6 +189,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             UserDefaults.standard.set(0, forKey: "num")
             UserDefaults.standard.set(true, forKey: "HasLaunchedOnce")
             UserDefaults.standard.set(0, forKey: "numOfEditings")
+            UserDefaults.standard.set(settingKey.light, forKey: "theme")
             
             // print("has Launched once", UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
         }
@@ -484,7 +413,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         filterView.isHidden = true
         tableView.reloadSections(section as IndexSet, with: .automatic)
         if todaySelected || tomorrowSelected || noDateSelected || f0Selected || f1Selected || f2Selected || f3Selected{
-            leftNavButton.setTitleColor(Color.filtering, for: .normal)
+//            leftNavButton.setTitleColor(Color.filtering, for: .normal)
             isFiltered = true
             
         }
@@ -497,15 +426,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var rightNavButton = UIButton(type: .custom)
     var leftNavButton = UIButton(type: .custom)
     private func initNavButton(){
-        
-        leftNavButton.setImage(UIImage(named: "img/filter"), for: .normal)
+        let renderedFilterImage = UIImage(named: "img/filter")!.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+
+        leftNavButton.setImage(renderedFilterImage, for: .normal)
         leftNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(size: 25), height: sizeConvert(size: 25))
         leftNavButton.addTarget(self, action: #selector(self.handleLeftNavButton), for: .touchUpInside)
+//        leftNavButton.setTitleColor(Color.text, for: .normal)
+        leftNavButton.tintColor = Color.text
         let item1 = UIBarButtonItem(customView: leftNavButton)
         
-        rightNavButton.setImage(UIImage(named: "img/settings"), for: .normal)
+        let renderedSettingsImage = UIImage(named: "img/settings")!.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        rightNavButton.setImage(renderedSettingsImage, for: .normal)
         rightNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(size: 25), height: sizeConvert(size: 25))
         rightNavButton.addTarget(self, action: #selector(self.handleRightNavButton), for: .touchUpInside)
+        rightNavButton.tintColor = Color.text
+        
         let item2 = UIBarButtonItem(customView: rightNavButton)
         
         self.navigationItem.setRightBarButton(item2, animated: true)
@@ -1048,15 +983,15 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if let f = cell.todoItem?.flag{
             switch f {
             case "0" :
-                return FlagColor.c0
+                return Color.f0
             case "1":
-                return FlagColor.c1
+                return Color.f1
             case "2":
-                return FlagColor.c2
+                return Color.f2
             case "3":
-                return FlagColor.c3
+                return Color.f3
             case "-1":
-                return FlagColor.n1
+                return Color.cellBackground
             default:
                 break
             }}

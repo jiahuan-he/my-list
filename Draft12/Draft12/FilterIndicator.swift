@@ -22,7 +22,7 @@ class FilterIndicator: UIView {
     let buttonX = CGFloat(0.65*ScreenSize.w)
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Color.filtering
+        backgroundColor = Color.filterIndicator
         resultLabel.font = Font.filter
         resultLabel.textColor = Color.text
         resultLabel.frame = CGRect(x: labelX, y: 0, width: 0, height: 0)
