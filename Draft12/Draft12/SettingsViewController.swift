@@ -22,6 +22,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
     var reminderView: SettingItem?
     
     var feedbackView: SettingItem?
+    var rateView: SettingItem?
     
     var originalHeight: CGFloat?
     let lineSpace = CGFloat(0.08 * ScreenSize.h)
@@ -68,10 +69,14 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         
         feedbackView = SettingItem(frame: (reminderView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Send Feedback", key: settingKey.sound)
         feedbackView?.button.isHidden = true
-        //        feedbackView?.label.center.x = self.view.center.x
         let feedbackRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.sendEmailButtonTapped(sender:)))
         feedbackView?.addGestureRecognizer(feedbackRecognizer)
         
+        
+        rateView = SettingItem(frame: (feedbackView?.frame.offsetBy(dx: 0, dy: (badgeCountView?.frame.height)!))!, title: "Rate Me", key: settingKey.sound)
+        rateView?.button.isHidden = true
+        let rateRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.rateApp))
+        rateView?.addGestureRecognizer(rateRecognizer)
         
         
         if let navController = self.navigationController, navController.viewControllers.count >= 2 {
@@ -113,6 +118,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         view.addSubview(badgeCountView!)
         view.addSubview(reminderView!)
         view.addSubview(feedbackView!)
+        view.addSubview(rateView!)
         
         
     }
@@ -232,6 +238,25 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         } else {
             //            self.showSendMailErrorAlert()
         }
+    }
+    
+    let appId = "id1260218707"
+    func rateAppHelper(completion: @escaping ((_ success: Bool)->())){
+        guard let url = URL(string : "itms-apps://itunes.apple.com/app/" + appId) else {
+            completion(false)
+            return
+        }
+        guard #available(iOS 10, *) else {
+            completion(UIApplication.shared.openURL(url))
+            return
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: completion)
+    }
+    
+    func rateApp(){
+        rateAppHelper(completion: ({ success in
+//            print("RateApp \(success)")
+        }))
     }
     
     func configuredMailComposeViewController() -> MFMailComposeViewController {

@@ -306,6 +306,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = U28JKGUCNQ;
 				INFOPLIST_FILE = Draft12/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jiahuan-he.mylist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -321,6 +322,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = U28JKGUCNQ;
 				INFOPLIST_FILE = Draft12/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jiahuan-he.mylist";
 				PRODUCT_NAME = "$(TARGET_NAME)";

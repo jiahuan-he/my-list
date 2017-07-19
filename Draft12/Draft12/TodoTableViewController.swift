@@ -272,7 +272,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         num += 1
         UserDefaults.standard.set(num, forKey: "numOfEditings")
         if num > 16 && num%10 == 0{
-            SKStoreReviewController.requestReview()
+            if #available(iOS 10.3, *) {
+                SKStoreReviewController.requestReview()
+            } else {
+                // Fallback on earlier versions
+            }
         }
         
     }
