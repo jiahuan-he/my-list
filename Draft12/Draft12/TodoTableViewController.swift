@@ -28,7 +28,7 @@ extension Date
 class TodoTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TodoItemTableViewCellDelegate, FilterViewDelegate, FilterIndicatorDelegate, SettingItemDelegate, ThemeDelegate{
     var modifyingDate = false
     var resignAfterModifyingDate = false
-    var createdNewCell = false
+    var isCreatingNewCell = false
     
     var pickerOffset: CGFloat{
         switch UIScreen.main.bounds.width {
@@ -71,7 +71,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var offset: CGFloat?
+    var offset: CGFloat?{
+        didSet{
+            print(offset)
+        }
+    }
     var tableTap: UITapGestureRecognizer?
     let filterIndicator = FilterIndicator()
     
@@ -190,7 +194,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             UserDefaults.standard.set(0, forKey: "num")
             UserDefaults.standard.set(true, forKey: "HasLaunchedOnce")
             UserDefaults.standard.set(0, forKey: "numOfEditings")
-            UserDefaults.standard.set("light", forKey: settingKey.theme)
+            UserDefaults.standard.set("dark", forKey: settingKey.theme)
             
             // print("has Launched once", UserDefaults.standard.bool(forKey: "HasLaunchedOnce"))
         }
@@ -226,6 +230,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             else if theme == "light"{
                 UIApplication.shared.statusBarStyle = UIStatusBarStyle.default
             }
+        }
+        else{
+            UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
         }
         
         
@@ -797,7 +804,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoItemTableViewCell
-        //        cell.textView.attributedText = nil
+        
+        //Clear all attributed text. Every time a cell is being recycled and reused, its attributed text is not entirely erased, which leads to new cell "born with" attributed text. So I have to clear all attributed text right after a cell is "being born"
+        cell.textView.attributedText = nil
+        cell.textView.typingAttributes = [:]
+        cell.textView.linkTextAttributes = [:]
+        cell.textView.allowsEditingTextAttributes = false
         
         cell.overdueLabel.textColor = Color.cue
         cell.crossLabel.tintColor = Color.crossLabel
@@ -813,8 +825,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.textView.keyboardAppearance = UIKeyboardAppearance.dark
             }
         }
-        
-        
+        else{
+            cell.textView.keyboardAppearance = UIKeyboardAppearance.dark
+        }
         
         cell.delegate = self
         cell.todoItem = items[indexPath.row]
@@ -1148,6 +1161,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
+        print("head in cellDidbeginEditing " , editingCell.frame.origin.y)
         playNewItemSound()
         leftNavButton.isEnabled = false
         rightNavButton.isEnabled = false
@@ -1165,9 +1179,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             return
         }
         
-        offset = tableView.contentOffset.y - editingCell.frame.origin.y
-        offset = -initContentOffset.y + offset!
         
+        // IMPORTANT: (-initContentOffset.y + tableView.contentOffset.y) should be 0 if at beginning position
+        print("-initContentOffset.y: ", -initContentOffset.y)
+        print("tableView.contentOffset.y: ", tableView.contentOffset.y)
+        print("editingCell.frame.origin.y ", -editingCell.frame.origin.y)
+        offset =  -initContentOffset.y + tableView.contentOffset.y - editingCell.frame.origin.y
+        if isCreatingNewCell{
+            offset = 0
+            isCreatingNewCell = false
+        }
         // Important feature: scrolview content offset !!
         let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
         for cell in visibleCells {
@@ -1181,7 +1202,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 }
             })
         }
-        
+        print("tail in cellDidbeginEditing " , editingCell.frame.origin.y)
         if(editingCell.todoItem!.dueDate == nil){
             editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
             editingCell.dateButton.setTitleColor(Color.dateButton, for: .normal)
@@ -1275,7 +1296,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             //            let index = NSIndexSet(index: 0)
             //            tableView.reloadSections(index as IndexSet, with: .automatic)
         }
-        createdNewCell = false
+        
         self.navigationItem.leftBarButtonItem?.isEnabled = true
         tableView.isScrollEnabled = true
         if isFiltered{
@@ -1287,6 +1308,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 }})
         }
         resetBadgeCount()
+        isCreatingNewCell = false
     }
     
     // MARK: - UIScrollViewDelegate methods
@@ -1353,9 +1375,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if pullDownInProgress && scrollViewContentOffsetY <= 0.0 {
             // maintain the location of the placeholder
             // print(scrollViewContentOffsetY)
-            addClueLabel.frame = CGRect(x: 0, y: -scrollViewContentOffsetY-sizeConvert(size: 30), width: 0, height: 0)
-            
             addClueLabel.sizeToFit()
+            addClueLabel.frame = CGRect(x: 0, y: -scrollViewContentOffsetY-sizeConvert(size: 30), width: ScreenSize.w/3, height: addClueLabel.frame.height)
+            
             addClueLabel.center.x = tableView.center.x
             
             clueView!.frame = CGRect(x: 0, y: scrollViewContentOffsetY,
@@ -1389,10 +1411,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             items.insert(newItem, at: 0)
             tableView.insertRows(at: [indexPath], with: .top)
             tableView.endUpdates()
+            
+            
             let newCell = tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell
+            print("tail in didenddraing" , newCell.frame.origin.x)
+//            newCell.frame = newCell.frame.offsetBy(dx: 0, dy: newCell.frame.height)
+
+            isCreatingNewCell = true
             newCell.textView!.becomeFirstResponder()
-            createdNewCell = true
-            cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
+            
+//            cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
         }
     }
     

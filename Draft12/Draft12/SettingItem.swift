@@ -160,14 +160,19 @@ class SettingItem: UIView {
             
             darkButton!.addTarget(self, action: #selector(self.checkDark), for: .touchUpInside)
             lightButton!.addTarget(self, action: #selector(self.checkLight), for: .touchUpInside)
-            let theme = UserDefaults.standard.string(forKey: settingKey.theme)
-            if theme == "dark"{
-                darkChecked = true
-                darkButton!.setImage(renderedCheckedImage, for: .normal)
+            if let theme = UserDefaults.standard.string(forKey: settingKey.theme){
+                if theme == "dark"{
+                    darkChecked = true
+                    darkButton!.setImage(renderedCheckedImage, for: .normal)
+                }
+                else {
+                    darkChecked = false
+                    lightButton!.setImage(renderedCheckedImage, for: .normal)
+                }
+
             }
-            else {
-                darkChecked = false
-                lightButton!.setImage(renderedCheckedImage, for: .normal)
+            else{
+                darkChecked = true
             }
         }
         seperator.frame = CGRect(x: 0, y: frame.height-seperatorWidth, width: ScreenSize.w, height: seperatorWidth)

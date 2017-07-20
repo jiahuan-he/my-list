@@ -37,7 +37,7 @@ struct Color{
                     return UIColor.black
                 }
             }
-            return UIColor.black
+            return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
         }
     }
     
@@ -51,7 +51,7 @@ struct Color{
                     return UIColor.black
                 }
             }
-                    return UIColor.black
+                    return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
         }
     }
     
@@ -65,7 +65,7 @@ struct Color{
                     return UIColor.black
                 }
             }
-            return UIColor.black
+            return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
         }
     }
     
@@ -79,7 +79,7 @@ struct Color{
                     return #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
                 }
             }
-            return #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            return UIColor(red: 35/255, green: 35/255, blue: 35/255, alpha: 1)
         }
     }
     
@@ -93,7 +93,7 @@ struct Color{
                     return UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1)
                 }
             }
-            return UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1)
+            return UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1)
         }
     }
     
@@ -107,7 +107,7 @@ struct Color{
                     return UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1)
                 }
             }
-            return UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1)
+            return UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
         }
     }
     
@@ -121,7 +121,7 @@ struct Color{
                     return UIColor(red: 100/255, green: 100/255, blue: 100/255, alpha: 0.4)
                 }
             }
-            return UIColor(red: 100/255, green: 100/255, blue: 100/255, alpha: 0.4)
+            return UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
         }
     }
     static var dateButton: UIColor{
@@ -134,7 +134,7 @@ struct Color{
                     return Color.text.withAlphaComponent(0.6)
                 }
             }
-            return Color.text.withAlphaComponent(0.6)
+            return #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
         }
     }
     
@@ -148,7 +148,7 @@ struct Color{
                     return UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1)
                 }
             }
-            return UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1)
+            return UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
         }
     }
     
@@ -162,7 +162,7 @@ struct Color{
                     return UIColor.black
                 }
             }
-            return UIColor.black
+            return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
         }
     }
     
@@ -176,7 +176,7 @@ struct Color{
                     return UIColor.black
                 }
             }
-            return UIColor.black
+            return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
         }
     }
     
@@ -190,7 +190,7 @@ struct Color{
                     return UIColor.black
                 }
             }
-            return UIColor.black
+            return UIColor(red: 237/255, green: 236/255, blue: 232/255, alpha: 1)
         }
     }
     
@@ -204,7 +204,7 @@ struct Color{
                     return Color.text.withAlphaComponent(0.6)
                 }
             }
-            return Color.text.withAlphaComponent(0.6)
+            return #colorLiteral(red: 0.9995340705, green: 0.9866005873, blue: 0.04135324298, alpha: 0.9740475171)
         }
     }
     
@@ -218,7 +218,7 @@ struct Color{
                     return #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
                 }
             }
-            return #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+            return #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
         }
     }
     
