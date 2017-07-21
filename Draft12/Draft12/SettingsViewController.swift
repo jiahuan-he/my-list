@@ -58,9 +58,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
             tapPlayer!.play()
         }
     }
-    
-    
-    
+
     override func viewDidLoad() {
         initSounds()
         originalHeight = (self.navigationController?.navigationBar.frame.height)! + (self.navigationController?.navigationBar.frame.origin.y)!

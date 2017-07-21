@@ -14,7 +14,6 @@ import AVFoundation
 import StoreKit
 
 
-
 extension Date
 {
     func toString( dateFormat format  : String ) -> String
@@ -71,17 +70,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var offset: CGFloat?{
-        didSet{
-            print(offset)
-        }
-    }
+    var offset: CGFloat?
+//        didSet{
+//            print(offset)
+//        }
+    
     var tableTap: UITapGestureRecognizer?
     let filterIndicator = FilterIndicator()
-    
-    //    var newItemSound: SystemSoundID = 0
-    //    var dingSound: SystemSoundID = 1
-    //    var tapSound: SystemSoundID = 2
+
     
     var newItemSound =  URL(fileURLWithPath: Bundle.main.path(forResource: "sound/newItem", ofType: "wav")!)
     var dingSound =  URL(fileURLWithPath: Bundle.main.path(forResource: "sound/ding", ofType: "wav")!)
@@ -128,12 +124,21 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func initSounds(){
         // Load "mysoundname.wav"
         do {
+            do{
+                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+                try AVAudioSession.sharedInstance().setActive(true)
+            }
+            catch{
+                
+            }
             newItemPlayer = try AVAudioPlayer(contentsOf: newItemSound)
             dingPlayer = try AVAudioPlayer(contentsOf: dingSound)
             tapPlayer = try AVAudioPlayer(contentsOf: tapSound)
             newItemPlayer!.prepareToPlay()
             dingPlayer!.prepareToPlay()
             tapPlayer!.prepareToPlay()
+            
+            
         }
         catch{
             // print("SOUND ERROR")
@@ -580,10 +585,10 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func assignOpacity(cell: TodoItemTableViewCell){
         
-        cell.aButton?.alpha = 0.5
-        cell.bButton?.alpha = 0.5
-        cell.cButton?.alpha = 0.5
-        cell.dButton?.alpha = 0.5
+        cell.aButton?.alpha = 0.3
+        cell.bButton?.alpha = 0.3
+        cell.cButton?.alpha = 0.3
+        cell.dButton?.alpha = 0.3
         if cell.todoItem!.flag == nil{
             return
         }
@@ -1161,7 +1166,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidBeginEditing(editingCell: TodoItemTableViewCell) {
-        print("head in cellDidbeginEditing " , editingCell.frame.origin.y)
+//        print("head in cellDidbeginEditing " , editingCell.frame.origin.y)
         playNewItemSound()
         leftNavButton.isEnabled = false
         rightNavButton.isEnabled = false
@@ -1181,9 +1186,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         // IMPORTANT: (-initContentOffset.y + tableView.contentOffset.y) should be 0 if at beginning position
-        print("-initContentOffset.y: ", -initContentOffset.y)
-        print("tableView.contentOffset.y: ", tableView.contentOffset.y)
-        print("editingCell.frame.origin.y ", -editingCell.frame.origin.y)
+//        print("-initContentOffset.y: ", -initContentOffset.y)
+//        print("tableView.contentOffset.y: ", tableView.contentOffset.y)
+//        print("editingCell.frame.origin.y ", -editingCell.frame.origin.y)
         offset =  -initContentOffset.y + tableView.contentOffset.y - editingCell.frame.origin.y
         if isCreatingNewCell{
             offset = 0
@@ -1202,7 +1207,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 }
             })
         }
-        print("tail in cellDidbeginEditing " , editingCell.frame.origin.y)
+//        print("tail in cellDidbeginEditing " , editingCell.frame.origin.y)
         if(editingCell.todoItem!.dueDate == nil){
             editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
             editingCell.dateButton.setTitleColor(Color.dateButton, for: .normal)
