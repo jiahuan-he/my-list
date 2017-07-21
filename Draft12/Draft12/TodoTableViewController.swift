@@ -67,6 +67,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             else if items.count > 0 || isFiltered{
                 backgroundTextView.isHidden = true
             }
+            resetBadgeCount()
         }
     }
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -321,6 +322,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         filterIndicator.delegate = self
         tableView.addSubview(filterView)
         tableView.addSubview(filterIndicator)
+//        UIApplication.shared.keyWindow?.addSubview(filterIndicator)
         
         initBackgroundText()
         
@@ -343,22 +345,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         //        UIApplication.shared.registerForRemoteNotifications()
         resetBadgeCount()
+        
         tableView.setContentOffset(initContentOffset, animated: false)
         
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //        tableView.setContentOffset(initContentOffset, animated: false)
-        
-        //        let today = UserDefaults.standard.bool(forKey: filterKey.today)
-        //        let tomorrow = UserDefaults.standard.bool(forKey: filterKey.tomorrow)
-        //        let noDate = UserDefaults.standard.bool(forKey: filterKey.noDate)
-        //        let f0Selected = UserDefaults.standard.bool(forKey: filterKey.f0)
-        //        let f1Selected = UserDefaults.standard.bool(forKey: filterKey.f1)
-        //        let f2Selected = UserDefaults.standard.bool(forKey: filterKey.f2)
-        //        let f3Selected = UserDefaults.standard.bool(forKey: filterKey.f3)
-        //        doneFiltering(todaySelected: today, tomorrowSelected: tomorrow, noDateSelected: noDate, f0Selected: f0Selected, f1Selected: f1Selected, f2Selected: f2Selected, f3Selected: f3Selected)
         tableView.setContentOffset(initContentOffset, animated: false)
         
     }
@@ -493,7 +486,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var isFiltering: Bool = false{
         didSet{
             if isFiltering == true{
-                
+                tableView.isScrollEnabled = false
                 self.filterView.isHidden = false
                 tableTap!.isEnabled = false
                 leftNavButton.isEnabled = false
@@ -506,6 +499,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 tableView.setContentOffset(initContentOffset, animated: false)
             }
             else{
+                tableView.isScrollEnabled = true
                 self.filterView.isHidden = true
                 tableTap!.isEnabled = true
                 leftNavButton.isEnabled = true
@@ -721,6 +715,19 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         items[6].createDate = items[5].createDate!.addingTimeInterval(-1)
         
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(false, forKey: filterKey.today)
+        userDefaults.set(false, forKey: filterKey.tomorrow)
+        userDefaults.set(false, forKey: filterKey.noDate)
+        userDefaults.set(false, forKey: filterKey.f0)
+        userDefaults.set(false, forKey: filterKey.f1)
+        userDefaults.set(false, forKey: filterKey.f2)
+        userDefaults.set(false, forKey: filterKey.f3)
+        userDefaults.synchronize()
     }
     
     func getData(){
@@ -1036,7 +1043,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.textView.isEditable = false
                 cell.alpha = Alpha.notEditingCell
             }
-            cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
+            
+            if isFiltered{
+                cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
+            }
+            else{
+                cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
+            }
         }
     }
     
@@ -1095,11 +1108,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if isFiltered{
             for cell in tableView.visibleCells{
                 UIView.animate(withDuration: 0.3, animations: {() in
+//                    cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.origin.y + self.filterIndicator.frame.height-cell.frame.origin.y)
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
+                    
                 })
             }
         }
-        resetBadgeCount()
         //        AudioServicesPlayAlertSound(dingSound)
         playDingSound()
     }
@@ -1172,7 +1186,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         rightNavButton.isEnabled = false
         //        filterIndicator.isHidden = true
         UIView.animate(withDuration: 0.3, animations: {() in
-            self.filterIndicator.frame = self.filterIndicator.frame.offsetBy(dx: 0, dy: -self.filterIndicator.frame.height)
+//            self.filterIndicator.frame = self.filterIndicator.frame.offsetBy(dx: 0, dy: -self.filterIndicator.frame.height)
         })
         self.editingCell = editingCell
         assignOpacity(cell: editingCell)
@@ -1199,6 +1213,12 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         for cell in visibleCells {
             UIView.animate(withDuration: 0.3, animations: {() in
                 cell.frame = cell.frame.offsetBy(dx: 0, dy: self.offset!)
+                
+                if self.isFiltered{                    
+                        cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
+                }
+                
+                
                 if cell != editingCell{
                     cell.alpha = Alpha.notEditingCell
                     cell.textView.isEditable = false
@@ -1224,15 +1244,14 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func cellDidEndEditing(editingCell: TodoItemTableViewCell) {
-        incrementNumOfEditings()
-        leftNavButton.isEnabled = true
-        rightNavButton.isEnabled = true
-        if isFiltered{
-            UIView.animate(withDuration: 0.3, animations: {() in
-                self.filterIndicator.frame = self.filterIndicator.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
-            })
-        }
+      
+        var deletedItem = false
         
+        incrementNumOfEditings()
+        if !isFiltered{
+            leftNavButton.isEnabled = true
+            rightNavButton.isEnabled = true
+        }
         if(modifyingDate == true){
             return
         }
@@ -1243,17 +1262,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         if(editingCell.todoItem!.dueDate != nil){
             editingCell.dateButton.isHidden = false
-            
             let pickerDate = editingCell.todoItem!.dueDate! as Date
             var date = ""
             if NSCalendar.current.isDateInToday(pickerDate){
                 date = "Today @ " + pickerDate.toString(dateFormat: DateFormat.timeOnly)
-                
-                
             }
             else if NSCalendar.current.isDateInTomorrow(pickerDate){
                 date = "Tomorrow @ " + pickerDate.toString(dateFormat: DateFormat.timeOnly)
-                
             }
             else{
                 date = pickerDate.toString(dateFormat: DateFormat.normal)
@@ -1268,51 +1283,45 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         else{
             editingCell.dateButton.isHidden = true
         }
-        
-        
-        let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
-        // print("offset " , self.offset!)
-        for cell: TodoItemTableViewCell in visibleCells {
-            UIView.animate(withDuration: 0.3, animations: {() in
-                cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
-            })
-        }
-        for cell: TodoItemTableViewCell in visibleCells {
-            cell.textView.isEditable = true
-        }
-        
+
         if editingCell.todoItem?.name == "" {
+            deletedItem = true
             itemDeleted(item: editingCell.todoItem!)
         }
         else{
             (UIApplication.shared.delegate as! AppDelegate).saveContext()
         }
+        
+        let visibleCells = tableView.visibleCells as! [TodoItemTableViewCell]
+        for cell: TodoItemTableViewCell in visibleCells {
+            cell.textView.isEditable = true
+            if !deletedItem{
+                UIView.animate(withDuration: 0.3, animations: {() in
+                    cell.frame = cell.frame.offsetBy(dx: 0, dy: -self.offset!)
+                })
+            }
+        }
         offset = 0
         editingCell.dateButton.isEnabled = false
-        
-        if items.contains(editingCell.todoItem!) {
-            
-            tableView.beginUpdates()
-            let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-            getData()
-            let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
-            tableView.moveRow(at: fromPath, to: toPath)
-            tableView.endUpdates()
-            //            let index = NSIndexSet(index: 0)
-            //            tableView.reloadSections(index as IndexSet, with: .automatic)
+        if !deletedItem{
+            if items.contains(editingCell.todoItem!) {
+                tableView.beginUpdates()
+                let fromPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+                getData()
+                let toPath = IndexPath(row: items.index(of: editingCell.todoItem!)!, section: 0)
+                tableView.moveRow(at: fromPath, to: toPath)
+                tableView.endUpdates()
+            }
+            if isFiltered{
+                let vCells = tableView.visibleCells
+                UIView.animate(withDuration: 0.3, animations: {() in
+                    for cell in vCells{
+                        cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
+                    }})
+            }
         }
-        
         self.navigationItem.leftBarButtonItem?.isEnabled = true
         tableView.isScrollEnabled = true
-        if isFiltered{
-            //            filterIndicator.isHidden = false
-            let vCells = tableView.visibleCells
-            UIView.animate(withDuration: 0.3, animations: {() in
-                for cell in vCells{
-                    cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
-                }})
-        }
-        resetBadgeCount()
         isCreatingNewCell = false
     }
     
@@ -1359,6 +1368,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             addClueLabel.isHidden = true
             filterIndicator.resultLabel.text = "REMOVE FILTER TO ADD"
             filterIndicator.resultLabel.sizeToFit()
+            
             return
         }
         
