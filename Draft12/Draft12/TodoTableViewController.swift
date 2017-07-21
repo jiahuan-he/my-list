@@ -321,8 +321,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         filterIndicator.isHidden = true
         filterIndicator.delegate = self
         tableView.addSubview(filterView)
-        tableView.addSubview(filterIndicator)
-//        UIApplication.shared.keyWindow?.addSubview(filterIndicator)
+//        tableView.addSubview(filterIndicator)
+        filterIndicator.frame = CGRect(x: 0, y: (navigationController?.navigationBar.frame.height)! + (navigationController?.navigationBar.frame.origin.y)!, width: ScreenSize.w, height: ScreenSize.h/16)
+        UIApplication.shared.keyWindow?.addSubview(filterIndicator)
         
         initBackgroundText()
         
@@ -519,9 +520,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 rightNavButton.isEnabled = false
                 backgroundTextView.isHidden = true
                 filterIndicator.isHidden = false
-                filterIndicator.frame = CGRect(x: 0, y: 0, width: ScreenSize.w, height: ScreenSize.h/16)
+                filterIndicator.isHidden = false
                 filterIndicator.addFilter(num: items.count)
                 let vCells = tableView.visibleCells as! [TodoItemTableViewCell]
+                tableView.frame.offsetBy(dx: 0, dy: 200)
+//                let contentOffset = CGPoint(x: tableView.contentOffset.x, y: tableView.contentOffset.y - filterIndicator.frame.height)
+//                tableView.setContentOffset(contentOffset, animated: true)
+                print(initContentOffset.y)
                 UIView.animate(withDuration: 0.5, animations: {() in
                     for cell in vCells{
                         cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
@@ -1108,13 +1113,11 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if isFiltered{
             for cell in tableView.visibleCells{
                 UIView.animate(withDuration: 0.3, animations: {() in
-//                    cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.origin.y + self.filterIndicator.frame.height-cell.frame.origin.y)
                     cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
                     
                 })
             }
         }
-        //        AudioServicesPlayAlertSound(dingSound)
         playDingSound()
     }
     
@@ -1227,7 +1230,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
                 }
             })
         }
-//        print("tail in cellDidbeginEditing " , editingCell.frame.origin.y)
+
         if(editingCell.todoItem!.dueDate == nil){
             editingCell.dateButton.setTitle("Add Due Date", for: UIControlState.normal)
             editingCell.dateButton.setTitleColor(Color.dateButton, for: .normal)
@@ -1336,7 +1339,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     let marginalHeight = ScreenSize.h/15
     var addClueLabel = UILabel()
     
+    var scrolledByUser = false
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        scrolledByUser = true
         clueView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         addClueLabel.font = Font.clue
         addClueLabel.textColor = Color.cue
@@ -1352,30 +1357,29 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if isFiltered{
-            filterIndicator.addFilter(num: items.count)
-            filterIndicator.resultLabel.sizeToFit()
-            return
-        }
-        
-    }
-    
+    private var lastContentOffset: CGFloat = 0
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        
         if isFiltered{
+            if (self.lastContentOffset > scrollView.contentOffset.y) && scrolledByUser {
+                // move up
+                filterIndicator.resultLabel.text = "REMOVE FILTER TO ADD"
+                filterIndicator.resultLabel.sizeToFit()
+            }
+            else if (self.lastContentOffset < scrollView.contentOffset.y) {
+                // move down
+                
+            }
+            // update the new position acquired
+            self.lastContentOffset = scrollView.contentOffset.y
             addClueLabel.isHidden = true
-            filterIndicator.resultLabel.text = "REMOVE FILTER TO ADD"
-            filterIndicator.resultLabel.sizeToFit()
+
             
             return
         }
         
         addClueLabel.isHidden = false
         let maxOffsetY = sizeConvert(size: -110)
-        
-        //        print("scroll: ",scrollView.contentOffset.y)
+
         if scrollView.contentOffset.y < maxOffsetY{
             scrollView.contentOffset.y = maxOffsetY
         }
@@ -1388,8 +1392,6 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             addClueLabel.text = "pull to add"
         }
         if pullDownInProgress && scrollViewContentOffsetY <= 0.0 {
-            // maintain the location of the placeholder
-            // print(scrollViewContentOffsetY)
             addClueLabel.sizeToFit()
             addClueLabel.frame = CGRect(x: 0, y: -scrollViewContentOffsetY-sizeConvert(size: 30), width: ScreenSize.w/3, height: addClueLabel.frame.height)
             
@@ -1397,17 +1399,16 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             clueView!.frame = CGRect(x: 0, y: scrollViewContentOffsetY,
                                      width: tableView.frame.size.width, height: -scrollViewContentOffsetY)
-            //            addClueLabel!.alpha = min(1.0, -scrollViewContentOffsetY/marginalHeight)
         } else {
             pullDownInProgress = false
         }
     }
+
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        
+        scrolledByUser = false
         if isFiltered{
-            //            filterIndicator.resultLabel.text = "REMOVE FILTER TO ADD"
-            //            filterIndicator.resultLabel.sizeToFit()
+            filterIndicator.addFilter(num: items.count)
             return
         }
         let scrollViewContentOffsetY = scrollView.contentOffset.y - initContentOffset.y
@@ -1426,18 +1427,34 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             items.insert(newItem, at: 0)
             tableView.insertRows(at: [indexPath], with: .top)
             tableView.endUpdates()
-            
-            
             let newCell = tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell
-            print("tail in didenddraing" , newCell.frame.origin.x)
-//            newCell.frame = newCell.frame.offsetBy(dx: 0, dy: newCell.frame.height)
 
             isCreatingNewCell = true
             newCell.textView!.becomeFirstResponder()
-            
-//            cellDidBeginEditing(editingCell: tableView.cellForRow(at: indexPath) as! TodoItemTableViewCell)
+
         }
     }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        print("end decelerating content offset", tableView.contentOffset.y)
+        if isFiltered{
+            filterIndicator.addFilter(num: items.count)
+            let path = IndexPath(row: 0, section: 0)
+            if let cell = tableView.cellForRow(at: path){
+                print(cell.frame.origin.y)
+                if cell.frame.origin.y == 0 && tableView.contentOffset.y == initContentOffset.y{
+                    tableView.reloadData()
+                    let vCells = tableView.visibleCells
+                    UIView.animate(withDuration: 0.3, animations: {() in
+                        for cell in vCells{
+                            cell.frame = cell.frame.offsetBy(dx: 0, dy: self.filterIndicator.frame.height)
+                    }})
+                }
+            }
+            return
+        }
+    }
+    
     
     func updateTheme() {
         backgroundDate.textColor = Color.text

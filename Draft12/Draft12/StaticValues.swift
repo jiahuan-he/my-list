@@ -113,15 +113,15 @@ struct Color{
     
     static var separator: UIColor{
         get{
-            if let theme = UserDefaults.standard.string(forKey: settingKey.theme){
-                if theme == "dark"{
-                    return UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
-                }
-                else{
-                    return UIColor(red: 100/255, green: 100/255, blue: 100/255, alpha: 0.4)
-                }
-            }
-            return UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
+//            if let theme = UserDefaults.standard.string(forKey: settingKey.theme){
+//                if theme == "dark"{
+//                    return UIColor(red: 60/255, green: 60/255, blue: 60/255, alpha: 1)
+//                }
+//                else{
+//                    return UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 1)
+//                }
+//            }
+            return UIColor(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.5)
         }
     }
     static var dateButton: UIColor{
