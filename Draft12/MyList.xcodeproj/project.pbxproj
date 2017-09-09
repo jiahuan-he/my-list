@@ -22,7 +22,6 @@
 		3AD780A31EB0792A007FDE5E /* TodoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD780A21EB0792A007FDE5E /* TodoTableViewController.swift */; };
 		3AD780A61EB07971007FDE5E /* TodoItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD780A41EB07971007FDE5E /* TodoItemTableViewCell.swift */; };
 		3AD780A71EB07971007FDE5E /* TodoItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AD780A51EB07971007FDE5E /* TodoItemTableViewCell.xib */; };
-		3AD780A91EB07A7D007FDE5E /* toolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD780A81EB07A7D007FDE5E /* toolbarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +42,6 @@
 		3AD780A21EB0792A007FDE5E /* TodoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoTableViewController.swift; sourceTree = "<group>"; };
 		3AD780A41EB07971007FDE5E /* TodoItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoItemTableViewCell.swift; sourceTree = "<group>"; };
 		3AD780A51EB07971007FDE5E /* TodoItemTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TodoItemTableViewCell.xib; sourceTree = "<group>"; };
-		3AD780A81EB07A7D007FDE5E /* toolbarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = toolbarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,23 +76,102 @@
 			children = (
 				3AC9CEF51F0CAC7B00DCEC41 /* sound */,
 				3A750CA81EF49FA6000DAFE9 /* img */,
-				3AD780A81EB07A7D007FDE5E /* toolbarView.swift */,
+				3AD780971EB078BB007FDE5E /* Assets.xcassets */,
 				3AD7808D1EB078BB007FDE5E /* AppDelegate.swift */,
 				3AD780911EB078BB007FDE5E /* Main.storyboard */,
-				3AD780971EB078BB007FDE5E /* Assets.xcassets */,
 				3AD780991EB078BB007FDE5E /* LaunchScreen.storyboard */,
 				3AD7809C1EB078BB007FDE5E /* Info.plist */,
-				3AD780941EB078BB007FDE5E /* Draft12.xcdatamodeld */,
-				3AC9CEEF1F0C9B7C00DCEC41 /* SettingsViewController.swift */,
-				3AC9CEF31F0C9BEE00DCEC41 /* SettingItem.swift */,
-				3AD780A21EB0792A007FDE5E /* TodoTableViewController.swift */,
-				3AD780A41EB07971007FDE5E /* TodoItemTableViewCell.swift */,
-				3A1D279B1F00EC090074788F /* FilterView.swift */,
-				3AC9CEEB1F0AD3B600DCEC41 /* FilterIndicator.swift */,
-				3AD780A51EB07971007FDE5E /* TodoItemTableViewCell.xib */,
-				3AAF1BD41F1EEF99002D19F7 /* StaticValues.swift */,
+				3AF2BED91F649D3300D8EB34 /* Util */,
+				3AF2BED61F649CB200D8EB34 /* SettingsPage */,
+				3AF2BED41F649C6C00D8EB34 /* MainPage */,
 			);
 			path = Draft12;
+			sourceTree = "<group>";
+		};
+		3AF2BECF1F649B3500D8EB34 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				3AD780A21EB0792A007FDE5E /* TodoTableViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		3AF2BED11F649B7000D8EB34 /* Table */ = {
+			isa = PBXGroup;
+			children = (
+				3AD780A41EB07971007FDE5E /* TodoItemTableViewCell.swift */,
+				3AD780A51EB07971007FDE5E /* TodoItemTableViewCell.xib */,
+			);
+			name = Table;
+			sourceTree = "<group>";
+		};
+		3AF2BED31F649B9E00D8EB34 /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				3A1D279B1F00EC090074788F /* FilterView.swift */,
+				3AC9CEEB1F0AD3B600DCEC41 /* FilterIndicator.swift */,
+			);
+			name = Filter;
+			sourceTree = "<group>";
+		};
+		3AF2BED41F649C6C00D8EB34 /* MainPage */ = {
+			isa = PBXGroup;
+			children = (
+				3AF2BEDA1F649D6F00D8EB34 /* Model */,
+				3AF2BED51F649C8B00D8EB34 /* View */,
+				3AF2BECF1F649B3500D8EB34 /* Controller */,
+			);
+			name = MainPage;
+			sourceTree = "<group>";
+		};
+		3AF2BED51F649C8B00D8EB34 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3AF2BED11F649B7000D8EB34 /* Table */,
+				3AF2BED31F649B9E00D8EB34 /* Filter */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		3AF2BED61F649CB200D8EB34 /* SettingsPage */ = {
+			isa = PBXGroup;
+			children = (
+				3AF2BED81F649CD800D8EB34 /* Controller */,
+				3AF2BED71F649CD300D8EB34 /* View */,
+			);
+			name = SettingsPage;
+			sourceTree = "<group>";
+		};
+		3AF2BED71F649CD300D8EB34 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3AC9CEF31F0C9BEE00DCEC41 /* SettingItem.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		3AF2BED81F649CD800D8EB34 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				3AC9CEEF1F0C9B7C00DCEC41 /* SettingsViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		3AF2BED91F649D3300D8EB34 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				3AAF1BD41F1EEF99002D19F7 /* StaticValues.swift */,
+			);
+			name = Util;
+			sourceTree = "<group>";
+		};
+		3AF2BEDA1F649D6F00D8EB34 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3AD780941EB078BB007FDE5E /* Draft12.xcdatamodeld */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -174,7 +251,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AC9CEEC1F0AD3B600DCEC41 /* FilterIndicator.swift in Sources */,
-				3AD780A91EB07A7D007FDE5E /* toolbarView.swift in Sources */,
 				3AD780A61EB07971007FDE5E /* TodoItemTableViewCell.swift in Sources */,
 				3AD780961EB078BB007FDE5E /* Draft12.xcdatamodeld in Sources */,
 				3AD780A31EB0792A007FDE5E /* TodoTableViewController.swift in Sources */,
