@@ -214,11 +214,11 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
         addSubview(overdueLabel)
     }
     
-    func popDatepicker(){
+    @objc func popDatepicker(){
         delegate!.popupDatePicker(editingCell: self)
     }
     
-    func setFlag(sender: UIButton){
+    @objc func setFlag(sender: UIButton){
         if(todoItem!.flag == String(sender.tag)){
             todoItem!.flag = "-1"
         }
@@ -231,7 +231,7 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     
-    func handlePan(recognizer: UIPanGestureRecognizer){
+    @objc func handlePan(recognizer: UIPanGestureRecognizer){
         let maxTransation = frame.size.width/4.0
         // 1
         if recognizer.state == .began {
@@ -376,32 +376,32 @@ class TodoItemTableViewCell: UITableViewCell, UITextViewDelegate {
     }
     
     func hideLabels(){
-        UIView.transition(with: self.bButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+        UIView.transition(with: self.bButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { () -> Void in
             self.bButton!.isHidden = true
         }, completion: nil)
-        UIView.transition(with: self.cButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+        UIView.transition(with: self.cButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { () -> Void  in
             self.cButton!.isHidden = true
         }, completion: nil)
-        UIView.transition(with: self.aButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+        UIView.transition(with: self.aButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { () -> Void  in
             self.aButton!.isHidden = true
         }, completion: nil)
-        UIView.transition(with: self.dButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+        UIView.transition(with: self.dButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { () -> Void in
             self.dButton!.isHidden = true
         }, completion: nil)
     }
     
     private func unhideLabels(){
         
-        UIView.transition(with: self.bButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+        UIView.transition(with: self.bButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { () -> Void in
             self.bButton!.isHidden = false
         }, completion: nil)
-        UIView.transition(with: self.cButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+        UIView.transition(with: self.cButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { () -> Void in
             self.cButton!.isHidden = false
         }, completion: nil)
-        UIView.transition(with: self.aButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+        UIView.transition(with: self.aButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { () -> Void in
             self.aButton!.isHidden = false
         }, completion: nil)
-        UIView.transition(with: self.dButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { _ in
+        UIView.transition(with: self.dButton!, duration: 0.2, options: .transitionCrossDissolve, animations: { () -> Void in
             self.dButton!.isHidden = false
         }, completion: nil)
     }

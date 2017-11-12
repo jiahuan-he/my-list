@@ -245,7 +245,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         super.viewDidLoad()
         
         navigationController?.navigationBar.barTintColor = Color.navigationBar
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: Color.navigationBarText, NSFontAttributeName: Font.navigationBarText!]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: Color.navigationBarText, NSAttributedStringKey.font: Font.navigationBarText!]
         
         datePicker.frame = CGRect(x:  0, y:  ScreenSize.h - datePickerHeight, width:  UIScreen.main.bounds.width, height: datePickerHeight)
         
@@ -358,7 +358,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-    func handleTableTap(_ sender: UITapGestureRecognizer){
+    @objc func handleTableTap(_ sender: UITapGestureRecognizer){
         editingCell?.textView.resignFirstResponder()
     }
     
@@ -475,7 +475,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         self.navigationItem.setLeftBarButton(item1, animated: true)
     }
     
-    func handleRightNavButton(){
+    @objc func handleRightNavButton(){
         let settingsC = SettingsViewController()
         self.navigationController?.pushViewController(settingsC, animated: true)
         playTapSound()
@@ -540,7 +540,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    func handleLeftNavButton(){
+    @objc func handleLeftNavButton(){
         //        AudioServicesPlaySystemSound(tapSound)
         playTapSound()
         if isFiltered{
@@ -894,7 +894,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: cell.textView.text)
-        attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
+        attributeString.addAttribute(NSAttributedStringKey.strikethroughStyle, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
         if cell.todoItem!.isComplete{
             cell.textView.attributedText = attributeString
             cell.textView.font = Font.text
@@ -905,7 +905,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             //            editingCell.textView.backgroundColor = Color.complete
         }
         else{
-            attributeString.removeAttribute(NSStrikethroughColorAttributeName, range: NSMakeRange(0, attributeString.length))
+            attributeString.removeAttribute(NSAttributedStringKey.strikethroughColor, range: NSMakeRange(0, attributeString.length))
             //            cell.textView.attributedText = attributeString
             cell.textView.typingAttributes = [:]
             cell.textView.font = Font.text
@@ -933,7 +933,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     // buttons helper function
-    func removeButtonPressed(){
+    @objc func removeButtonPressed(){
         modifyingDate = false
         hidePicker()
         editingCell!.todoItem!.dueDate = nil
@@ -950,7 +950,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         editingCell!.textView.becomeFirstResponder()
     }
     
-    func doneButtonPressed(){
+    @objc func doneButtonPressed(){
         leftNavButton.isEnabled = true
         rightNavButton.isEnabled = true
         modifyingDate = false
@@ -1128,7 +1128,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         scheduleNotification(item: editingCell.todoItem!)
         
         let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: editingCell.textView.text)
-        attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
+        attributeString.addAttribute(NSAttributedStringKey.strikethroughStyle, value: sizeConvert(size: 2), range: NSMakeRange(0, attributeString.length))
         if (editingCell.todoItem?.isComplete)! {
             editingCell.textView.attributedText = attributeString
             editingCell.textView.font = Font.text
@@ -1139,7 +1139,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         else{
             
-            attributeString.removeAttribute(NSStrikethroughColorAttributeName, range: NSMakeRange(0, attributeString.length))
+            attributeString.removeAttribute(NSAttributedStringKey.strikethroughColor, range: NSMakeRange(0, attributeString.length))
             editingCell.textView.typingAttributes = [:]
             editingCell.textView.text = editingCell.todoItem?.name
             editingCell.textView.font = Font.text
@@ -1259,7 +1259,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             return
         }
         if(editingCell.todoItem?.dueDate == nil){
-            UIView.transition(with: editingCell.dateButton, duration: 0.3, options: .transitionCrossDissolve, animations:{ _ in
+            UIView.transition(with: editingCell.dateButton, duration: 0.3, options: .transitionCrossDissolve, animations:{ () -> Void  in
                 editingCell.dateButton.isHidden = true
             }, completion: nil)
         }
@@ -1460,7 +1460,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         backgroundDate.textColor = Color.text
         backgroundCue.textColor = Color.text
         navigationController?.navigationBar.barTintColor = Color.navigationBar
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: Color.navigationBarText, NSFontAttributeName: Font.navigationBarText!]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: Color.navigationBarText, NSAttributedStringKey.font: Font.navigationBarText!]
         barView.backgroundColor = Color.cellBackground
         barView.layer.borderColor = Color.separator.cgColor
         removeButton.setTitleColor(Color.remove, for: UIControlState.normal)

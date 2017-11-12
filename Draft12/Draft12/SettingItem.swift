@@ -185,7 +185,7 @@ class SettingItem: UIView {
         addSubview(label)
     }
     
-    func checkDark(){
+    @objc func checkDark(){
         button.tintColor = UIColor.red
         button.setTitleColor(UIColor.red, for: .normal)
         if darkChecked{
@@ -194,7 +194,7 @@ class SettingItem: UIView {
         darkChecked = true
     }
     
-    func checkLight(){
+    @objc func checkLight(){
         if !darkChecked{
             return
         }

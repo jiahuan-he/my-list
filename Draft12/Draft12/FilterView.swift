@@ -402,41 +402,41 @@ class FilterView: UIView {
         confirmView.addSubview(doneButton)
     }
     
-    func selectToday(){
+    @objc func selectToday(){
         isTodaySelected = !isTodaySelected
     }
     
-    func selectTomorrow(){
+    @objc func selectTomorrow(){
         isTomorrowSelected = !isTomorrowSelected
     }
     
-    func selectNoDate(){
+    @objc func selectNoDate(){
         isNoDateSelected = !isNoDateSelected
     }
     
-    func selectF0(){
+    @objc func selectF0(){
         isF0Selected = !isF0Selected
     }
     
-    func selectF1(){
+    @objc func selectF1(){
         isF1Selected = !isF1Selected
     }
     
-    func selectF2(){
+    @objc func selectF2(){
         isF2Selected = !isF2Selected
     }
     
-    func selectF3(){
+    @objc func selectF3(){
         isF3Selected = !isF3Selected
     }
     
-    func removePressed(){
+    @objc func removePressed(){
         clearDateSelection()
         clearFlagSelection()
         donePressed()
     }
     
-    func donePressed(){
+    @objc func donePressed(){
         delegate!.doneFiltering(todaySelected: isTodaySelected, tomorrowSelected: isTomorrowSelected, noDateSelected: isNoDateSelected, f0Selected: isF0Selected, f1Selected: isF1Selected, f2Selected: isF2Selected, f3Selected: isF3Selected)
     }
 

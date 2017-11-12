@@ -138,34 +138,34 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         settingViews.append(rateView!)
     }
     
-    func handleBadgeButton(){
+    @objc func handleBadgeButton(){
         checkAuthorization(forKey: settingKey.badge)
     }
     
-    func handleReminderButton(){
+    @objc func handleReminderButton(){
         checkAuthorization(forKey: settingKey.reminder)
     }
     
-    func handleSoundButton(){
+    @objc func handleSoundButton(){
         soundEffectView!.buttonChecked = !soundEffectView!.buttonChecked
     }
     
     func getAlertAuthorizationResult(){
-        if let settings = UIApplication.shared.currentUserNotificationSettings {
-            if settings.types.contains([.alert, .sound]) {
-                authorized = true
+        UNUserNotificationCenter.current().getNotificationSettings(){ (settings) in
+            if settings.alertSetting == .enabled && settings.soundSetting == .enabled{
+                self.authorized = true
             } else {
-                authorized = false
+                self.authorized = false
             }
         }
     }
     
     func getBadgeAuthorizationResult(){
-        if let settings = UIApplication.shared.currentUserNotificationSettings {
-            if settings.types.contains([.badge]) {
-                authorized = true
-            } else{
-                authorized = false
+        UNUserNotificationCenter.current().getNotificationSettings(){ (settings) in
+            if settings.badgeSetting == .enabled{
+                self.authorized = true
+            } else {
+                self.authorized = false
             }
         }
     }
@@ -238,14 +238,14 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
     }
     
     
-    func handleLeftNavButton(){
+    @objc func handleLeftNavButton(){
         playTapSound()
         _ = navigationController?.popViewController(animated: true)
     }
     
     
     
-    func sendEmailButtonTapped(sender: AnyObject) {
+    @objc func sendEmailButtonTapped(sender: AnyObject) {
         // print("email")
         let mailComposeViewController = configuredMailComposeViewController()
         if MFMailComposeViewController.canSendMail() {
@@ -268,7 +268,7 @@ class SettingsViewController: UIViewController, MFMailComposeViewControllerDeleg
         UIApplication.shared.open(url, options: [:], completionHandler: completion)
     }
     
-    func rateApp(){
+    @objc func rateApp(){
         rateAppHelper(completion: ({ success in
 //            print("RateApp \(success)")
         }))

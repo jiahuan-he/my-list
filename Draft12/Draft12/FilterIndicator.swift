@@ -43,7 +43,7 @@ class FilterIndicator: UIView {
         addSubview(removeButton)
     }
     
-    func removeFilter(){
+    @objc func removeFilter(){
         delegate!.removeFilterIndicator()
         
     }
