@@ -457,22 +457,31 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let renderedFilterImage = UIImage(named: "img/filter")!.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
 
         leftNavButton.setImage(renderedFilterImage, for: .normal)
-        leftNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(size: 25), height: sizeConvert(size: 25))
+        leftNavButton.imageView?.contentMode = .scaleAspectFit
         leftNavButton.addTarget(self, action: #selector(self.handleLeftNavButton), for: .touchUpInside)
 //        leftNavButton.setTitleColor(Color.text, for: .normal)
         leftNavButton.tintColor = Color.text
-        let item1 = UIBarButtonItem(customView: leftNavButton)
+        
         
         let renderedSettingsImage = UIImage(named: "img/settings")!.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        
         rightNavButton.setImage(renderedSettingsImage, for: .normal)
-        rightNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(size: 25), height: sizeConvert(size: 25))
+        rightNavButton.imageView?.contentMode = .scaleAspectFit
         rightNavButton.addTarget(self, action: #selector(self.handleRightNavButton), for: .touchUpInside)
         rightNavButton.tintColor = Color.text
         
-        let item2 = UIBarButtonItem(customView: rightNavButton)
         
-        self.navigationItem.setRightBarButton(item2, animated: true)
-        self.navigationItem.setLeftBarButton(item1, animated: true)
+        rightNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(size: 25), height: sizeConvert(size: 30))
+        rightNavButton.widthAnchor.constraint(equalToConstant: sizeConvert(size: 25)).isActive = true
+
+        leftNavButton.frame = CGRect(x: 0, y: 0, width: sizeConvert(size: 25), height: sizeConvert(size: 25))
+        leftNavButton.widthAnchor.constraint(equalToConstant: sizeConvert(size: 25)).isActive = true
+        
+        let rButton = UIBarButtonItem.init(customView: rightNavButton)
+        let lButton = UIBarButtonItem.init(customView: leftNavButton)
+
+        self.navigationItem.setRightBarButton(rButton, animated: true)
+        self.navigationItem.setLeftBarButton(lButton, animated: true)
     }
     
     @objc func handleRightNavButton(){
@@ -692,10 +701,9 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             userDefault.set(id+1, forKey: "num")
             items.append(newItem)
             newItem.flag = String(i%4)
-            
         }
         
-        let today = Date() as NSDate
+        let today = Date()
         items[0].name = "Pull down to add new task."
         items[0].createDate = today
         
@@ -704,13 +712,13 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         items[3].name = "Tap the filter at the left corner to filter tasks."
         
         items[4].name = "Overdue tasks' date is displayed as red."
-        items[4].dueDate = Date() as NSDate
+        items[4].dueDate = Date()
         
         items[5].name = "Date and flag can't be modified when filtering."
-        items[5].dueDate = Calendar.current.date(byAdding: .day, value: 1, to: Date())! as NSDate
+        items[5].dueDate = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
         
         items[6].name = "Enjoy ʘ‿ʘ"
-        items[6].dueDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())! as NSDate
+        items[6].dueDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())!
 
         items[1].createDate = items[0].createDate!.addingTimeInterval(-1)
         items[2].createDate = items[1].createDate!.addingTimeInterval(-1)
@@ -955,7 +963,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
         rightNavButton.isEnabled = true
         modifyingDate = false
         hidePicker()
-        editingCell!.todoItem!.dueDate = datePicker.date as NSDate
+        editingCell!.todoItem!.dueDate = datePicker.date
         let dateButton = editingCell!.dateButton
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         UIView.animate(withDuration: 0.2, animations: { () in
@@ -1418,7 +1426,7 @@ class TodoTableViewController: UIViewController, UITableViewDelegate, UITableVie
             let newItem = TodoItem(context: context)
             let userDefault = UserDefaults.standard
             let id = userDefault.integer(forKey: "num")
-            newItem.createDate = Date() as NSDate
+            newItem.createDate = Date()
             newItem.id = Int64(id)
             userDefault.set(id+1, forKey: "num")
             newItem.flag = "0"
