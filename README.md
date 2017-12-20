@@ -2,14 +2,14 @@
 Some drafts for playing around. 
 ## Demo
 
-1. create, complete, and delete a task
-## ![Alt Text](https://media.giphy.com/media/l4EoWGuldwG9YtxpS/giphy.gif)
-2. filter tasks
-## ![Alt Text](https://media.giphy.com/media/l4EpaN3mZ7VAxP3WM/giphy.gif)
-3. modify color and due date
-## ![Alt Text](https://media.giphy.com/media/l4Epgtd8lU0px1E1W/giphy.gif)
-4. light theme
-## ![Alt Text](https://media.giphy.com/media/l4Ep8xzpYyNEoJXbi/giphy.gif)
+### 1.  create, complete, and delete a task
+## <img src="/GIFs/1-add-task.gif" width="300">
+### 2. filter tasks
+## <img src="/GIFs/2-delete-complete.gif" width="300">
+### 3. modify color and due date
+## <img src="/GIFs/3-filter.gif" width="300">
+### 4. light theme
+## <img src="/GIFs/4-theme.gif" width="300">
 
 
 
