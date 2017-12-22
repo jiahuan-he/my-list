@@ -1,5 +1,6 @@
 # My List
-Some drafts for playing around. 
+A free and ad-free IOS app
+
 ## Demo
 
 ### 1.  create, complete, and delete a task
