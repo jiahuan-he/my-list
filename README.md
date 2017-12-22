@@ -9,7 +9,10 @@ Some drafts for playing around.
 ### 3. modify color and due date
 ## <img src="/GIFs/3-filter.gif" width="300">
 ### 4. light theme
-## <img src="/GIFs/4-theme.gif" width="300">
+<img src="/GIFs/4-settings.png" width="300">
+<img src="/GIFs/4-light-theme.png" width="300">
+
+
 
 
 
